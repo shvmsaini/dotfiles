@@ -1,0 +1,66 @@
+##### Terminal #####
+super + Return 
+	kitty
+### restart bspwm ###
+super + shift + r
+	bspc wm -r 
+##### close window ####
+super + shift + q
+	bspc node -c 
+super + shift + e
+	pkill bspwm #exit bspwm
+super + i 
+	bspc node -R 90 #split
+super + shift + i
+	bspc node -R -90 #Split
+super + l
+	bspc desktop
+super + Escape
+	killall sxhkd && sxhkd
+	#(pkill -usr1 -x sxhkd) && sxhkd
+super + {t,shift + t,s,f}
+	bspc node -t {tiled,pseudo_tiled,floating,fullscreen}
+super + Right
+	bspc node -f east
+super + Left
+	bspc node -f west
+super + Up
+	bspc node -f north
+super + Down
+	bspc node -f south
+super + m
+	bspc desktop -l next
+#super + shift + {1-9}
+#	id=$(bspc query -N -n); bspc node -d ^{1-9}; bspc node -f ${id}
+
+####################### Send to workspace & switch ##############
+super + shift + {1-9,0}
+	bspc node -d '^{1-9,10}' --follow
+
+####################### Rotate tree #############################
+super + shift + {d,a}
+    bspc node @/ -C {forward,backward}
+
+####################### Send to Monitor #########################
+super + shift + equal
+    bspc node -m last --follow
+
+####################### Resize window ##########################
+super + r: {h,j,k,l}
+    STEP=20; SELECTION={1,2,3,4}; \
+    bspc node -z $(echo "left -$STEP 0,bottom 0 $STEP,top 0 -$STEP,right $STEP 0" | cut -d',' -f$SELECTION) || \
+    bspc node -z $(echo "right -$STEP 0,top 0 $STEP,bottom 0 -$STEP,left $STEP 0" | cut -d',' -f$SELECTION)
+
+#### Switch workspaces ####
+super + {0,1,2,3,4,5}
+	bspc desktop -f '^{0,1,2,3,4,5}'
+
+### Rofi ####
+super + d
+	rofi -show drun
+super + Tab 
+	rofi -show window
+super + semicolon
+	rofimoji
+super + entern
+	kitty

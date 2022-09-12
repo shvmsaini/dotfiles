@@ -1,0 +1,96 @@
+/** Basic config file **/
+
+configuration {
+  show-icons: true;
+  icon-theme: "Papirus";
+  modi: "window,run,drun";
+  font: "Hack 10";
+}
+
+//@theme "/home/shvmpc/.local/share/rofi/themes/squared-everforest.rasi"
+//@theme "/home/shvmpc/.local/share/rofi/themes/rounded-gray-dark.rasi"
+
+@theme "/dev/null"
+
+* {
+  bg: #11121D;
+  transparent: #00000000;
+  bg-alt: #444b6a;
+  fg: #FFFFFF;
+  fg-alt: #787c99;
+  background-color: @bg;
+  border: 0;
+  margin: 0;
+  padding: 0;
+  spacing: 0;
+}
+
+button {
+    action: "ok";
+    str: "\uf002 ";
+    font: "Hack 16";
+    expand: false;
+    text-color: #6e6a86;
+    background-color: @transparent;
+    vertical-align: 0.5;
+    horizontal-align: 0.5;
+}
+
+window {
+  transparency: "real";
+  border-radius: 10px;
+  width: 30%;
+}
+
+element {
+  padding: 8 0;
+  text-color: @fg-alt;
+}
+
+element selected {
+  background-color: @bg;
+  text-color: #fab387;
+}
+
+element-text {
+  background-color: inherit;
+  text-color: inherit;
+  vertical-align: 0.5;
+}
+
+element-icon {
+  size: 25;
+  padding: 0 5 0 0;
+}
+
+entry {
+  background-color: @bg-alt;
+  padding: 10;
+  text-color: @fg;
+}
+
+inputbar {
+  children: [prompt, entry];
+}
+
+listview {
+  padding: 8 12;
+  background-color: @bg;
+  columns: 1;
+  border-radius:10px;
+  lines: 8;
+}
+
+mainbox {
+  background-color: @bg;
+  border-radius:0;
+  children: [inputbar, listview];
+}
+
+prompt {
+  background-color: @bg-alt;
+  enabled: true;
+  padding: 12 0 0 12;
+  text-color: @fg;
+}
+
