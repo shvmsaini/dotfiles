@@ -25,6 +25,7 @@ feh --bg-fill /mnt/forlinuxuse/Wallpapers/anime-girls-dark-night-forest.png
 (killall nm-applet) ; (nm-applet &)
 (killall /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1) ; ( /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 & )
 (killall gnome-keyring-daemon) ; ( gnome-keyring-daemon & )
+dex --autostart --environment herbstluftwm &
 
 # keybindings
 # if you have a super key you will be much happier with Mod set to Mod4
@@ -43,10 +44,12 @@ hc keybind $Mod-Tab spawn rofi -show window
 hc keybind $Mod-semicolon spawn rofimoji
 hc keybind Print spawn gnome-screenshot
 hc keybind Ctrl+Shift+Print spawn gnome-screenshot -a -c -i
-hc keybind Scroll_Lock spawn gnome-calculator floating=true
+hc keybind Scroll_Lock spawn gnome-calculator
 hc keybind $Mod-t spawn polybar-msg cmd toggle
+hc keybind $Mod+Shift+KP_Begin spawn ~/.config/herbstluftwm/scratchpad.sh
 hc keybind $Mod-Shift-KP_End spawn firefox-developer-edition
 hc keybind $Mod-Shift-KP_Down spawn gvim
+hc keybind $Mod-Shift-KP_Next spawn nemo
 hc keybind $Mod-Shift-n spawn nemo
 hc set default_frame_layout grid
 
@@ -196,7 +199,7 @@ hc set always_show_frame 0
 
 # rules
 hc unrule -F
-hc rule class="discord" tag=5 # move all discord windows to tag 5
+hc rule class="Discord" tag=5 # move all discord windows to tag 5
 hc rule focus=on # normally focus new clients
 hc rule floatplacement=center #other possible: smart
 #hc rule focus=off # normally do not focus new clients
@@ -218,7 +221,7 @@ hc unlock
 # do multi monitor setup here, e.g.:
 # hc set_monitors 1280x1024+0+0 1280x1024+1280+0
 # or simply:
-# hc detect_monitors
+hc detect_monitors
 
 # find the panel
 panel=~/.config/herbstluftwm/panel.sh
@@ -227,5 +230,3 @@ for monitor in $(hc list_monitors | cut -d: -f1) ; do
     # start it on each monitor
     "$panel" "$monitor" &
 done
-
-hc detect_monitors 
