@@ -1,0 +1,283 @@
+#!/bin/bash
+#       _____           _ 
+#      / ____|         | |
+#     | |  __  ___   __| |
+# The | | |_ |/ _ \ / _` | Config
+#     | |__| | (_) | (_| |
+#      \_____|\___/ \__,_|
+
+hc() {
+	herbstclient "$@" 
+}
+
+### Common Dirs
+DIR="$HOME/.config/herbstluftwm"
+SCRIPTS="$HOME/.config/scripts"
+TERM="kitty"
+
+### Resetting Hooks
+hc emit_hook reload
+
+#### Autostart applications ####
+$SCRIPTS/autostart.sh
+
+#### Herbst Keybinds ####
+hc keyunbind --all # Remove all existing keybindings
+Mod=Mod4   # Use the super key as the main modifier
+
+hc keybind $Mod-Shift-q close_and_remove
+hc keybind $Mod-Shift-c close
+hc keybind $Mod-Shift-r reload
+hc keybind $Mod-Shift-e spawn $DIR/exitHC.sh
+
+#### Applications & Scripts Keybinds ####
+hc keybind $Mod-Return spawn $TERM
+hc keybind $Mod-KP_Enter spawn $TERM
+hc keybind $Mod-d spawn rofi -show drun
+hc keybind $Mod-Tab spawn rofi -show window
+hc keybind $Mod-semicolon spawn rofimoji
+hc keybind $Mod-t spawn polybar-msg cmd toggle
+hc keybind $Mod-Mod1-KP_End spawn firefox
+hc keybind $Mod-Mod1-KP_Down spawn $TERM -e nvim
+hc keybind $Mod-Mod1-KP_Next spawn $DIR/app_spawn.sh nemo
+hc keybind $Mod-Mod1-b spawn $DIR/app_spawn.sh brave
+hc keybind $Mod-Mod1-c spawn $DIR/app_spawn.sh code
+hc keybind $Mod-Mod1-n spawn $DIR/app_spawn.sh nemo
+hc keybind $Mod-Mod1-t spawn $DIR/app_spawn.sh tor
+hc keybind $Mod-Mod1-f spawn firefox
+hc keybind $Mod-Mod1-l spawn logseq
+hc keybind $Mod-Mod1-p spawn pavucontrol
+hc keybind $Mod-Mod1-h spawn $TERM -e htop
+hc keybind $Mod-Mod1-r spawn $TERM -e ranger
+hc keybind $Mod-s spawn $DIR/scratchpad.sh ">_<" "682x746+683+21" #Side scratchpad
+hc keybind $Mod-w spawn $DIR/scratchpad.sh ">_<" "1111x640+126+70" #Wide scratchpad
+
+hc keybind Pause spawn $DIR/hide_all.sh
+hc keybind Print spawn flameshot launcher
+hc keybind Ctrl+Shift+Print spawn flameshot gui
+#hc keybind Scroll_Lock spawn gnome-calculator
+hc keybind Scroll_Lock spawn kitty -e python3
+
+#### Volume ####
+hc keybind $Mod-minus spawn $SCRIPTS/volume.sh "down"
+hc keybind $Mod-equal spawn $SCRIPTS/volume.sh "up"
+hc keybind $Mod-KP_Add spawn $SCRIPTS/volume.sh "up"
+hc keybind $Mod-KP_Subtract spawn $SCRIPTS/volume.sh "down"
+
+#### Window Gap Change ####
+hc keybind $Mod+Shift+equal spawn $DIR/gap_change.sh "+"
+hc keybind $Mod+Shift+minus spawn $DIR/gap_change.sh "-"
+
+#### Basic movement in tiling and floating mode ####
+#### Focusing clients ####
+hc keybind $Mod-Left  focus left
+hc keybind $Mod-Down  focus down
+hc keybind $Mod-Up    focus up
+hc keybind $Mod-Right focus right
+hc keybind $Mod-h     focus left
+hc keybind $Mod-j     focus down
+hc keybind $Mod-k     focus up
+hc keybind $Mod-l     focus right
+
+# Moving clients in tiling and floating mode
+hc keybind $Mod-Shift-Left  shift left
+hc keybind $Mod-Shift-Down  shift down
+hc keybind $Mod-Shift-Up    shift up
+hc keybind $Mod-Shift-Right shift right
+hc keybind $Mod-Shift-h     shift left
+hc keybind $Mod-Shift-j     shift down
+hc keybind $Mod-Shift-k     shift up
+hc keybind $Mod-Shift-l     shift right
+
+# moving clients to different frames
+hc keybind $Mod-Shift-KP_Down     shift down --level=frame
+hc keybind $Mod-Shift-KP_Up       shift up  --level=frame
+hc keybind $Mod-Shift-KP_Right    shift right --level=frame
+hc keybind $Mod-Shift-KP_Left     shift left --level=frame
+
+# splitting frames
+# create an empty frame at the specified direction
+hc keybind $Mod-g chain . split bottom . focus --level=frame down . set_layout horizontal
+hc keybind $Mod-v chain . split right . focus --level=frame right . set_layout vertical
+# let the current frame explode into subframes
+hc keybind $Mod+x split explode
+
+# resizing frames and floating clients
+resizestep=0.04
+hc keybind $Mod-Control-h       resize left +$resizestep
+hc keybind $Mod-Control-j       resize down +$resizestep
+hc keybind $Mod-Control-k       resize up +$resizestep
+hc keybind $Mod-Control-l       resize right +$resizestep
+hc keybind $Mod-Control-Left    resize left +$resizestep
+hc keybind $Mod-Control-Down    resize down +$resizestep
+hc keybind $Mod-Control-Up      resize up +$resizestep
+hc keybind $Mod-Control-Right   resize right +$resizestep
+
+#### Layouting ####
+hc keybind $Mod-q remove
+hc keybind $Mod-Shift-space floating toggle
+hc keybind $Mod-f fullscreen toggle
+hc keybind $Mod-Shift-f set_attr clients.focus.floating toggle
+hc keybind $Mod-Shift-d set_attr clients.focus.decorated toggle
+hc keybind $Mod-Shift-m spawn $DIR/minimize.sh "min"
+hc keybind $Mod-Control-m spawn $DIR/minimize.sh "unmin"
+hc keybind $Mod-p pseudotile toggle
+hc keybind $Mod-m spawn $DIR/maximize.sh
+hc keybind $Mod-Shift-s spawn $DIR/move_to_monitor.sh
+hc keybind $Mod-Shift-BackSpace spawn $DIR/move_to_monitor.sh
+
+# The following cycles through the available layouts within a frame, but skips
+# layouts, if the layout change wouldn't affect the actual window positions.
+# I.e. if there are two windows within a frame, the grid layout is skipped.
+hc keybind $Mod-space                                                      \
+            or , and . compare tags.focus.curframe_wcount = 2              \
+                     . cycle_layout +1 vertical horizontal vertical grid   \
+               , cycle_layout +1 vertical horizontal grid
+
+#### Mouse ####
+hc mouseunbind --all
+hc mousebind $Mod-Button1 move
+hc mousebind $Mod-Button2 zoom
+hc mousebind $Mod-Button3 resize
+
+#### Focus ####
+hc keybind $Mod-BackSpace cycle_monitor
+hc keybind $Mod-Ctrl-Tab	cycle_all +1
+hc keybind $Mod-Shift-Tab cycle_all -1
+hc keybind $Mod-c cycle
+hc keybind $Mod-i jumpto urgent
+
+#### Theme - Tiling, Gaps, Frames etc. ####
+hc attr theme.tiling.reset 1
+hc attr theme.floating.reset 1
+hc attr tags.0.tiling.root.algorithm grid
+hc set frame_border_active_color '#222222cc'
+hc set frame_border_normal_color '#101010cc'
+hc set frame_bg_normal_color '#565656aa'
+hc set frame_bg_active_color '#345F0Caa'
+hc set frame_border_width 0
+hc set frame_bg_transparent on
+hc set frame_transparent_width 5
+hc set frame_active_opacity 10
+hc set frame_normal_opacity 5
+hc set frame_gap 0
+hc set window_gap 2
+hc set frame_padding 0
+hc set window_border_width 2
+hc set show_frame_decorations if_empty
+hc set smart_window_surroundings off
+hc set smart_frame_surroundings on
+hc set mouse_recenter_gap 0
+hc set focus_crosses_monitor_boundaries true
+hc set focus_follows_mouse 1
+hc set always_show_frame 0
+hc set default_frame_layout grid
+
+#### Theme - Borders, Fonts etc. ####
+hc attr theme.title_height 15
+hc attr theme.title_align center
+hc attr theme.title_when multiple_tabs
+hc attr theme.title_font 'Dejavu Sans:pixelsize=12'  # example using Xft
+# hc attr theme.title_font '-*-fixed-medium-r-*-*-13-*-*-*-*-*-*-*'
+hc attr theme.title_depth 3  # space below the title's baseline
+hc attr theme.active.color '#345F0Cef'
+hc attr theme.title_color '#ffffff'
+hc attr theme.normal.color '#323232dd'
+hc attr theme.urgent.color '#7811A1dd'
+hc attr theme.tab_color '#1F1F1Fdd'
+hc attr theme.active.tab_color '#2B4F0Add'
+hc attr theme.active.tab_outer_color '#6C8257dd'
+hc attr theme.active.tab_title_color '#ababab'
+hc attr theme.normal.title_color '#898989'
+hc attr theme.outer_width 0
+hc attr theme.inner_width 0
+hc attr theme.border_width 1
+hc attr theme.inner_color black
+hc attr theme.border_width 2
+hc attr theme.floating.border_width 2
+hc attr theme.floating.outer_width 1
+hc attr theme.floating.outer_color black
+hc attr theme.active.inner_color '#789161'
+hc attr theme.urgent.inner_color '#9A65B0'
+hc attr theme.normal.inner_color '#404040'
+# copy inner color to outer_color
+for state in active urgent normal ; do
+    hc substitute C theme.${state}.inner_color \
+            attr theme.${state}.outer_color C
+            done
+            hc attr theme.tiling.outer_width 1
+            hc attr theme.background_color '#14141400'
+
+#### Tags ####
+tag_names=( "1" "2" "3" "4" "5" "6" "7" "8" )
+tag_keys=({1..8})
+
+hc rename default "${tag_names[0]}" || true
+for i in "${!tag_names[@]}" ; do
+	  hc add "${tag_names[$i]}"
+    key="${tag_keys[$i]}"
+    if [ -n "$key" ] ; then
+		  hc keybind "$Mod-$key" use_index "$i"
+		  hc keybind "$Mod-Shift-$key" move_index "$i"
+    fi
+done
+
+#### Cycle through tags ####
+hc keybind $Mod-grave use_index +1 --skip-visible
+hc keybind $Mod-Shift-grave  use_index -1 --skip-visible
+
+#### Rules ####
+hc unrule -F
+hc rule focus=on # Normally focus new clients
+hc rule floatplacement=center 
+hc rule class="gnome-calculator" floating=true floatplacement=center
+hc rule class="Pavucontrol" floating=true
+hc rule class="Pamac-manager" floating=true
+hc rule class="GParted" floating=true
+hc rule class="Logseq" tag=2 
+hc rule class="Gnome-system-monitor" floating=true
+hc rule class="org.cryptomator.launcher.Cryptomator\$MainApp" floating=true
+hc rule windowtype~'_NET_WM_WINDOW_TYPE_(DIALOG|UTILITY|SPLASH)' floating=on
+hc rule windowtype='_NET_WM_WINDOW_TYPE_DIALOG' focus=on
+hc rule windowtype~'_NET_WM_WINDOW_TYPE_(NOTIFICATION|DOCK|DESKTOP)' manage=off
+hc rule fixedsize floating=on
+hc rule index=e # New windows will be placed in empty frames
+
+hc set tree_style '╾│ ├└╼─┐'
+
+# unlock, just to be sure
+hc unlock
+
+# do multi monitor setup here, e.g.:
+# hc set_monitors 1280x1024+0+0 1280x1024+1280+0
+# or simply:
+hc detect_monitors
+
+# For wallapaper based theming
+$DIR/pywal_theme.sh
+ 
+# Polybar after tag creation and pywal
+$HOME/.config/polybar/kabinspace/launch.sh &
+
+#### Miscellaneous ####
+# BSPWM Style Layout on tag 1
+$DIR/fibo_layout.sh & 
+
+# Switch to Last Tag 
+$DIR/lasttag.sh &
+hc keybind $Mod-z emit_hook goto_last_tag 
+
+# Tesseract Script
+hc keybind $Mod-Shift-F12 spawn $SCRIPTS/get_ss_text.sh
+
+# PrivateBin Script
+hc keybind $Mod-Shift-F11 spawn $SCRIPTS/privatebin.sh
+
+# Master Stack Layout on tag 4
+$DIR/master_stack.sh &
+
+# Clipmenu
+hc keybind Ctrl+Alt+h spawn clipmenu 
+
+# Switch to Layout
+hc keybind $Mod-b spawn $DIR/staticfibo.sh

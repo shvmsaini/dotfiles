@@ -1,0 +1,43 @@
+#! /bin/sh
+
+bspc monitor HDMI -d I II III IV
+bspc monitor DP I II III
+
+bspc config focus_follows_pointer true
+
+bspc config border_width         2
+bspc config window_gap           5
+
+bspc config split_ratio          0.52
+bspc config borderless_monocle   true
+bspc config gapless_monocle      true
+
+### IDK but it fixed the dbus issue"
+export XDG_RUNTIME_DIR="/run/user/$UID"
+export DBUS_SESSION_BUS_ADDRESS="unix:path=${XDG_RUNTIME_DIR}/bus"
+
+### Notification ###
+dunst &
+
+#### Compositor ###
+picom --experimental-backends &
+
+### Start Polybar ###
+/home/shvmpc/polybar-themes/bitmap/launch.sh --shapes &
+
+### Xrandr Multimonitor ###
+xrandr --output DP-1-2 --auto --right-of HDMI-1
+
+### Clipboard Manager ###
+killall parcellite && parcellite &
+
+### Wallpaper ###
+feh --bg-fill /mnt/forlinuxuse/Wallpapers/coffe-shop-vibes.png &
+#/usr/lib/gnome-settings-daemon-42/
+/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 &
+
+gnome-keyring-daemon &
+
+dex --autostart --environment bspwm &
+
+killall nm-applet && nm-applet &

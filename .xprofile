@@ -1,0 +1,5 @@
+nm-applet &
+~/.config/scripts/autoxrandr.sh
+picom &
+
+export QT_QPA_PLATFORMTHEME=qt5ct
