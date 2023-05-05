@@ -22,9 +22,11 @@ set scripts $HOME/.config/scripts/
 set pbdir $HOME/.local/lib/python3.10/site-packages/pbincli/cli.py
 set hcdir $HOME/.config/herbstluftwm/
 set conf ~/.config
-set FLU /mnt/forlinuxuse/
-set STF /run/media/shvmpc/Stuff/
+set FLU /mnt/forlinuxuse
+set STF /run/media/shvmpc/Stuff
 set QT_QPA_PLATFORMTHEME qt5ct
+
+set EDITOR /bin/vim
 
 # Keybind
 bind \cH backward-kill-word # Control-Backspace deletes word

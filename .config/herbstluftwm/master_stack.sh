@@ -19,10 +19,10 @@ hc --idle "attribute_changed|reload|swap$tag" |
             IFS=$'\t' read -ra args <<<"$line"
 
             swap=$(if [[ "${args[0]}" = "swap$tag" ]]; then echo 1; else echo 0; fi)
-            clientch=$(if [[ "${args[1]}" = "tags.$tag.client_count" && "${args[3]}" -gt 1 ]]; then echo 1; else echo 0; fi)
-		  newcstate=$(hc attr clients.focus.floating)
+            clientch=$(if [[ "${args[1]}" = "tags.$tag.client_count" ]]; then echo 1; else echo 0; fi)
+		  ncfloat=$(hc attr clients.focus.floating)
 
-            if [[ ( $swap = 1 || $clientch = 1 ) && $newcstate = false ]]; then
+            if [[ ( $swap = 1 || $clientch = 1 ) && $ncfloat = false ]]; then
                 clients=($(hc list_clients --tag=$tname --tiling))
                 fclient=$(hc attr clients.focus.winid)
                 s=$(hc attr clients.$fclient.parent_frame.selection)
@@ -30,7 +30,7 @@ hc --idle "attribute_changed|reload|swap$tag" |
                     ratio=$(hc dump | cut -d " " -f 2 | cut -d ":" -f 2)
                 fi
 
-                if [[ $swap = "1" ]]; then
+                if [[ $swap = 1 ]]; then
                     # Focused client should not be master
                     if [ $fclient = ${clients[0]} ]; then continue; fi
                     # Swapping master and focused client
@@ -38,11 +38,15 @@ hc --idle "attribute_changed|reload|swap$tag" |
                     clients[0]=$fclient
                     hc load $tagname "$(echo "(split horizontal:$ratio:1 (clients horizontal:0 ${clients[0]}) (clients vertical:$s ${clients[@]:1}))")"
                     hc jumpto ${clients[0]}
-                elif [[ $clientch = "1" ]]; then
-                    hc load $tagname "$(echo "(split horizontal:$ratio:1 (clients horizontal:0 ${clients[0]}) (clients vertical:0 ${clients[@]:1}))")"
-                    hc jumpto $fclient
+                elif [[ $clientch = 1 ]]; then
+				if [[ ${args[3]} = 1 ]]; then
+					hc load $tagname "$(echo "(clients horizontal:0 ${clients[0]})")"
+				else
+					hc load $tagname "$(echo "(split horizontal:$ratio:1 (clients horizontal:0 ${clients[0]}) (clients vertical:0 ${clients[@]:1}))")"
+				fi
+                    #hc jumpto $fclient
                 fi
-            elif [ "${args[0]}" = "reload" ]; then
+            elif [[ "${args[0]}" = reload ]]; then
                 exit 1
             fi
         done

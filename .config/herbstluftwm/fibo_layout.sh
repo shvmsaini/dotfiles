@@ -14,7 +14,7 @@ hc --idle '(attribute_changed|reload)' |
        IFS=$'\t' read -ra args <<< "$line"
 	  if [[ "${args[1]}" = "tags.$tag.client_count" ]]; then
 		clients=($(hc list_clients --tag="$tname" --tiling))
-		ratio=($(hc dump | /usr/share/doc/herbstluftwm/examples/dumpbeautify.sh | grep "split" | cut -d ':' -f 2) "0.5")
+		ratio=($(hc dump | /usr/share/doc/herbstluftwm/examples/dumpbeautify.sh | grep "split" | cut -d ':' -f 2) "0.448")
 		layout="" # Resetting
 		j=0
 		k=0

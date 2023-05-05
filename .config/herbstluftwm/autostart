@@ -29,7 +29,8 @@ hc keybind $Mod-Shift-q close_and_remove
 hc keybind $Mod-Shift-c close
 hc keybind $Mod-Shift-r reload
 hc keybind $Mod-Shift-e spawn $DIR/exitHC.sh
-
+hc keybind $Mod-o mirror
+hc keybind $Mod-r rotate
 #### Applications & Scripts Keybinds ####
 hc keybind $Mod-Return spawn $TERM
 hc keybind $Mod-KP_Enter spawn $TERM
@@ -151,27 +152,31 @@ hc keybind $Mod-i jumpto urgent
 hc attr theme.tiling.reset 1
 hc attr theme.floating.reset 1
 hc attr tags.0.tiling.root.algorithm grid
+## Frame Border
 hc set frame_border_active_color '#222222cc'
 hc set frame_border_normal_color '#101010cc'
-hc set frame_bg_normal_color '#565656aa'
-hc set frame_bg_active_color '#345F0Caa'
 hc set frame_border_width 0
-hc set frame_bg_transparent on
-hc set frame_transparent_width 5
+## Frame background
+hc set frame_bg_transparent off
+hc set frame_bg_normal_color '#56565600'
+hc set frame_bg_active_color '#345F0C00'
+## Frame Width, Gap, Padding
+hc set frame_transparent_width 0
+hc set frame_gap 0
+hc set frame_padding 0
+## Frame opacity
 hc set frame_active_opacity 10
 hc set frame_normal_opacity 5
-hc set frame_gap 0
-hc set window_gap 2
-hc set frame_padding 0
-hc set window_border_width 2
-hc set show_frame_decorations if_empty
-hc set smart_window_surroundings off
+## Frame settings
 hc set smart_frame_surroundings on
-hc set mouse_recenter_gap 0
-hc set focus_crosses_monitor_boundaries true
-hc set focus_follows_mouse 1
-hc set always_show_frame 0
+hc set show_frame_decorations if_empty
 hc set default_frame_layout grid
+hc set window_gap 2
+hc set window_border_width 2
+hc set smart_window_surroundings off
+hc set mouse_recenter_gap off
+hc set focus_crosses_monitor_boundaries true
+hc set focus_follows_mouse on
 
 #### Theme - Borders, Fonts etc. ####
 hc attr theme.title_height 15
@@ -222,6 +227,11 @@ for i in "${!tag_names[@]}" ; do
     fi
 done
 
+KP_keys=( KP_End KP_Down KP_Next KP_Left KP_Begin KP_Right KP_Home KP_Up KP_Prior )
+for i in "${!tag_names[@]}" ; do
+	hc keybind $Mod-${KP_keys[$i]} use ${tag_names[$i]}
+done
+
 #### Cycle through tags ####
 hc keybind $Mod-grave use_index +1 --skip-visible
 hc keybind $Mod-Shift-grave  use_index -1 --skip-visible
@@ -235,6 +245,8 @@ hc rule class="Pavucontrol" floating=true
 hc rule class="Pamac-manager" floating=true
 hc rule class="GParted" floating=true
 hc rule class="Logseq" tag=2 
+hc rule class="jetbrains-studio" tag=3
+hc rule class="Gimp-2.10" tag=7
 hc rule class="Gnome-system-monitor" floating=true
 hc rule class="org.cryptomator.launcher.Cryptomator\$MainApp" floating=true
 hc rule windowtype~'_NET_WM_WINDOW_TYPE_(DIALOG|UTILITY|SPLASH)' floating=on
@@ -257,7 +269,8 @@ hc detect_monitors
 $DIR/pywal_theme.sh
  
 # Polybar after tag creation and pywal
-$HOME/.config/polybar/kabinspace/launch.sh &
+# $HOME/.config/polybar/kabinspace/launch.sh &
+$HOME/.config/polybar/catppuccino/launch.sh &
 
 #### Miscellaneous ####
 # BSPWM Style Layout on tag 1
@@ -274,10 +287,11 @@ hc keybind $Mod-Shift-F12 spawn $SCRIPTS/get_ss_text.sh
 hc keybind $Mod-Shift-F11 spawn $SCRIPTS/privatebin.sh
 
 # Master Stack Layout on tag 4
-$DIR/master_stack.sh &
+#$DIR/master_stack.sh &
 
 # Clipmenu
 hc keybind Ctrl+Alt+h spawn clipmenu 
 
 # Switch to Layout
 hc keybind $Mod-b spawn $DIR/staticfibo.sh
+

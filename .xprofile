@@ -1,5 +1,7 @@
 nm-applet &
 ~/.config/scripts/autoxrandr.sh
 picom &
-
+export QT_STYLE_OVERRIDE=Adwaita-dark
 export QT_QPA_PLATFORMTHEME=qt5ct
+export JAVA_HOME=/usr/lib/jvm/java-17-openjdk
+export ANDROID_SDK_ROOT=/home/shvmpc/Android/Sdk

@@ -137,7 +137,7 @@ ex ()
 }
 export IDEA_JDK=/usr/lib/jvm/jdk-jetbrains
 export ANDROID_SDK_ROOT=/home/shvmpc/Android/Sdk
-export JAVA_HOME=/usr/lib/jvm/java-11-openjdk
+export JAVA_HOME=/usr/lib/jvm/java-17-openjdk
 export RUBY=/home/shvmpc/.local/share/gem/ruby/3.0.0/bin
 export QT_QPA_PLATFORMTHEME=qt5ct
 
