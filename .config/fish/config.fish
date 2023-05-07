@@ -16,6 +16,7 @@ alias l.='exa -ald --color=always --group-directories-first --icons .*' # show o
 alias dir="dir --color=auto"
 alias tata="exit"
 alias config="/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME"
+alias dots="/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME"
 
 # Directories
 set scripts $HOME/.config/scripts/
