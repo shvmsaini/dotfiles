@@ -21,6 +21,12 @@ require("awful.hotkeys_popup.keys")
 -- Volume Widget
 local volume_widget = require('awesome-wm-widgets.volume-widget.volume')
 
+-- Net Speed
+local net_speed_widget = require("awesome-wm-widgets.net-speed-widget.net-speed")
+
+-- Separator
+local separator = wibox.widget.textbox("  ")
+
 -- {{{ Error handling
 -- Check if awesome encountered an error during startup and fell back to
 -- another config (This code will only ever execute for the fallback config)
@@ -49,37 +55,33 @@ end
 -- {{{ Variable definitions
 -- Themes define colours, icons, font and wallpapers.
 beautiful.init(gears.filesystem.get_themes_dir() .. "default/theme.lua")
+beautiful.wibar_bg = "#000000" 
 
+-- Gaps
+beautiful.useless_gap = 2
+ beautiful.master_width_factor = 0.555
+ beautiful.xresources.get_current_theme()
+-- beautiful.wibar_fg = "#6B913A" 
+
+-- beautiful.bg_normal = "#000000" 
 -- This is used later as the default terminal and editor to run.
 terminal = "kitty"
+termexec = terminal .. " -e "
 editor = os.getenv("nvim") or "vim" or "nano"
-editor_cmd = terminal .. " -e " .. editor
+editor_cmd = termexec .. editor
 
 -- Default modkey.
 modkey = "Mod4"
 
 -- Variables
-HOME = os.getenv("HOME") .. "/"
-SCRIPTS = HOME .. ".config/scripts/"
+home = os.getenv("HOME") .. "/"
+scripts = home .. ".config/scripts/"
+wall = "/mnt/forlinuxuse/Wallpapers/"
 
 -- Table of layouts to cover with awful.layout.inc, order matters.
 awful.layout.layouts = {
-    -- awful.layout.suit.floating,
     -- awful.layout.suit.tile,
     awful.layout.suit.tile.left,
-    -- awful.layout.suit.tile.bottom,
-    -- awful.layout.suit.tile.top,
-    -- awful.layout.suit.fair,
-    -- awful.layout.suit.fair.horizontal,
-    -- awful.layout.suit.spiral,
-    -- awful.layout.suit.spiral.dwindle,
-    -- awful.layout.suit.max,
-    -- awful.layout.suit.max.fullscreen,
-    -- awful.layout.suit.magnifier,
-    -- awful.layout.suit.corner.nw,
-    -- awful.layout.suit.corner.ne,
-    -- awful.layout.suit.corner.sw,
-    -- awful.layout.suit.corner.se,
 }
 -- }}}
 
@@ -88,14 +90,14 @@ awful.layout.layouts = {
 myawesomemenu = {
    { "hotkeys", function() hotkeys_popup.show_help(nil, awful.screen.focused()) end },
    { "manual", terminal .. " -e man awesome" },
-   { "edit config", editor_cmd .. " " .. HOME .. ".config/awesome/rc.lua" },
+   { "edit config", editor_cmd .. " " .. home .. ".config/awesome/rc.lua" },
    { "restart", awesome.restart },
    { "quit", function() awesome.quit() end },
 }
 
 mymainmenu = awful.menu({ items = { { "awesome", myawesomemenu, beautiful.awesome_icon },
                                     { "open terminal", terminal },
-                                    { "powermenu", SCRIPTS .. "powermenu.sh" },
+                                    { "powermenu", scripts .. "powermenu.sh" },
                                   }
                         })
 
@@ -112,7 +114,7 @@ mykeyboardlayout = awful.widget.keyboardlayout()
 -- {{{ Wibar
 -- Create a textclock widget
 -- mytextclock = wibox.widget.textclock()
-mytextclock = wibox.widget.textclock(" %a %b %d, %I:%M ")
+mytextclock = wibox.widget.textclock(" %a %b %d, %I:%M %p")
 local systray = wibox.widget.systray()
 -- systray::set_base_size(10)
 
@@ -164,7 +166,8 @@ local function set_wallpaper(s)
         if type(wallpaper) == "function" then
             wallpaper = wallpaper(s)
         end
-        gears.wallpaper.maximized(wallpaper, s, true)
+        gears.wallpaper.maximized(wall .. "maria-lysenko-5miAc099lMc-unsplash.jpg", s, false)
+        --gears.wallpaper.maximized(wallpaper, s, true)
     end
 end
 
@@ -176,7 +179,7 @@ awful.screen.connect_for_each_screen(function(s)
     set_wallpaper(s)
 
     -- Each screen has its own tag table.
-    awful.tag({ "1", "2", "3", "4", "5", "6", "7", "8", "9" }, s, awful.layout.layouts[1])
+    awful.tag({ "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX" }, s, awful.layout.layouts[1])
 
     -- Create a promptbox for each screen
     s.mypromptbox = awful.widget.prompt()
@@ -199,11 +202,55 @@ awful.screen.connect_for_each_screen(function(s)
     s.mytasklist = awful.widget.tasklist {
         screen  = s,
         filter  = awful.widget.tasklist.filter.currenttags,
-        buttons = tasklist_buttons
+        buttons = tasklist_buttons,
+        style = {
+            shape_border_width = 1,
+            shape_border_color = '#777777',
+		  align = "center"
+            --shape  = gears.shape.rounded_bar,
+        },
+        layout   = {
+            --spacing = 10,
+            spacing_widget = {
+                {
+                    forced_width = 5,
+                    shape        = gears.shape.circle,
+                    widget       = wibox.widget.separator
+                },
+                valign = 'center',
+                halign = 'center',
+                widget = wibox.container.place,
+            },
+            layout  = wibox.layout.flex.horizontal
+        },
+        widget_template = {
+            {
+                {
+                    {
+                        {
+                            id     = 'icon_role',
+                            widget = wibox.widget.imagebox,
+                        },
+                        margins = 2,
+                        widget  = wibox.container.margin,
+                    },
+                    {
+                        id     = 'text_role',
+                        widget = wibox.widget.textbox,
+                    },
+                    layout = wibox.layout.fixed.horizontal,
+                },
+                left  = 10,
+                right = 10,
+                widget = wibox.container.margin
+            },
+            id     = 'background_role',
+            widget = wibox.container.background,
+        },
     }
 
     -- Create the wibox
-    s.mywibox = awful.wibar({ position = "top", screen = s, height = 22 })
+    s.mywibox = awful.wibar({ position = "top", screen = s, height = 22, opacity = 0.9, })
 
     -- Add widgets to the wibox
     s.mywibox:setup {
@@ -219,10 +266,13 @@ awful.screen.connect_for_each_screen(function(s)
             layout = wibox.layout.fixed.horizontal,
             -- mykeyboardlayout,
             systray,
+		  net_speed_widget(),
 		  volume_widget{
-			  widget_type='icon_and_text'
+		  	widget_type='icon_and_text'
 		  },
+		  separator,
             mytextclock,
+		  separator,
             s.mylayoutbox,
         },
     }
@@ -289,35 +339,35 @@ globalkeys = gears.table.join(
               {description = "Opens Tor Browser", group = "launcher"}),
     awful.key({ modkey,}, "d", function () awful.spawn.with_shell("rofi -show drun") end,
               {description = "Opens Rofi", group = "launcher"}),
-    awful.key({ modkey, "Mod1"}, "r", function () awful.spawn.with_shell("kitty -e ranger") end,
+    awful.key({ modkey, "Mod1"}, "r", function () awful.spawn.with_shell(termexec .. "ranger") end,
               {description = "Opens Ranger", group = "launcher"}),
-    awful.key({ modkey, "Mod1"}, "h", function () awful.spawn.with_shell("kitty -e htop") end,
+    awful.key({ modkey, "Mod1"}, "h", function () awful.spawn.with_shell(termexec .. "htop") end,
               {description = "Opens htop", group = "launcher"}),
     awful.key({ modkey, "Mod1"}, "b", function () awful.spawn("brave") end,
               {description = "Opens Brave Browser", group = "launcher"}),
     awful.key({ "Ctrl", "Shift"}, "Print", function () awful.spawn("flameshot gui") end,
               {description = "Opens Screenshot window", group = "launcher"}),
     awful.key({ "Ctrl", "Mod1"}, "h", function () awful.spawn("clipmenu") end,
-              {description = "Opens Screenshot window", group = "launcher"}),
-    awful.key({ modkey,}, "F12", function () awful.spawn_with_shell("python3") end,
+              {description = "Opens Clipboard History", group = "launcher"}),
+    awful.key({ }, "Scroll_Lock", function () awful.spawn.with_shell(termexec .. "python3") end,
               {description = "Opens Python as calculator", group = "launcher"}),
 
 	-- Volume Controls
-    awful.key({ modkey,           }, "minus", function () awful.spawn.with_shell("~/.config/scripts/volume.sh down") end,
+    awful.key({ modkey,           }, "minus", function () awful.spawn.with_shell( scripts .. "volume.sh down") end,
               {description = "Decreases volume by 5%", group = "launcher"}),
-    awful.key({ modkey,           }, "KP_Subtract", function () awful.spawn.with_shell("~/.config/scripts/volume.sh down") end,
+    awful.key({ modkey,           }, "KP_Subtract", function () awful.spawn.with_shell(scripts .. "volume.sh down") end,
               {description = "Decreases volume by 5%", group = "launcher"}),
-    awful.key({ modkey,           }, "equal", function () awful.spawn.with_shell("~/.config/scripts/volume.sh up") end,
+    awful.key({ modkey,           }, "equal", function () awful.spawn.with_shell(scripts .. "volume.sh up") end,
               {description = "Increases volume by 5%", group = "launcher"}),
-    awful.key({ modkey,           }, "KP_Add", function () awful.spawn.with_shell("~/.config/scripts/volume.sh up") end,
+    awful.key({ modkey,           }, "KP_Add", function () awful.spawn.with_shell(scripts .. "volume.sh up") end,
               {description = "Increases volume by 5%", group = "launcher"}),
 
     awful.key({modkey,            }, "t",
         function() 
             awful.screen.focused().mywibox.visible = not awful.screen.focused().mywibox.visible 
-        end),
+        end, {description = "Toggle Tag on visible screen", group = "awesome"}),
 
-    awful.key({ modkey, "Shift" }, "r", awesome.restart,
+    awful.key({ modkey, "Shift"   }, "r", awesome.restart,
               {description = "reload awesome", group = "awesome"}),
     awful.key({ modkey, "Shift"   }, "e", awesome.quit,
               {description = "quit awesome", group = "awesome"}),
@@ -504,6 +554,7 @@ awful.rules.rules = {
           "DTA",  -- Firefox addon DownThemAll.
           "copyq",  -- Includes session name in class.
           "pinentry",
+          "file_properties",
         },
         class = {
           "Arandr",
@@ -521,13 +572,14 @@ awful.rules.rules = {
         -- and the name shown there might not match defined rules here.
         name = {
           "Event Tester",  -- xev.
+          --"Documents Properties",
         },
         role = {
           "AlarmWindow",  -- Thunderbird's calendar.
           "ConfigManager",  -- Thunderbird's about:config.
           "pop-up",       -- e.g. Google Chrome's (detached) Developer Tools.
         }
-      }, properties = { floating = true }},
+      }, properties = { floating = true, placement = awful.placement.centered }},
 
     -- Add titlebars to normal clients and dialogs
     { rule_any = {type = { "normal", "dialog" }
@@ -535,8 +587,8 @@ awful.rules.rules = {
     },
 
     -- Set Firefox to always map on the tag named "2" on screen 1.
-    -- { rule = { class = "Firefox" },
-    --   properties = { screen = 1, tag = "2" } },
+    { rule = { class = "Logseq" },
+      properties = { screen = 2, tag = "2" } },
 }
 -- }}}
 
@@ -607,9 +659,6 @@ client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_n
 -- autostart
 awful.spawn.with_shell("$HOME/.config/scripts/autostart.sh")
 
--- awful.key({ modkey,           }, "d", function () awful.spawn("rofi -show drun") end,
---             {description = "open a terminal", group = "launchefr"}),
-
 -- {{ Personal keybindings
 client.connect_signal("request::default_keybindings", function()
     awful.keyboard.append_client_keybindings({
@@ -624,7 +673,4 @@ client.connect_signal("request::titlebars", function(c)
     awful.titlebar.hide(c)
 end)
 
--- Gaps
-beautiful.useless_gap = 2
 
--- beautiful.xresources.get_current_theme()
