@@ -50,20 +50,21 @@ do
         in_error = false
     end)
 end
--- }}}
+-- }}}Hack Nerd Font Mono
 
 -- {{{ Variable definitions
 -- Themes define colours, icons, font and wallpapers.
-beautiful.init(gears.filesystem.get_themes_dir() .. "default/theme.lua")
+beautiful.init(gears.filesystem.get_themes_dir() .. "zenburn/theme.lua")
 beautiful.wibar_bg = "#000000" 
-
--- Gaps
 beautiful.useless_gap = 2
- beautiful.master_width_factor = 0.555
- beautiful.xresources.get_current_theme()
--- beautiful.wibar_fg = "#6B913A" 
+beautiful.master_width_factor = 0.555
+-- beautiful.tasklist_bg_focus = Background
+beautiful.menu_height = 24 
+beautiful.menu_width = 300 
+beautiful.menu_font = "Hack Nerd Font Mono 11"
+beautiful.hotkeys_font = "Hack Nerd Font Mono 11" 
+beautiful.hotkeys_description_font = "Hack Nerd Font Mono 11"
 
--- beautiful.bg_normal = "#000000" 
 -- This is used later as the default terminal and editor to run.
 terminal = "kitty"
 termexec = terminal .. " -e "
@@ -82,6 +83,8 @@ wall = "/mnt/forlinuxuse/Wallpapers/"
 awful.layout.layouts = {
     -- awful.layout.suit.tile,
     awful.layout.suit.tile.left,
+    -- awful.layout.suit.floating,
+
 }
 -- }}}
 
@@ -95,9 +98,15 @@ myawesomemenu = {
    { "quit", function() awesome.quit() end },
 }
 
+powermenu = {
+    { "Shutdown", scripts .. "shutdown.sh"},
+    { "Reboot", scripts .. "reboot.sh"},
+    { "Sleep", scripts .. "sleep.sh"},
+}
+
 mymainmenu = awful.menu({ items = { { "awesome", myawesomemenu, beautiful.awesome_icon },
                                     { "open terminal", terminal },
-                                    { "powermenu", scripts .. "powermenu.sh" },
+                                    { "power", powermenu}
                                   }
                         })
 
@@ -115,7 +124,24 @@ mykeyboardlayout = awful.widget.keyboardlayout()
 -- Create a textclock widget
 -- mytextclock = wibox.widget.textclock()
 mytextclock = wibox.widget.textclock(" %a %b %d, %I:%M %p")
-local systray = wibox.widget.systray()
+beautiful.bg_systray = "#000000"
+beautiful.systray_icon_spacing = 10
+
+local systray = wibox.widget {
+    {
+        wibox.widget.systray(),
+        left   = 5,
+        top    = 2,
+        bottom = 2,
+        right  = 0,
+        widget = wibox.container.margin,
+    },
+    bg         = "#000000",
+    fg         =  "#000000",
+    -- shape      = gears.shape.rounded_rect,
+    -- shape_clip = true,
+    widget     = wibox.container.background,
+}
 -- systray::set_base_size(10)
 
 -- Create a wibox for each screen and add it
@@ -148,6 +174,9 @@ local tasklist_buttons = gears.table.join(
                                                   )
                                               end
                                           end),
+                     awful.button({ }, 2, function (c)
+                                              c:kill()
+                                          end),
                      awful.button({ }, 3, function()
                                               awful.menu.client_list({ theme = { width = 250 } })
                                           end),
@@ -166,7 +195,7 @@ local function set_wallpaper(s)
         if type(wallpaper) == "function" then
             wallpaper = wallpaper(s)
         end
-        gears.wallpaper.maximized(wall .. "maria-lysenko-5miAc099lMc-unsplash.jpg", s, false)
+        gears.wallpaper.maximized(wall .. "garage.png", s, false)
         --gears.wallpaper.maximized(wallpaper, s, true)
     end
 end
@@ -179,7 +208,7 @@ awful.screen.connect_for_each_screen(function(s)
     set_wallpaper(s)
 
     -- Each screen has its own tag table.
-    awful.tag({ " 1 ", " 2 ", " 3 ", " 4 ", " 5 ", " 6 ", " 7 ", " 8 ", " 9   " }, s, awful.layout.layouts[1])
+    awful.tag({ " 1 ", " 2 ", " 3 ", " 4 ", " 5 ", " 6 ", " 7 ", " 8 ", " 9 " }, s, awful.layout.layouts[1])
 
     -- Create a promptbox for each screen
     s.mypromptbox = awful.widget.prompt()
@@ -206,7 +235,7 @@ awful.screen.connect_for_each_screen(function(s)
         style = {
             shape_border_width = 1,
             shape_border_color = '#777777',
-		  align = "center"
+		    align = "center"
             --shape  = gears.shape.rounded_bar,
         },
         layout   = {
@@ -250,7 +279,7 @@ awful.screen.connect_for_each_screen(function(s)
     }
 
     -- Create the wibox
-    s.mywibox = awful.wibar({ position = "top", screen = s, height = 22, opacity = 0.8, })
+    s.mywibox = awful.wibar({ position = "top", screen = s, height = 20, opacity = 0.8, })
 
     -- Add widgets to the wibox
     s.mywibox:setup {
@@ -281,22 +310,32 @@ end)
 
 -- {{{ Mouse bindings
 root.buttons(gears.table.join(
-    awful.button({ }, 3, function () mymainmenu:toggle() end)
-    --awful.button({ }, 4, awful.tag.viewnext),
-    --awful.button({ }, 5, awful.tag.viewprev)
+    awful.button({ }, 3, function () mymainmenu:toggle() end),
+    awful.button({modkey}, 4, awful.tag.viewnext),
+    awful.button({modkey}, 5, awful.tag.viewprev)
+    --awful.button({modkey}, 2, awful.tag.)
 ))
 -- }}}
 
 -- {{{ Key bindings
 globalkeys = gears.table.join(
-    awful.key({ modkey,           }, "s",      hotkeys_popup.show_help,
+    awful.key({ modkey,           }, "slash",      hotkeys_popup.show_help,
               {description = "show help", group="awesome"}),
-    awful.key({ modkey,           }, "Left",   awful.tag.viewprev,
-              {description = "view previous", group = "tag"}),
-    awful.key({ modkey,           }, "Right",  awful.tag.viewnext,
-              {description = "view next", group = "tag"}),
+    awful.key({ modkey,           }, "Left",  function () awful.client.focus.global_bydirection("left") end,
+              {description = "view left client", group = "tag"}),
+    awful.key({ modkey,           }, "Right", function () awful.client.focus.global_bydirection("right") end,
+              {description = "view right client", group = "tag"}),
+    awful.key({ modkey,           }, "Up",  function () awful.client.focus.bydirection("up") end,
+              {description = "view above client", group = "tag"}),
+    awful.key({ modkey,           }, "Down", function () awful.client.focus.bydirection("down") end,
+              {description = "view below client", group = "tag"}),
+
     awful.key({ modkey,           }, "Escape", awful.tag.history.restore,
               {description = "go back", group = "tag"}),
+    awful.key({ modkey,           }, "grave",   awful.tag.viewnext,
+              {description = "view previous", group = "tag"}),
+    awful.key({ modkey, "Shift"   }, "grave",  awful.tag.viewprev,
+              {description = "view next", group = "tag"}),
 
     awful.key({ modkey, }, "j", function () awful.client.focus.byidx( 1) end,
               {description = "focus next by index", group = "client"}),
@@ -323,6 +362,22 @@ globalkeys = gears.table.join(
             end
         end,
         {description = "go back", group = "client"}),
+    awful.key({ modkey }, "y", function ()
+				local s1, s2 = nil, nil
+
+				for s in screen do
+					if not s1 then
+						s1 = s
+					elseif not s2 then
+						s2 = s
+					else
+						break
+					end
+				end
+				s1:swap(s2)
+			  end,
+              {description = "jump to urgent client", group = "client"}),
+ 
 
     -- Standard program
     awful.key({ modkey,}, "Return", function () awful.spawn(terminal) end,
@@ -525,6 +580,12 @@ clientbuttons = gears.table.join(
     awful.button({ modkey }, 3, function (c)
         c:emit_signal("request::activate", "mouse_click", {raise = true})
         awful.mouse.client.resize(c)
+    end),
+    awful.button({ modkey }, 4, function (t)
+        awful.tag.viewnext(t.screen)
+    end),
+    awful.button({ modkey }, 5, function (t)
+        awful.tag.viewprev(t.screen)
     end)
 )
 
@@ -586,7 +647,7 @@ awful.rules.rules = {
       }, properties = { titlebars_enabled = true }
     },
 
-    -- Set Firefox to always map on the tag named "2" on screen 1.
+    -- Set Logseq to always map on the tag named "2" on screen 1.
     { rule = { class = "Logseq" },
       properties = { screen = 2, tag = "2" } },
 }
@@ -672,5 +733,3 @@ end)
 client.connect_signal("request::titlebars", function(c)
     awful.titlebar.hide(c)
 end)
-
-
