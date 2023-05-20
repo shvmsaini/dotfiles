@@ -21,7 +21,7 @@ require("awful.hotkeys_popup.keys")
 -- Volume Widget
 local volume_widget = require('awesome-wm-widgets.volume-widget.volume')
 
--- Net Speed
+-- Net Speed Widget
 local net_speed_widget = require("awesome-wm-widgets.net-speed-widget.net-speed")
 
 -- Separator
@@ -50,7 +50,7 @@ do
         in_error = false
     end)
 end
--- }}}Hack Nerd Font Mono
+-- }}}
 
 -- {{{ Variable definitions
 -- Themes define colours, icons, font and wallpapers.
@@ -84,7 +84,6 @@ awful.layout.layouts = {
     -- awful.layout.suit.tile,
     awful.layout.suit.tile.left,
     -- awful.layout.suit.floating,
-
 }
 -- }}}
 
@@ -106,7 +105,7 @@ powermenu = {
 
 mymainmenu = awful.menu({ items = { { "awesome", myawesomemenu, beautiful.awesome_icon },
                                     { "open terminal", terminal },
-                                    { "power", powermenu}
+                                    { "power", powermenu, beautiful.awesome_icon}
                                   }
                         })
 
@@ -376,7 +375,7 @@ globalkeys = gears.table.join(
 				end
 				s1:swap(s2)
 			  end,
-              {description = "jump to urgent client", group = "client"}),
+              {description = "Swap screen", group = "client"}),
  
 
     -- Standard program
@@ -406,18 +405,22 @@ globalkeys = gears.table.join(
               {description = "Opens Clipboard History", group = "launcher"}),
     awful.key({ }, "Scroll_Lock", function () awful.spawn.with_shell(termexec .. "python3") end,
               {description = "Opens Python as calculator", group = "launcher"}),
+    awful.key({ modkey, "Shift"}, "F11", function () awful.spawn(scripts .. "privatebin.sh") end,
+              {description = "Opens Privatebin client", group = "launcher"}),
 
 	-- Volume Controls
-    awful.key({ modkey,           }, "minus", function () awful.spawn.with_shell( scripts .. "volume.sh down") end,
+    awful.key({ modkey, }, "minus", function () awful.spawn.with_shell( scripts .. "volume.sh down") end,
               {description = "Decreases volume by 5%", group = "launcher"}),
-    awful.key({ modkey,           }, "KP_Subtract", function () awful.spawn.with_shell(scripts .. "volume.sh down") end,
+    awful.key({ modkey, }, "KP_Subtract", function () awful.spawn.with_shell(scripts .. "volume.sh down") end,
               {description = "Decreases volume by 5%", group = "launcher"}),
-    awful.key({ modkey,           }, "equal", function () awful.spawn.with_shell(scripts .. "volume.sh up") end,
+    awful.key({ modkey, }, "equal", function () awful.spawn.with_shell(scripts .. "volume.sh up") end,
               {description = "Increases volume by 5%", group = "launcher"}),
-    awful.key({ modkey,           }, "KP_Add", function () awful.spawn.with_shell(scripts .. "volume.sh up") end,
+    awful.key({ modkey, }, "KP_Add", function () awful.spawn.with_shell(scripts .. "volume.sh up") end,
               {description = "Increases volume by 5%", group = "launcher"}),
+		    
+    
 
-    awful.key({modkey,            }, "t",
+    awful.key({modkey, }, "t",
         function() 
             awful.screen.focused().mywibox.visible = not awful.screen.focused().mywibox.visible 
         end, {description = "Toggle Tag on visible screen", group = "awesome"}),
@@ -427,9 +430,9 @@ globalkeys = gears.table.join(
     awful.key({ modkey, "Shift"   }, "e", awesome.quit,
               {description = "quit awesome", group = "awesome"}),
 
-    awful.key({ modkey,           }, "l",     function () awful.tag.incmwfact( 0.05)          end,
+    awful.key({ modkey, }, "l",     function () awful.tag.incmwfact( 0.05)          end,
               {description = "increase master width factor", group = "layout"}),
-    awful.key({ modkey,           }, "h",     function () awful.tag.incmwfact(-0.05)          end,
+    awful.key({ modkey, }, "h",     function () awful.tag.incmwfact(-0.05)          end,
               {description = "decrease master width factor", group = "layout"}),
     awful.key({ modkey, "Shift"   }, "h",     function () awful.tag.incnmaster( 1, nil, true) end,
               {description = "increase the number of master clients", group = "layout"}),
@@ -482,24 +485,24 @@ clientkeys = gears.table.join(
             c:raise()
         end,
         {description = "toggle fullscreen", group = "client"}),
-    awful.key({ modkey, "Shift"   }, "q",      function (c) c:kill()                         end,
+    awful.key({ modkey, "Shift"   }, "q",      function (c) c:kill() end,
               {description = "close", group = "client"}),
-    awful.key({ modkey, "Shift" }, "f",  awful.client.floating.toggle                     ,
+    awful.key({ modkey, "Shift" }, "f",  awful.client.floating.toggle,
               {description = "toggle floating", group = "client"}),
     awful.key({ modkey, "Control" }, "s", function (c) c:swap(awful.client.getmaster()) end,
               {description = "move to master", group = "client"}),
-    awful.key({ modkey,  "Shift"  }, "BackSpace",      function (c) c:move_to_screen()               end,
+    awful.key({ modkey,  "Shift"  }, "BackSpace",      function (c) c:move_to_screen() end,
               {description = "move to screen", group = "client"}),
-    awful.key({ modkey,           }, "t",      function (c) c.ontop = not c.ontop            end,
+    awful.key({ modkey, }, "t",      function (c) c.ontop = not c.ontop end,
               {description = "toggle keep on top", group = "client"}),
-    awful.key({ modkey,           }, "n",
+    awful.key({ modkey, }, "n",
         function (c)
             -- The client currently has the input focus, so it cannot be
             -- minimized, since minimized clients can't have the focus.
             c.minimized = true
         end ,
         {description = "minimize", group = "client"}),
-    awful.key({ modkey,           }, "m",
+    awful.key({ modkey, }, "m",
         function (c)
             c.maximized = not c.maximized
             c:raise()
@@ -587,6 +590,13 @@ clientbuttons = gears.table.join(
     awful.button({ modkey }, 5, function (t)
         awful.tag.viewprev(t.screen)
     end)
+--	awful.button({ modkey, "Shift", }, 5, function ()
+--		awful.spawn.with_shell("xdotool key alt+Left") 
+--	end),
+--	awful.button({ modkey, "Shift", }, 4, function ()
+--		awful.spawn.with_shell("xdotool key alt+Right") 
+--	end)
+
 )
 
 -- Set keys
@@ -627,13 +637,14 @@ awful.rules.rules = {
          -- "Tor Browser", -- Needs a fixed window size to avoid fingerprinting by screen size.
           "Wpa_gui",
           "veromix",
-          "xtightvncviewer"},
+          "xtightvncviewer",
+          "org.cryptomator.launcher.Cryptomator$MainApp"
+        },
 
         -- Note that the name property shown in xprop might be set slightly after creation of the client
         -- and the name shown there might not match defined rules here.
         name = {
           "Event Tester",  -- xev.
-          --"Documents Properties",
         },
         role = {
           "AlarmWindow",  -- Thunderbird's calendar.
@@ -643,13 +654,14 @@ awful.rules.rules = {
       }, properties = { floating = true, placement = awful.placement.centered }},
 
     -- Add titlebars to normal clients and dialogs
-    { rule_any = {type = { "normal", "dialog" }
-      }, properties = { titlebars_enabled = true }
+    { rule_any = {type = { "normal", "dialog", "utility" }
+      }, properties = { titlebars_enabled = true, placement = awful.placement.centered }
     },
 
     -- Set Logseq to always map on the tag named "2" on screen 1.
     { rule = { class = "Logseq" },
-      properties = { screen = 2, tag = "2" } },
+      properties = { screen = 2, tag = "2" }
+    },
 }
 -- }}}
 
@@ -732,4 +744,13 @@ end)
 -- Hide titlebar
 client.connect_signal("request::titlebars", function(c)
     awful.titlebar.hide(c)
+end)
+
+-- All floating windows to be on top
+client.connect_signal("property::floating", function(c)
+    if c.floating then
+        c.ontop = true
+    else
+        c.ontop = false
+    end
 end)

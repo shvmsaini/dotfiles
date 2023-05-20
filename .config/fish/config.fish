@@ -17,15 +17,20 @@ alias dir="dir --color=auto"
 alias tata="exit"
 alias config="/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME"
 alias dots="/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME"
+alias font-list="fc-list : family | awk -F',' '{print $1}' | sort | uniq | fzf | tr -d '\n'"
 
 # Directories
 set scripts $HOME/.config/scripts/
 set pbdir $HOME/.local/lib/python3.10/site-packages/pbincli/cli.py
 set hcdir $HOME/.config/herbstluftwm/
-set conf ~/.config
+set conf $HOME/.config
 set FLU /mnt/forlinuxuse
 set STF /run/media/shvmpc/Stuff
 set QT_QPA_PLATFORMTHEME qt5ct
+
+# PATH
+export PATH="$PATH:$HOME/.local/bin"
+export TERM=kitty
 
 set EDITOR /bin/vim
 
