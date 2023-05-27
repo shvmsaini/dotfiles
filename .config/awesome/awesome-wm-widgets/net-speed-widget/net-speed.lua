@@ -75,7 +75,7 @@ local function worker(user_args)
 
     local interface = args.interface or '*'
     local timeout = args.timeout or 2
-    local width = args.width or 43
+    local width = args.width or 50
 
     net_speed_widget = wibox.widget {
         {
