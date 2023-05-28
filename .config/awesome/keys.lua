@@ -262,11 +262,11 @@ for i = 1, 9 do
         awful.key({ modkey, "Mod1" }, "#" .. i + 9,
                   function ()
                       if client.focus then
-                            a = 1;
+                            ind = 1
                             if (client.focus.screen == screen[1]) then
-                                a = 2;
+                                ind = 2
                             end
-                          local tag = screen[a].tags[i]
+                          local tag = screen[ind].tags[i]
                           if tag then
                               client.focus:move_to_tag(tag)
                           end

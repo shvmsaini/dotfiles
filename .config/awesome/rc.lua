@@ -93,7 +93,7 @@ powermenu = {
 mymainmenu = awful.menu({ items = { { "awesome", myawesomemenu, beautiful.awesome_icon },
                                     { "open terminal", terminal },
                                     { "change wallpaper", function() 
-								 awful.spawn.with_shell("feh --bg-fill $FLU/Wallpapers/$(dir -1 $FLU/Wallpapers/ | shuf | head -n 1)") end},
+								 awful.spawn.with_shell("~/.config/awesome/scripts/pywal.sh") end},
                                     { "power", powermenu, "/home/shvmpc/.local/share/icons/power.svg"}
                                   }
                         })
@@ -112,7 +112,6 @@ menubar.utils.terminal = terminal -- Set the terminal for applications that requ
 -- Create a textclock widget
 -- mytextclock = wibox.widget.textclock()
 mytextclock = wibox.widget.textclock(" %a %b %d, %I:%M %p")
-beautiful.bg_systray = "#000000"
 beautiful.systray_icon_spacing = 10
 
 local systray = wibox.widget {
@@ -124,8 +123,8 @@ local systray = wibox.widget {
         right  = 0,
         widget = wibox.container.margin,
     },
-    bg         = "#000000",
-    fg         =  "#000000",
+    -- bg         = xrdb.background,
+    -- fg         =  xrdb.background,
     -- shape      = gears.shape.rounded_rect,
     -- shape_clip = true,
     widget     = wibox.container.background,
@@ -161,18 +160,10 @@ local tasklist_buttons = gears.table.join(
                                                   )
                                               end
                                           end),
-                     awful.button({ }, 2, function (c)
-                                              c:kill()
-                                          end),
-                     awful.button({ }, 3, function()
-                                              awful.menu.client_list({ theme = { width = 250 } })
-                                          end),
-                     awful.button({ }, 4, function ()
-                                              awful.client.focus.byidx(1)
-                                          end),
-                     awful.button({ }, 5, function ()
-                                              awful.client.focus.byidx(-1)
-                                          end),
+                     awful.button({ }, 2, function (c) c:kill() end),
+                     awful.button({ }, 3, function() awful.menu.client_list({ theme = { width = 250 } }) end),
+                     awful.button({ }, 4, function () awful.client.focus.byidx(1) end),
+                     awful.button({ }, 5, function () awful.client.focus.byidx(-1) end),
                      awful.button({ modkey }, 1, function (c)
                                 c:emit_signal("request::activate", "mouse_click", {raise = true})
                                 awful.mouse.client.move(c)
@@ -186,7 +177,7 @@ local function set_wallpaper(s)
         if type(wallpaper) == "function" then
             wallpaper = wallpaper(s)
         end
-        awful.spawn.with_shell("feh --bg-fill $FLU/Wallpapers/$(dir -1 $FLU/Wallpapers/ | shuf | head -n 1)")
+        awful.spawn.with_shell("feh --bg-fill $(echo \"$(cat ~/.cache/wal/wal)\")")
         --gears.wallpaper.maximized(wall .. "black_hole.jpg", s, false)
         --gears.wallpaper.maximized(wallpaper, s, true)
     end
@@ -374,4 +365,5 @@ client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_n
 -- }}}
 
 -- autostart
+-- awful.spawn.with_shell("$HOME/.config/awesome/scripts/pywal.sh")
 awful.spawn.with_shell("$HOME/.config/scripts/autostart.sh")
