@@ -7,7 +7,7 @@ else
 	wall=$wdir/"$(ls $wdir | shuf | head -n 1)"
 fi
 
-wal -i $wall
+wal -i $wall >/dev/null
 
 # As wall is not able to set wallpaper in awesome
 feh --bg-fill $wall 

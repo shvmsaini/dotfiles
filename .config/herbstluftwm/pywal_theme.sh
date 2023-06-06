@@ -11,7 +11,7 @@ else
 	wall=$wdir/"$(ls $wdir | shuf | head -n 1)"
 fi
 
-wal -i $wall
+wal -i $wall >/dev/null
 
 source ~/.cache/wal/colors.sh
 

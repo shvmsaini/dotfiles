@@ -60,5 +60,13 @@ awful.rules.rules = {
     { rule = { class = "Logseq" },
       properties = { screen = 2, tag = " 2 " }
     },
+    -- Gimp
+    { rule = { class = "Gimp-2.10" },
+      properties = { screen = 2, tag = " 9 " }
+    },
+    -- Code
+    { rule = { class = "code-oss" },
+      properties = { screen = 2, tag = " 3 " }
+    },
 }
 -- }}}

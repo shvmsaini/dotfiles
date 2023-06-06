@@ -7,6 +7,8 @@ export JAVA_HOME=/usr/lib/jvm/java-17-openjdk
 export ANDROID_SDK_ROOT=/home/shvmpc/Android/Sdk
 export TERMINAL=kitty
 export TERM=kitty
+export XDG_CONFIG_HOME=/home/shvmpc/.config
+export _JAVA_AWT_WM_NONREPARENTING=1
 
 xset r rate 250 40 &
 

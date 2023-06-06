@@ -67,6 +67,7 @@ home = os.getenv("HOME") .. "/"
 scripts = home .. ".config/scripts/"
 wall = "/mnt/forlinuxuse/Wallpapers/"
 
+
 -- Table of layouts to cover with awful.layout.inc, order matters.
 awful.layout.layouts = { 
     -- awful.layout.suit.tile,
@@ -91,10 +92,13 @@ powermenu = {
 }
 
 mymainmenu = awful.menu({ items = { { "awesome", myawesomemenu, beautiful.awesome_icon },
-                                    { "open terminal", terminal },
-                                    { "change wallpaper", function() 
-								 awful.spawn.with_shell("~/.config/awesome/scripts/pywal.sh") end},
-                                    { "power", powermenu, "/home/shvmpc/.local/share/icons/power.svg"}
+                                    { "open terminal", terminal, termIcon },
+                                    { "change wallpaper",
+                                        function() 
+								            awful.spawn.with_shell("~/.config/awesome/scripts/pywal.sh") 
+                                        end,
+                                        wallIcon},
+                                    { "power", powermenu, powerIcon}
                                   }
                         })
 
@@ -123,10 +127,6 @@ local systray = wibox.widget {
         right  = 0,
         widget = wibox.container.margin,
     },
-    -- bg         = xrdb.background,
-    -- fg         =  xrdb.background,
-    -- shape      = gears.shape.rounded_rect,
-    -- shape_clip = true,
     widget     = wibox.container.background,
 }
 
@@ -187,6 +187,25 @@ end
 screen.connect_signal("property::geometry", set_wallpaper)
 
 awful.screen.connect_for_each_screen(function(s)
+    -- For screen swapping
+     s:connect_signal("swapped", function(self, other, is_source)
+        if not is_source then return end
+
+        local st = self.selected_tag
+        local sc = st:clients() -- NOTE: this is only here for convinience
+        local ot = other.selected_tag
+        local oc = ot:clients() -- but this HAS to be saved in a variable because we modify the client list in the process of swapping
+
+        for _, c in ipairs(sc) do
+        c:move_to_tag(ot)
+        end
+
+        for _, c in ipairs(oc) do
+        c:move_to_tag(st)
+        end
+    end)
+        
+
     -- Wallpaper
     set_wallpaper(s)
 
