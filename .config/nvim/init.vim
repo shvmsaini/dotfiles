@@ -26,6 +26,7 @@ set spelllang=en_US
 " autocmd VimEnter * NERDTree
 nnoremap q: :q
 nnoremap <C-q> :q!
+nnoremap <C-w> :w
 nnoremap Y yy 
 vnoremap <C-c> "+y 
 

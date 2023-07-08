@@ -17,7 +17,9 @@ file="screeshot.jpg"
 
 flameshot gui -p $dir/$file
 
-TESSDATA_PREFIX=/usr/local/share/tessdata/ tesseract $dir/$file $dir/output
+#TESSDATA_PREFIX=/usr/local/share/tessdata/ tesseract $dir/$file $dir/output
+
+tesseract $dir/$file $dir/output
 
 xclip -selection clipboard < $dir/output.txt 
 

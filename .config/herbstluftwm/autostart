@@ -281,7 +281,7 @@ $DIR/lasttag.sh &
 hc keybind $Mod-z emit_hook goto_last_tag 
 
 # Tesseract Script
-hc keybind $Mod-Shift-F12 spawn $SCRIPTS/get_ss_text.sh
+hc keybind $Mod-Shift-F12 spawn $SCRIPTS/tesseract.sh
 
 # PrivateBin Script
 hc keybind $Mod-Shift-F11 spawn $SCRIPTS/privatebin.sh

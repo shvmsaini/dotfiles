@@ -64,7 +64,7 @@ beautiful.wibar_bg = xrdb.background
 -- Taglist Widget
 beautiful.taglist_bg_focus = xrdb.foreground
 beautiful.taglist_fg_focus = xrdb.background
-beautiful.taglist_bg_urgent = "#df5774"
+beautiful.taglist_bg_urgent = "#DF5774"
 beautiful.taglist_fg_urgent = xrdb.background
 
 -- Systray

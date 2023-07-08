@@ -71,10 +71,18 @@ globalkeys = gears.table.join(
               {description = "Opens Firefox", group = "launcher"}),
     awful.key({ modkey, "Mod1"       }, "n", function () awful.spawn("nemo") end,
               {description = "Opens Nemo", group = "launcher"}),
-    awful.key({ modkey, "Mod1"       }, "l", function () awful.spawn("logseq") end,
-              {description = "Opens Logseq", group = "launcher"}),
-    awful.key({ modkey, "Mod1"       }, "t", function () awful.spawn("torbrowser-launcher") end,
-              {description = "Opens Tor Browser", group = "launcher"}),
+    awful.key({ modkey, "Mod1"       }, "l", function ()
+                local matcher = function(c)
+                    return awful.rules.match(c, {class = 'Logseq'})
+                end
+                awful.client.run_or_raise('logseq', matcher)
+             end, {description = "Run or Raise Logseq", group = "launcher"}),
+    awful.key({ modkey, "Mod1"       }, "t", function ()
+                local matcher = function(c)
+                    return awful.rules.match(c, {class = 'Tor Browser'})
+                end
+                awful.client.run_or_raise('torbrowser-launcher', matcher)
+            end, {description = "Run or Raise Tor Browser", group = "launcher"}),
     awful.key({ modkey,}, "d", function () awful.spawn.with_shell("rofi -show drun") end,
               {description = "Opens Rofi", group = "launcher"}),
     awful.key({ modkey, "Mod1"}, "r", function () awful.spawn.with_shell(termexec .. "ranger") end,
@@ -90,13 +98,21 @@ globalkeys = gears.table.join(
 
     awful.key({ "Ctrl", "Mod1"}, "h", function () awful.spawn("clipmenu") end,
               {description = "Opens Clipboard History", group = "launcher"}),
-    awful.key({ }, "Scroll_Lock",
+    awful.key({ }, "Scroll_Lock", 
         function () 
-            awful.screen.focused().selected_tag.master_width_factor = 0.405
-            awful.spawn.with_shell(termexec .. "python3")
+              awful.spawn(termexec .. "python3", {
+                floating  = true,
+                tag       = mouse.screen.selected_tag,
+                width = 500,
+                ontop = true,
+                x = 1366 - 500 - 3, -- Otherwise not placed right after closing a client and then spawning
+                placement = awful.placement.maximize_vertically + awful.placement.right
+              })
         end, {description = "Opens Python as calculator", group = "launcher"}),
     awful.key({ modkey, "Shift"}, "F11", function () awful.spawn(scripts .. "privatebin.sh") end,
               {description = "Opens Privatebin client", group = "launcher"}),
+    awful.key({ modkey, "Shift"}, "F12", function () awful.spawn(scripts .. "tesseract.sh") end,
+              {description = "Opens Tesseract script", group = "launcher"}),
 
 	-- Volume Controls
     awful.key({ modkey, }, "minus", function () awful.spawn.with_shell( scripts .. "volume.sh down") end,
@@ -192,19 +208,19 @@ globalkeys = gears.table.join(
         end, {description = "Hide everything from screen", group = "launcher"}),
 
     -- Swap Screen
-    awful.key({ modkey, "Control" }, "o",
+    awful.key({ modkey, "Control" }, "BackSpace",
         function ()
             local focused_screen = awful.screen.focused()
             local s = focused_screen.get_next_in_direction(focused_screen, "right")
         
             -- FIXME: this only makes sense for two screens
             if not s then
-            s = focused_screen.get_next_in_direction(focused_screen, "left")
+                s = focused_screen.get_next_in_direction(focused_screen, "left")
             end
         
             if not s then 
-            naughty.notify { preset = naughty.config.presets.critical, title = "could not get other screen" }
-            return
+                naughty.notify { preset = naughty.config.presets.critical, title = "could not get other screen" }
+                return
             end
             focused_screen:swap(s)
         end, {description = "swap screens", group = "layout"})
@@ -258,6 +274,12 @@ clientkeys = gears.table.join(
     awful.key({ modkey, "Shift"   }, "m",
         function (c)
             c.maximized_horizontal = not c.maximized_horizontal
+            c:raise()
+        end ,
+        {description = "(un)maximize horizontally", group = "client"}),
+    awful.key({ modkey}, "s",
+        function (c)
+            c.sticky = not c.sticky
             c:raise()
         end ,
         {description = "(un)maximize horizontally", group = "client"})

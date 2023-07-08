@@ -5,7 +5,7 @@ end
 # Hide welcome message
 set fish_greeting
 
-## Aliases 
+# Aliases 
 alias hc="herbstclient"
 # Replace ls with exa
 alias ls='exa -al --color=always --group-directories-first --icons' # preferred listing
@@ -18,6 +18,7 @@ alias tata="exit"
 alias config="/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME"
 alias dots="/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME"
 alias font-list="fc-list : family | awk -F',' '{print $1}' | sort | uniq | fzf | tr -d '\n'"
+alias hcs="history clear-session"
 
 # Directories
 set scripts $HOME/.config/scripts/
@@ -27,10 +28,12 @@ set conf $HOME/.config
 set FLU /mnt/forlinuxuse
 set STF /run/media/shvmpc/Stuff
 set QT_QPA_PLATFORMTHEME qt5ct
+set QT_STYLE_OVERRIDE Adwaita-dark
 
 # PATH
 export PATH="$PATH:$HOME/.local/bin"
 export TERM=kitty
+export QT_STYLE_OVERRIDE=Adwaita-dark
 
 set EDITOR /bin/vim
 
@@ -39,9 +42,6 @@ bind \cH backward-kill-word # Control-Backspace deletes word
 
 # Replace some more things with better alternatives
 alias cat='bat --style header --style snip --style changes --style header'
-
-# Common Use
-alias fixpacman="sudo rm /var/lib/pacman/db.lck"
 
 # PrivateBin
 function pbin
@@ -52,3 +52,9 @@ end
 function backup --argument filename
     cp $filename $filename.bak
 end
+
+# Pacman Related
+alias upgrade="sudo pacman -Syuu"
+alias remove="sudo pacman -Rns "
+alias install="sudo pacman -S "
+alias fixpacman="sudo rm /var/lib/pacman/db.lck"

@@ -1,5 +1,6 @@
 nm-applet &
 ~/.config/scripts/autoxrandr.sh
+~/.config/awesome/scripts/pywal.sh
 picom &
 export QT_STYLE_OVERRIDE=Adwaita-dark
 export QT_QPA_PLATFORMTHEME=qt5ct

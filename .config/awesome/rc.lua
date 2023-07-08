@@ -70,8 +70,8 @@ wall = "/mnt/forlinuxuse/Wallpapers/"
 
 -- Table of layouts to cover with awful.layout.inc, order matters.
 awful.layout.layouts = { 
-    -- awful.layout.suit.tile,
     awful.layout.suit.tile.left,
+    awful.layout.suit.tile,
 }
 -- }}}
 
@@ -95,7 +95,7 @@ mymainmenu = awful.menu({ items = { { "awesome", myawesomemenu, beautiful.awesom
                                     { "open terminal", terminal, termIcon },
                                     { "change wallpaper",
                                         function() 
-								            awful.spawn.with_shell("~/.config/awesome/scripts/pywal.sh") 
+								            awful.spawn.with_shell("~/.config/awesome/scripts/pywal.sh -f") 
                                         end,
                                         wallIcon},
                                     { "power", powermenu, powerIcon}
@@ -169,6 +169,7 @@ local tasklist_buttons = gears.table.join(
                                 awful.mouse.client.move(c)
                                 end))
 
+
 local function set_wallpaper(s)
     -- Wallpaper
     if beautiful.wallpaper then
@@ -210,7 +211,12 @@ awful.screen.connect_for_each_screen(function(s)
     set_wallpaper(s)
 
     -- Each screen has its own tag table.
-    awful.tag({ " 1 ", " 2 ", " 3 ", " 4 ", " 5 ", " 6 ", " 7 ", " 8 ", " 9 " }, s, awful.layout.layouts[1])
+    if s == screen[1] then
+        awful.tag({ " 1 ", " 2 ", " 3 ", " 4 ", " 5 ", " 6 ", " 7 ", " 8 ", " 9 " }, s, awful.layout.layouts[1])
+    else
+        awful.tag({ " 1 ", " 2 ", " 3 ", " 4 ", " 5 ", " 6 ", " 7 ", " 8 ", " 9 " }, s, awful.layout.layouts[2])
+    end
+
 
     -- Create a promptbox for each screen
     s.mypromptbox = awful.widget.prompt()
@@ -332,6 +338,8 @@ client.connect_signal("manage", function (c)
         -- Prevent clients from being unreachable after screen count changes.
         awful.placement.no_offscreen(c)
     end
+    -- awful.client.movetoscreen(c, mouse.screen)
+    -- awful.client.movetoscreen(c, client.focus.screen)
 end)
 
 -- Add a titlebar if titlebars_enabled is set to true in the rules.
@@ -373,6 +381,8 @@ client.connect_signal("request::titlebars", function(c)
         layout = wibox.layout.align.horizontal
     }
 end)
+
+
 
 -- Enable sloppy focus, so that focus follows mouse.
 client.connect_signal("mouse::enter", function(c)

@@ -145,4 +145,5 @@ export QT_QPA_PLATFORMTHEME=qt5ct
 export QT_STYLE_OVERRIDE=Adwaita-dark
 
 export PATH=$PATH:$JAVA_HOME:$ANDROID_SDK_ROOT:$IDEA_JDK:$RUBY:$LOCALBIN
-. "$HOME/.cargo/env"
+
+bind 'set bell-style none'
