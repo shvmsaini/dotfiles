@@ -1,3 +1,4 @@
+local naughty = require("naughty")
 local awful = require("awful")
 local gears = require("gears")
 require("awful.autofocus")
@@ -33,7 +34,7 @@ globalkeys = gears.table.join(
               {description = "go back", group = "tag"}),
     awful.key({ modkey, }, "grave",   awful.tag.viewnext,
               {description = "view next tag", group = "tag"}),
-    awful.key({ modkey, "Shift"   }, "grave",  awful.tag.viewprev,
+    awful.key({ modkey, "Shift" }, "grave",  awful.tag.viewprev,
               {description = "view prev tag", group = "tag"}),
 
     awful.key({ modkey, }, "j", function () awful.client.focus.byidx( 1) end,
@@ -53,7 +54,7 @@ globalkeys = gears.table.join(
               {description = "focus the previous screen", group = "screen"}),
     awful.key({ modkey }, "u", awful.client.urgent.jumpto,
               {description = "jump to urgent client", group = "client"}),
-    awful.key({ modkey,           }, "Tab",
+    awful.key({ modkey }, "Tab",
         function ()
             awful.client.focus.history.previous()
             if client.focus then
@@ -69,7 +70,12 @@ globalkeys = gears.table.join(
               {description = "open a terminal", group = "launcher"}),
     awful.key({ modkey, "Mod1"}, "f", function () awful.spawn("firefox") end,
               {description = "Opens Firefox", group = "launcher"}),
-    awful.key({ modkey, "Mod1"       }, "n", function () awful.spawn("nemo") end,
+    awful.key({ modkey, "Mod1"       }, "n", function () 
+                local matcher = function(c)
+                    return awful.rules.match(c, {class = 'Nemo'})
+                end
+                awful.client.run_or_raise('nemo', matcher)
+            end,
               {description = "Opens Nemo", group = "launcher"}),
     awful.key({ modkey, "Mod1"       }, "l", function ()
                 local matcher = function(c)
@@ -89,8 +95,10 @@ globalkeys = gears.table.join(
               {description = "Opens Ranger", group = "launcher"}),
     awful.key({ modkey, "Mod1"}, "h", function () awful.spawn.with_shell(termexec .. "htop") end,
               {description = "Opens htop", group = "launcher"}),
-    awful.key({ modkey, "Mod1"}, "b", function () awful.spawn("brave") end,
-              {description = "Opens Brave Browser", group = "launcher"}),
+    awful.key({ modkey, "Mod1"}, "b",
+          function ()
+            awful.spawn("brave", {tag =  awful.screen.focused().selected_tag})
+          end, {description = "Opens Brave Browser", group = "launcher"}),
     awful.key({ "Ctrl", "Shift"}, "Print", function () awful.spawn.with_shell("flameshot gui") end,
               {description = "Opens Screenshot window", group = "launcher"}),
     awful.key({ }, "Print", function () awful.spawn.with_shell("flameshot launcher") end,
@@ -109,10 +117,50 @@ globalkeys = gears.table.join(
                 placement = awful.placement.maximize_vertically + awful.placement.right
               })
         end, {description = "Opens Python as calculator", group = "launcher"}),
+    awful.key({ modkey, "Shift"}, "F10", function () awful.spawn(scripts .. "dictionary.sh") end,
+              {description = "Opens Dictionary script", group = "launcher"}),
     awful.key({ modkey, "Shift"}, "F11", function () awful.spawn(scripts .. "privatebin.sh") end,
               {description = "Opens Privatebin client", group = "launcher"}),
     awful.key({ modkey, "Shift"}, "F12", function () awful.spawn(scripts .. "tesseract.sh") end,
               {description = "Opens Tesseract script", group = "launcher"}),
+
+    -- Scratchpads
+    awful.key({modkey, "Shift"}, "Return",
+        function() 
+            --     pointX = 200
+            --     if awful.screen.focused() == screen[2] then
+            --         pointX = 1366 + 200
+            --     end
+
+            --     local myrule = "rule = { class = { "kitty" } }, properties = { floating = true }"
+
+            --     local matcher = function(c)
+            --         return awful.rules.match(c, myrule)
+            --     end 
+
+            --     if matcher then
+            --         naughty.notify { preset = naughty.config.presets.critical, title = "booom" }
+                  
+            --         for c in awful.client.iterate(matcher) do  
+            --             c.minimized = true
+            --         end
+            --     else
+            --     --     for c in awful.client.iterate(matcher) do  
+            --     --         c.minimized = false
+            --     --     end
+            --     -- end
+            --   awful.spawn(terminal, {
+            --     floating  = true,
+            --     tag       = mouse.screen.selected_tag,
+            --     width = 1000,
+            --     height = 500,
+            --     ontop = true,
+            --     sticky = true,
+            --     x = pointX,
+            --     placement = awful.placement.top
+            --   })  
+            -- end
+        end, {description = "Opens terminal scratchpad", group = "launcher"}),
 
 	-- Volume Controls
     awful.key({ modkey, }, "minus", function () awful.spawn.with_shell( scripts .. "volume.sh down") end,
@@ -137,21 +185,21 @@ globalkeys = gears.table.join(
             awful.spawn.with_shell("$conf/awesome/scripts/exit.sh")
         end, {description = "quit awesome", group = "awesome"}),
 
-    awful.key({ modkey, }, "l",     function () awful.tag.incmwfact( 0.05)          end,
+    awful.key({ modkey, }, "l", function () awful.tag.incmwfact( 0.05) end,
               {description = "increase master width factor", group = "layout"}),
-    awful.key({ modkey, }, "h",     function () awful.tag.incmwfact(-0.05)          end,
+    awful.key({ modkey, }, "h", function () awful.tag.incmwfact(-0.05) end,
               {description = "decrease master width factor", group = "layout"}),
-    awful.key({ modkey, "Shift"   }, "l",     function () awful.tag.incnmaster( 1, nil, true) end,
+    awful.key({ modkey, "Shift" }, "l", function () awful.tag.incnmaster( 1, nil, true) end,
               {description = "increase the number of master clients", group = "layout"}),
-    awful.key({ modkey, "Shift"   }, "h",     function () awful.tag.incnmaster(-1, nil, true) end,
+    awful.key({ modkey, "Shift" }, "h", function () awful.tag.incnmaster(-1, nil, true) end,
               {description = "decrease the number of master clients", group = "layout"}),
-    awful.key({ modkey, "Control" }, "l",     function () awful.tag.incncol( 1, nil, true)    end,
+    awful.key({ modkey, "Control" }, "l", function () awful.tag.incncol( 1, nil, true) end,
               {description = "increase the number of columns", group = "layout"}),
-    awful.key({ modkey, "Control" }, "h",     function () awful.tag.incncol(-1, nil, true)    end,
+    awful.key({ modkey, "Control" }, "h", function () awful.tag.incncol(-1, nil, true) end,
               {description = "decrease the number of columns", group = "layout"}),
-    awful.key({ modkey,           }, "space", function () awful.layout.inc( 1)                end,
+    awful.key({ modkey,}, "space", function () awful.layout.inc( 1) end,
               {description = "select next", group = "layout"}),
-    awful.key({ modkey, "Shift"   }, "space", function () awful.layout.inc(-1)                end,
+    awful.key({ modkey, "Shift"   }, "space", function () awful.layout.inc(-1) end,
               {description = "select previous", group = "layout"}),
 
     awful.key({ modkey, "Control" }, "n",
@@ -361,6 +409,9 @@ clientbuttons = gears.table.join(
     awful.button({ modkey }, 3, function (c)
         c:emit_signal("request::activate", "mouse_click", {raise = true})
         awful.mouse.client.resize(c)
+    end),
+    awful.button({ modkey }, 2, function (c)
+        c:kill()
     end),
     awful.button({ modkey }, 4, function (t)
         awful.tag.viewnext(t.screen)

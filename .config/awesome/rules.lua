@@ -25,6 +25,7 @@ awful.rules.rules = {
           "copyq",  -- Includes session name in class.
           "pinentry",
           "file_properties",
+          "pamac-manager",
         },
         class = {
           "Arandr",
@@ -50,7 +51,8 @@ awful.rules.rules = {
           "ConfigManager",  -- Thunderbird's about:config.
           "pop-up",       -- e.g. Google Chrome's (detached) Developer Tools.
         }
-      }, properties = { floating = true, placement = awful.placement.centered }},
+      }, properties = { floating = true, placement = awful.placement.centered }
+    },
 
     -- No titlebars to normal clients and dialogs
     { rule_any = {type = { "normal", "dialog", "utility" }
