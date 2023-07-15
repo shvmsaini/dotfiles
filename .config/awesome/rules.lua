@@ -1,7 +1,3 @@
-local awful = require("awful")
-local beautiful = require("beautiful")
-
--- {{{ Rules
 -- Rules to apply to new clients (through the "manage" signal).
 awful.rules.rules = {
     -- All clients will match this rule.
@@ -77,4 +73,3 @@ awful.rules.rules = {
       properties = {floating = true, placement = awful.placement.centered, width = 1100, height = 650}
     }
 }
--- }}}

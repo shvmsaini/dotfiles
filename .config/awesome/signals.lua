@@ -1,15 +1,3 @@
-pcall(require, "luarocks.loader")
-
--- Standard awesome library
-local gears = require("gears")
-local awful = require("awful")
-require("awful.autofocus")
--- Widget and layout library
-local wibox = require("wibox")
--- Theme handling library
-local beautiful = require("beautiful")
-
--- {{{ Signals
 -- Signal function to execute when a new client appears.
 client.connect_signal("manage", function (c)
     -- Set the windows at the slave,
@@ -66,7 +54,6 @@ client.connect_signal("request::titlebars", function(c)
     }
 end)
 
-
 -- Enable sloppy focus, so that focus follows mouse.
 client.connect_signal("mouse::enter", function(c)
     c:emit_signal("request::activate", "mouse_enter", {raise = false})
@@ -81,4 +68,41 @@ client.connect_signal("property::urgent", function(c)
     c:jump_to()
 end)
 
--- }}}
+-- Preserve tags on restart
+awesome.connect_signal('exit', 
+    function(reason_restart)
+        if not reason_restart then
+            return
+        end
+
+    local file = io.open('/tmp/awesomewm-last-selected-tags', 'w+')
+
+    for s in screen do
+        file:write(s.selected_tag.index, '\n')
+    end
+
+    file:close()
+end)
+
+awesome.connect_signal('startup',
+    function()
+        local file = io.open('/tmp/awesomewm-last-selected-tags', 'r')
+        if not file then
+            return
+        end
+
+    local selected_tags = {}
+
+    for line in file:lines() do
+        table.insert(selected_tags, tonumber(line))
+    end
+
+    for s in screen do
+        local i = selected_tags[s.index]
+        local t = s.tags[i]
+        t:view_only()
+    end
+
+    file:close()
+end)
+

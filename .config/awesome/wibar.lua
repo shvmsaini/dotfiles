@@ -1,23 +1,3 @@
--- If LuaRocks is installed, make sure that packages installed through it are
--- found (e.g. lgi). If LuaRocks is not installed, do nothing.
-pcall(require, "luarocks.loader")
-
--- Standard awesome library
-local gears = require("gears")
-local awful = require("awful")
-require("awful.autofocus")
--- Widget and layout library
-local wibox = require("wibox")
--- Theme handling library
-local beautiful = require("beautiful")
--- Notification library
-local naughty = require("naughty")
-local menubar = require("menubar")
-local hotkeys_popup = require("awful.hotkeys_popup")
--- Enable hotkeys help widget for VIM and other apps
--- when client with a matching name is opened:
-require("awful.hotkeys_popup.keys")
-
 -- Volume Widget
 local volume_widget = require('awesome-wm-widgets.volume-widget.volume')
 
@@ -27,13 +7,50 @@ local net_speed_widget = require("awesome-wm-widgets.net-speed-widget.net-speed"
 -- Separator
 local separator = wibox.widget.textbox("  ")
 
+-- Ram
+local ramIcon = home .. ".local/share/icons/material/white/memory.svg"
+local ramButtons = gears.table.join(
+        awful.button({ }, 2, function() awful.spawn.with_shell(termexec .. "htop") end))
+local ram = wibox.widget{
+    {
+        left   = 5,
+        top    = 1,
+        bottom = 1,
+        right  = 0,
+        widget = wibox.container.margin,
+        {   
+            image = ramIcon,
+            widget = wibox.widget.imagebox
+        },    
+    },
+   
+    {
+        widget = awful.widget.watch('bash -c "~/.config/scripts/ram.sh"')
+    },
+    buttons = ramButtons,
+    layout = wibox.layout.fixed.horizontal,
+}
+
 -- Keyboard map indicator and switcher
 -- mykeyboardlayout = awful.widget.keyboardlayout()
 
--- {{{ Wibar
 -- Create a textclock widget
--- mytextclock = wibox.widget.textclock()
-mytextclock = wibox.widget.textclock(" %a %b %d, %I:%M %p")
+local clockButtons =  gears.table.join( 
+       awful.button({ }, 2, function() awful.spawn.with_shell("firefox https://calendar.google.com") end))
+
+local clock = wibox.widget{
+    {
+        wibox.widget.textclock(" %a %b %d, %I:%M %p"),
+        left   = 5,
+        top    = 2,
+        bottom = 2,
+        right  = 0,
+        widget = wibox.container.margin,
+    },
+    widget  = wibox.container.background,
+    buttons = clockButtons
+}
+
 beautiful.systray_icon_spacing = 10
 
 local systray = wibox.widget {
@@ -123,7 +140,6 @@ awful.screen.connect_for_each_screen(function(s)
         c:move_to_tag(st)
         end
     end)
-        
 
     -- Wallpaper
     set_wallpaper(s)
@@ -134,7 +150,6 @@ awful.screen.connect_for_each_screen(function(s)
     else
         awful.tag({ " 1 ", " 2 ", " 3 ", " 4 ", " 5 ", " 6 ", " 7 ", " 8 ", " 9 " }, s, awful.layout.layouts[2])
     end
-
 
     -- Create a promptbox for each screen
     s.mypromptbox = awful.widget.prompt()
@@ -207,9 +222,6 @@ awful.screen.connect_for_each_screen(function(s)
     -- Create the wibox
     s.mywibox = awful.wibar({ position = "top", screen = s, height = 22, opacity = 0.8, })
 
-    --s.mytextclock:buttons( gears.table.join( 
-      --  awful.button({ }, 2, function() awful.spawn.with_shell("firefox https://calendar.google.com") end)))
-
     -- Add widgets to the wibox
     s.mywibox:setup {
         layout = wibox.layout.align.horizontal,
@@ -225,14 +237,16 @@ awful.screen.connect_for_each_screen(function(s)
             -- mykeyboardlayout,
             systray,
 		    net_speed_widget(),
+            ram,
+            separator,
+            separator,
 		    volume_widget{
 		  	    widget_type='icon_and_text'
 		    },
 		    separator,
-            mytextclock,
+            clock,
 		    separator,
             -- s.mylayoutbox,
         },
     }
 end)
--- }}}

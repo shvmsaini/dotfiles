@@ -1,7 +1,3 @@
--- Theme handling library
-local beautiful = require("beautiful")
-local gears = require("gears")
-
 -- Pywal Integration
 xresources = require("beautiful.xresources")
 xrdb = xresources.get_current_theme()
@@ -14,7 +10,7 @@ beautiful.useless_gap = 2
 beautiful.master_width_factor = 0.555
 
 -- Icons
-iconFolder = "/home/shvmpc/.local/share/icons/material"
+iconFolder = home .. "/.local/share/icons/material"
 powerIcon = iconFolder .. "/white/power.svg"
 termIcon = iconFolder .. "/white/terminal.svg"
 wallIcon = iconFolder .. "/white/wallpaper.svg"

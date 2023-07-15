@@ -1,11 +1,3 @@
-local naughty = require("naughty")
-local awful = require("awful")
-local gears = require("gears")
-require("awful.autofocus")
-local hotkeys_popup = require("awful.hotkeys_popup")
-require("awful.hotkeys_popup.keys")
-local menubar = require("menubar")
-
 -- {{{ Mouse bindings
 root.buttons(gears.table.join(
     awful.button({ }, 3, function () mymainmenu:toggle() end),

@@ -3,17 +3,17 @@
 pcall(require, "luarocks.loader")
 
 -- Standard awesome library
-local gears = require("gears")
-local awful = require("awful")
+gears = require("gears")
+awful = require("awful")
 require("awful.autofocus")
 -- Widget and layout library
-local wibox = require("wibox")
+wibox = require("wibox")
 -- Theme handling library
-local beautiful = require("beautiful")
+beautiful = require("beautiful")
 -- Notification library
-local naughty = require("naughty")
-local menubar = require("menubar")
-local hotkeys_popup = require("awful.hotkeys_popup")
+naughty = require("naughty")
+menubar = require("menubar")
+hotkeys_popup = require("awful.hotkeys_popup")
 -- Enable hotkeys help widget for VIM and other apps
 -- when client with a matching name is opened:
 require("awful.hotkeys_popup.keys")
@@ -44,11 +44,7 @@ do
 end
 -- }}}
 
--- Beautiful theme
-require("theme")
-
 -- {{{ Variable definitions
--- This is used later as the default terminal and editor to run.
 terminal = "kitty"
 termexec = terminal .. " -e "
 editor = os.getenv("nvim") or "vim" or "nano"
@@ -61,13 +57,15 @@ home = os.getenv("HOME") .. "/"
 scripts = home .. ".config/scripts/"
 wall = "/mnt/forlinuxuse/Wallpapers/"
 
-
 -- Table of layouts to cover with awful.layout.inc, order matters.
 awful.layout.layouts = { 
     awful.layout.suit.tile.left,
     awful.layout.suit.tile,
 }
 -- }}}
+
+-- Beautiful theme
+require("theme")
 
 -- Menu
 require("menu")
@@ -84,6 +82,5 @@ require("rules")
 -- Signals
 require("signals")
 
--- autostart
--- awful.spawn.with_shell("$HOME/.config/awesome/scripts/pywal.sh")
+-- Autostart
 awful.spawn(scripts .. "autostart.sh")
