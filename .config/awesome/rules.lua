@@ -1,4 +1,6 @@
 -- Rules to apply to new clients (through the "manage" signal).
+local last = screen.count()
+
 awful.rules.rules = {
     -- All clients will match this rule.
     { rule = { },
@@ -29,6 +31,7 @@ awful.rules.rules = {
           "Gpick",
           "Kruler",
           "MessageWin",  -- kalarm.
+          "Pavucontrol",
           "Sxiv",
          -- "Tor Browser", -- Needs a fixed window size to avoid fingerprinting by screen size.
           "Wpa_gui",
@@ -57,15 +60,15 @@ awful.rules.rules = {
 
     -- Set Logseq to always map on the tag named "2" on screen 1.
     { rule = { class = "Logseq" },
-      properties = { screen = 2, tag = " 2 " }
+      properties = { screen = last, tag = " 2 " }
     },
     -- Gimp
     { rule = { class = "Gimp-2.10" },
-      properties = { screen = 2, tag = " 9 " }
+      properties = { screen = last, tag = " 9 " }
     },
     -- Code
     { rule = { class = "code-oss" },
-      properties = { screen = 2, tag = " 3 " }
+      properties = { screen = last, tag = " 3 " }
     },
     -- Bitwarden
     {

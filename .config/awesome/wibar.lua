@@ -7,7 +7,7 @@ local net_speed_widget = require("awesome-wm-widgets.net-speed-widget.net-speed"
 -- Separator
 local separator = wibox.widget.textbox("  ")
 
--- Ram
+-- Ram Widget
 local ramIcon = home .. ".local/share/icons/material/white/memory.svg"
 local ramButtons = gears.table.join(
         awful.button({ }, 2, function() awful.spawn.with_shell(termexec .. "htop") end))
@@ -36,7 +36,9 @@ local ram = wibox.widget{
 
 -- Create a textclock widget
 local clockButtons =  gears.table.join( 
-       awful.button({ }, 2, function() awful.spawn.with_shell("firefox https://calendar.google.com") end))
+       awful.button({ }, 2, function() awful.spawn.with_shell("firefox https://calendar.google.com") end)
+    --    awful.button({ }, 3, function()  month_calendar:toggle()  end) -- Doesn't work
+    )
 
 local clock = wibox.widget{
     {
@@ -50,6 +52,11 @@ local clock = wibox.widget{
     widget  = wibox.container.background,
     buttons = clockButtons
 }
+
+-- TODO: Calender Widget
+local cal = wibox.widget.calendar.month(os.date('*t'))
+local month_calendar = awful.widget.calendar_popup.month() 
+month_calendar:attach(clock, "tr", {on_hover = false})
 
 beautiful.systray_icon_spacing = 10
 

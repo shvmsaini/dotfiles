@@ -8,6 +8,9 @@ root.buttons(gears.table.join(
 -- }}}
 -- 
 
+local screenX = 200
+local screenY = 130
+
 -- {{{ Key bindings
 globalkeys = gears.table.join(
     awful.key({ modkey, }, "slash",      hotkeys_popup.show_help,
@@ -62,24 +65,26 @@ globalkeys = gears.table.join(
               {description = "open a terminal", group = "launcher"}),
     awful.key({ modkey, "Mod1"}, "f", function () awful.spawn("firefox") end,
               {description = "Opens Firefox", group = "launcher"}),
-    awful.key({ modkey, "Mod1"       }, "n", function () 
+    awful.key({ modkey, "Mod1"}, "n", function () 
                 local matcher = function(c)
                     return awful.rules.match(c, {class = 'Nemo'})
                 end
                 awful.client.run_or_raise('nemo', matcher)
             end,
               {description = "Opens Nemo", group = "launcher"}),
-    awful.key({ modkey, "Mod1"       }, "l", function ()
+    awful.key({ modkey, "Mod1"}, "l", function ()
                 local matcher = function(c)
                     return awful.rules.match(c, {class = 'Logseq'})
                 end
                 awful.client.run_or_raise('logseq', matcher)
              end, {description = "Run or Raise Logseq", group = "launcher"}),
-    awful.key({ modkey, "Mod1"       }, "t", function ()
+    awful.key({ modkey, "Mod1"}, "t", function ()
                 local matcher = function(c)
                     return awful.rules.match(c, {class = 'Tor Browser'})
                 end
-                awful.client.run_or_raise('torbrowser-launcher', matcher)
+                local rulee = {tag = awful.screen.focused().selected_tag}
+                -- awful.client.run_or_raise('torbrowser-launcher', matcher)
+                awful.spawn.raise_or_spawn('torbrowser-launcher', rule, matcher)
             end, {description = "Run or Raise Tor Browser", group = "launcher"}),
     awful.key({ modkey,}, "d", function () awful.spawn.with_shell("rofi -show drun") end,
               {description = "Opens Rofi", group = "launcher"}),
@@ -118,40 +123,34 @@ globalkeys = gears.table.join(
 
     -- Scratchpads
     awful.key({modkey, "Shift"}, "Return",
-        function() 
-            --     pointX = 200
-            --     if awful.screen.focused() == screen[2] then
-            --         pointX = 1366 + 200
-            --     end
+            function() 
+                local myproperties = {
+                    floating = true,
+                    width = 1000,
+                    height = 500,
+                    placement = awful.placement.centered,
+                    x = screenX,
+                    y = screenY
+                }
 
-            --     local myrule = "rule = { class = { "kitty" } }, properties = { floating = true }"
+                found = nil
+                for _, c in ipairs(client.get()) do
+                    local myrule = {class = 'kitty'}
+                    if awful.rules.match(c, myrule) and c.floating then
+                        found = c
+                    end
+                end
 
-            --     local matcher = function(c)
-            --         return awful.rules.match(c, myrule)
-            --     end 
-
-            --     if matcher then
-            --         naughty.notify { preset = naughty.config.presets.critical, title = "booom" }
-                  
-            --         for c in awful.client.iterate(matcher) do  
-            --             c.minimized = true
-            --         end
-            --     else
-            --     --     for c in awful.client.iterate(matcher) do  
-            --     --         c.minimized = false
-            --     --     end
-            --     -- end
-            --   awful.spawn(terminal, {
-            --     floating  = true,
-            --     tag       = mouse.screen.selected_tag,
-            --     width = 1000,
-            --     height = 500,
-            --     ontop = true,
-            --     sticky = true,
-            --     x = pointX,
-            --     placement = awful.placement.top
-            --   })  
-            -- end
+                if not found then
+                    awful.spawn("kitty", myproperties)
+                else 
+                    found.minimized = not found.minimized
+                    if not found.minimized then
+                        client.focus = found
+                        found:raise()
+                    end
+                end 
+                    
         end, {description = "Opens terminal scratchpad", group = "launcher"}),
 
 	-- Volume Controls
@@ -273,7 +272,7 @@ clientkeys = gears.table.join(
             c:raise()
         end,
         {description = "toggle fullscreen", group = "client"}),
-    awful.key({ modkey, "Shift"   }, "q",      function (c) c:kill() end,
+    awful.key({ modkey, "Shift" }, "q", function (c) c:kill() end,
               {description = "close", group = "client"}),
     -- awful.key({ modkey, "Shift" }, "f", awful.client.floating.toggle,
             --   {description = "toggle floating", group = "client"}),
@@ -285,7 +284,7 @@ clientkeys = gears.table.join(
                 -- table[2] = 100
                 -- c:geometry(table)
             end,
-              {description = "toggle floating", group = "client"}),
+            {description = "toggle floating", group = "client"}),
     awful.key({ modkey, "Control" }, "s", function (c) c:swap(awful.client.getmaster()) end,
               {description = "move to master", group = "client"}),
     awful.key({ modkey,  "Shift"  }, "BackSpace",      function (c) c:move_to_screen() end,
@@ -376,14 +375,14 @@ for i = 1, 9 do
         awful.key({ modkey, "Mod1" }, "#" .. i + 9,
                   function ()
                       if client.focus then
-                            ind = 1
+                            local ind = 1
                             if (client.focus.screen == screen[1]) then
                                 ind = 2
                             end
-                          local tag = screen[ind].tags[i]
-                          if tag then
-                              client.focus:move_to_tag(tag)
-                          end
+                            local tag = screen[ind].tags[i]
+                            if tag then
+                                client.focus:move_to_tag(tag)
+                            end
                      end
                   end,
                   {description = "move focused client to tag #"..i.. " in other screen", group = "tag"})
