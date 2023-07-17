@@ -14,6 +14,8 @@ beautiful = require("beautiful")
 naughty = require("naughty")
 menubar = require("menubar")
 hotkeys_popup = require("awful.hotkeys_popup")
+-- Hides Tmux keys
+package.loaded["awful.hotkeys_popup.keys.tmux"] = {}
 -- Enable hotkeys help widget for VIM and other apps
 -- when client with a matching name is opened:
 require("awful.hotkeys_popup.keys")
@@ -48,14 +50,12 @@ end
 terminal = "kitty"
 termexec = terminal .. " -e "
 editor = os.getenv("nvim") or "vim" or "nano"
-
--- Default modkey.
-modkey = "Mod4"
-
--- Variables
 home = os.getenv("HOME") .. "/"
 scripts = home .. ".config/scripts/"
 wall = "/mnt/forlinuxuse/Wallpapers/"
+
+-- Default modkey.
+modkey = "Mod4"
 
 -- Table of layouts to cover with awful.layout.inc, order matters.
 awful.layout.layouts = { 

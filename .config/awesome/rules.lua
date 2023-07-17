@@ -74,5 +74,17 @@ awful.rules.rules = {
     {
       rule = {class = "Bitwarden"},
       properties = {floating = true, placement = awful.placement.centered, width = 1100, height = 650}
-    }
+    },
+    {
+      rule = { class = "scratchpad" },
+      properties = {
+          floating = true,
+          ontop = true,
+          sticky = true,
+          placement = awful.placement.centered,
+          skip_taskbar = true,
+          width = 800,
+          height = 600,
+      },
+    },
 }

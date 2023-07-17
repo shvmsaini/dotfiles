@@ -23,7 +23,6 @@ local ram = wibox.widget{
             widget = wibox.widget.imagebox
         },    
     },
-   
     {
         widget = awful.widget.watch('bash -c "~/.config/scripts/ram.sh"')
     },
@@ -34,11 +33,28 @@ local ram = wibox.widget{
 -- Keyboard map indicator and switcher
 -- mykeyboardlayout = awful.widget.keyboardlayout()
 
+-- Calender Widget
+local month_calendar = awful.widget.calendar_popup.month( {
+    start_sunday = true,
+    style_month = {
+        border_width = 0,
+        bg_color = xrdb.background,
+        padding = 4,
+    },
+    style_focus = {
+        fg_color = xrdb.background,
+        bg_color = xrdb.foreground,
+    }
+}) 
+
 -- Create a textclock widget
 local clockButtons =  gears.table.join( 
-       awful.button({ }, 2, function() awful.spawn.with_shell("firefox https://calendar.google.com") end)
-    --    awful.button({ }, 3, function()  month_calendar:toggle()  end) -- Doesn't work
-    )
+        awful.button({ }, 2, function() awful.spawn.with_shell("firefox https://calendar.google.com") end),
+        awful.button({ }, 3, function() 
+            month_calendar:call_calendar (0, "tr", awful.screen.focused())
+            month_calendar:toggle() 
+        end)
+)
 
 local clock = wibox.widget{
     {
@@ -53,10 +69,6 @@ local clock = wibox.widget{
     buttons = clockButtons
 }
 
--- TODO: Calender Widget
-local cal = wibox.widget.calendar.month(os.date('*t'))
-local month_calendar = awful.widget.calendar_popup.month() 
-month_calendar:attach(clock, "tr", {on_hover = false})
 
 beautiful.systray_icon_spacing = 10
 
@@ -74,42 +86,42 @@ local systray = wibox.widget {
 
 -- Create a wibox for each screen and add it
 local taglist_buttons = gears.table.join(
-                    awful.button({ }, 1, function(t) t:view_only() end),
-                    awful.button({ modkey }, 1, function(t)
-                                              if client.focus then
-                                                  client.focus:move_to_tag(t)
-                                              end
-                                          end),
-                    awful.button({ }, 3, awful.tag.viewtoggle),
-                    awful.button({ modkey }, 3, function(t)
-                                              if client.focus then
-                                                  client.focus:toggle_tag(t)
-                                              end
-                                          end),
-                    awful.button({ }, 4, function(t) awful.tag.viewnext(t.screen) end),
-                    awful.button({ }, 5, function(t) awful.tag.viewprev(t.screen) end)
-                )
+    awful.button({ }, 1, function(t) t:view_only() end),
+    awful.button({ modkey }, 1, function(t)
+                                if client.focus then
+                                    client.focus:move_to_tag(t)
+                                end
+                            end),
+    awful.button({ }, 3, awful.tag.viewtoggle),
+    awful.button({ modkey }, 3, function(t)
+                                if client.focus then
+                                    client.focus:toggle_tag(t)
+                                end
+                            end),
+    awful.button({ }, 4, function(t) awful.tag.viewnext(t.screen) end),
+    awful.button({ }, 5, function(t) awful.tag.viewprev(t.screen) end)
+)
 
 local tasklist_buttons = gears.table.join(
-                     awful.button({ }, 1, function (c)
-                                              if c == client.focus then
-                                                  c.minimized = true
-                                              else
-                                                  c:emit_signal(
-                                                      "request::activate",
-                                                      "tasklist",
-                                                      {raise = true}
-                                                  )
-                                              end
-                                          end),
-                     awful.button({ }, 2, function (c) c:kill() end),
-                     awful.button({ }, 3, function() awful.menu.client_list({ theme = { width = 250 } }) end),
-                     awful.button({ }, 4, function () awful.client.focus.byidx(1) end),
-                     awful.button({ }, 5, function () awful.client.focus.byidx(-1) end),
-                     awful.button({ modkey }, 1, function (c)
-                                c:emit_signal("request::activate", "mouse_click", {raise = true})
-                                awful.mouse.client.move(c)
-                                end))
+    awful.button({ }, 1, function (c)
+            if c == client.focus then
+                c.minimized = true
+            else
+                c:emit_signal(
+                    "request::activate",
+                    "tasklist",
+                    {raise = true}
+                )
+            end
+        end),
+    awful.button({ }, 2, function (c) c:kill() end),
+    awful.button({ }, 3, function() awful.menu.client_list({ theme = { width = 250 } }) end),
+    awful.button({ }, 4, function () awful.client.focus.byidx(1) end),
+    awful.button({ }, 5, function () awful.client.focus.byidx(-1) end),
+    awful.button({ modkey }, 1, function (c)
+            c:emit_signal("request::activate", "mouse_click", {raise = true})
+            awful.mouse.client.move(c)
+            end))
 
 
 local function set_wallpaper(s)
@@ -135,16 +147,16 @@ awful.screen.connect_for_each_screen(function(s)
         if not is_source then return end
 
         local st = self.selected_tag
-        local sc = st:clients() -- NOTE: this is only here for convinience
+        local sc = st:clients() -- NOTE: this is only here for convenience
         local ot = other.selected_tag
         local oc = ot:clients() -- but this HAS to be saved in a variable because we modify the client list in the process of swapping
 
         for _, c in ipairs(sc) do
-        c:move_to_tag(ot)
+            c:move_to_tag(ot)
         end
 
         for _, c in ipairs(oc) do
-        c:move_to_tag(st)
+            c:move_to_tag(st)
         end
     end)
 

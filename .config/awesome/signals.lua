@@ -10,6 +10,10 @@ client.connect_signal("manage", function (c)
         -- Prevent clients from being unreachable after screen count changes.
         awful.placement.no_offscreen(c)
     end
+
+    if c.class:lower() == 'scratchpad' then
+        rangerScratchpad = c
+    end
     -- awful.client.movetoscreen(c, mouse.screen)
     -- awful.client.movetoscreen(c, client.focus.screen)
 end)

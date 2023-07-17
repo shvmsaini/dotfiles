@@ -1,3 +1,5 @@
+require("awful.ewmh")
+
 -- {{{ Mouse bindings
 root.buttons(gears.table.join(
     awful.button({ }, 3, function () mymainmenu:toggle() end),
@@ -10,6 +12,8 @@ root.buttons(gears.table.join(
 
 local screenX = 200
 local screenY = 130
+htopScratchpad = nil
+rangerScratchpad = nil
 
 -- {{{ Key bindings
 globalkeys = gears.table.join(
@@ -69,7 +73,7 @@ globalkeys = gears.table.join(
                 local matcher = function(c)
                     return awful.rules.match(c, {class = 'Nemo'})
                 end
-                awful.client.run_or_raise('nemo', matcher)
+                awful.spawn.raise_or_spawn('nemo', {tag = awful.screen.focused().selected_tag}, matcher)
             end,
               {description = "Opens Nemo", group = "launcher"}),
     awful.key({ modkey, "Mod1"}, "l", function ()
@@ -83,7 +87,6 @@ globalkeys = gears.table.join(
                     return awful.rules.match(c, {class = 'Tor Browser'})
                 end
                 local rulee = {tag = awful.screen.focused().selected_tag}
-                -- awful.client.run_or_raise('torbrowser-launcher', matcher)
                 awful.spawn.raise_or_spawn('torbrowser-launcher', rule, matcher)
             end, {description = "Run or Raise Tor Browser", group = "launcher"}),
     awful.key({ modkey,}, "d", function () awful.spawn.with_shell("rofi -show drun") end,
@@ -128,6 +131,7 @@ globalkeys = gears.table.join(
                     floating = true,
                     width = 1000,
                     height = 500,
+                    skip_taskbar = true,
                     placement = awful.placement.centered,
                     x = screenX,
                     y = screenY
@@ -150,18 +154,27 @@ globalkeys = gears.table.join(
                         found:raise()
                     end
                 end 
-                    
-        end, {description = "Opens terminal scratchpad", group = "launcher"}),
+        end, {description = "Opens terminal scratchpad", group = "scratchpad"}),
+
+    awful.key({modkey}, "F1", function() 
+            if rangerScratchpad and rangerScratchpad.valid then
+                rangerScratchpad.minimized = not rangerScratchpad.minimized
+                client.focus = rangerScratchpad
+                rangerScratchpad:raise()
+            else
+                awful.spawn("kitty --class scratchpad -e ranger")
+            end
+        end, {description = "Scracthpad", group = "scratchpad"}),
 
 	-- Volume Controls
     awful.key({ modkey, }, "minus", function () awful.spawn.with_shell( scripts .. "volume.sh down") end,
-              {description = "Decreases volume by 5%", group = "launcher"}),
+              {description = "Decreases volume by 5%", group = "volume"}),
     awful.key({ modkey, }, "KP_Subtract", function () awful.spawn.with_shell(scripts .. "volume.sh down") end,
-              {description = "Decreases volume by 5%", group = "launcher"}),
+              {description = "Decreases volume by 5%", group = "volume"}),
     awful.key({ modkey, }, "equal", function () awful.spawn.with_shell(scripts .. "volume.sh up") end,
-              {description = "Increases volume by 5%", group = "launcher"}),
+              {description = "Increases volume by 5%", group = "volume"}),
     awful.key({ modkey, }, "KP_Add", function () awful.spawn.with_shell(scripts .. "volume.sh up") end,
-              {description = "Increases volume by 5%", group = "launcher"}),
+              {description = "Increases volume by 5%", group = "volume"}),
 		    
     
     awful.key({modkey, }, "t",
@@ -279,10 +292,6 @@ clientkeys = gears.table.join(
     awful.key({ modkey, "Shift" }, "f",
             function(c)
                 c.floating = not c.floating
-                -- table = {}
-                -- table[1] = 100
-                -- table[2] = 100
-                -- c:geometry(table)
             end,
             {description = "toggle floating", group = "client"}),
     awful.key({ modkey, "Control" }, "s", function (c) c:swap(awful.client.getmaster()) end,
