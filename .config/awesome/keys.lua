@@ -14,6 +14,7 @@ local screenX = 200
 local screenY = 130
 htopScratchpad = nil
 rangerScratchpad = nil
+termSP = nil
 
 -- {{{ Key bindings
 globalkeys = gears.table.join(
@@ -104,8 +105,10 @@ globalkeys = gears.table.join(
     awful.key({ }, "Print", function () awful.spawn.with_shell("flameshot launcher") end,
               {description = "Opens Screenshot window", group = "launcher"}),
 
-    awful.key({ "Ctrl", "Mod1"}, "h", function () awful.spawn("clipmenu") end,
-              {description = "Opens Clipboard History", group = "launcher"}),
+    -- awful.key({ "Ctrl", "Mod1"}, "h", function () awful.spawn("clipmenu") end,
+    awful.key({ "Ctrl", "Mod1"}, "h", function ()
+         awful.spawn("rofi -modi \"clipboard:greenclip print\" -show clipboard -run-command '{cmd}'")
+         end, {description = "Opens Clipboard History", group = "launcher"}),
     awful.key({ }, "Scroll_Lock", 
         function () 
               awful.spawn(termexec .. "python3", {
@@ -126,34 +129,14 @@ globalkeys = gears.table.join(
 
     -- Scratchpads
     awful.key({modkey, "Shift"}, "Return",
-            function() 
-                local myproperties = {
-                    floating = true,
-                    width = 1000,
-                    height = 500,
-                    skip_taskbar = true,
-                    placement = awful.placement.centered,
-                    x = screenX,
-                    y = screenY
-                }
-
-                found = nil
-                for _, c in ipairs(client.get()) do
-                    local myrule = {class = 'kitty'}
-                    if awful.rules.match(c, myrule) and c.floating then
-                        found = c
-                    end
-                end
-
-                if not found then
-                    awful.spawn("kitty", myproperties)
-                else 
-                    found.minimized = not found.minimized
-                    if not found.minimized then
-                        client.focus = found
-                        found:raise()
-                    end
-                end 
+        function() 
+            if termSP and termSP.valid then
+                termSP.minimized = not termSP.minimized
+                client.focus = termSP
+                termSP:raise()
+            else
+                awful.spawn("kitty --class termSP")
+            end
         end, {description = "Opens terminal scratchpad", group = "scratchpad"}),
 
     awful.key({modkey}, "F1", function() 
@@ -164,7 +147,7 @@ globalkeys = gears.table.join(
             else
                 awful.spawn("kitty --class scratchpad -e ranger")
             end
-        end, {description = "Scracthpad", group = "scratchpad"}),
+        end, {description = "Opens ranger scratchpad", group = "scratchpad"}),
 
 	-- Volume Controls
     awful.key({ modkey, }, "minus", function () awful.spawn.with_shell( scripts .. "volume.sh down") end,

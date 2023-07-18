@@ -75,16 +75,22 @@ awful.rules.rules = {
       rule = {class = "Bitwarden"},
       properties = {floating = true, placement = awful.placement.centered, width = 1100, height = 650}
     },
+    -- Scratchpad
     {
-      rule = { class = "scratchpad" },
+      rule_any = { class = { "scratchpad" , "termSP" }},
       properties = {
-          floating = true,
-          ontop = true,
           sticky = true,
-          placement = awful.placement.centered,
+          placement = function(...)
+            return awful.placement.centered(...) -- https://github.com/awesomeWM/awesome/issues/2497
+          end, 
           skip_taskbar = true,
           width = 800,
           height = 600,
+          floating = true,
       },
+    },
+    {
+      rule = { class = "termSP" },
+      properties = { width = 1000, height = 600 },
     },
 }

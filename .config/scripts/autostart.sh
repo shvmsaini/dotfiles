@@ -21,5 +21,6 @@ numlockx & # Activating numlock
 xset r rate 250 40 & # Lower keypress delays
 setxkbmap -option caps:swapescape # Swapping escape and capslock
 
-clipmenud &
+#clipmenud &
+greenclip daemon &
 

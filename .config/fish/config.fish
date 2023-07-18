@@ -58,3 +58,8 @@ alias upgrade="sudo pacman -Syuu"
 alias remove="sudo pacman -Rns "
 alias install="sudo pacman -S "
 alias fixpacman="sudo rm /var/lib/pacman/db.lck"
+
+# Null pointer
+function 0x0 --argument filename
+	curl -F"file=@$filename" -Fexpires=1 https://0x0.st
+end
