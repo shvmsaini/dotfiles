@@ -67,7 +67,7 @@ awful.rules.rules = {
       properties = { screen = last, tag = " 9 " }
     },
     -- Code
-    { rule = { class = "code-oss" },
+    { rule_any = { class = { "code-oss" , "jetbrains-studio" } },
       properties = { screen = last, tag = " 3 " }
     },
     -- Bitwarden
@@ -77,7 +77,7 @@ awful.rules.rules = {
     },
     -- Scratchpad
     {
-      rule_any = { class = { "scratchpad" , "termSP" }},
+      rule_any = { class = { "scratchpad" , "termSP", "fileSP", "calcSP" }},
       properties = {
           sticky = true,
           placement = function(...)
@@ -92,5 +92,15 @@ awful.rules.rules = {
     {
       rule = { class = "termSP" },
       properties = { width = 1000, height = 600 },
+    },
+    {
+      rule = { class = "calcSP" },
+      properties = { 
+        width = 800,
+        height = 400,
+        placement =  function(...)
+          return awful.placement.top(...)
+        end, 
+      },
     },
 }

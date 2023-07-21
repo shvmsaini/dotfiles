@@ -65,8 +65,8 @@ beautiful.taglist_bg_focus = xrdb.foreground
 beautiful.taglist_fg_focus = xrdb.background
 beautiful.taglist_bg_urgent = "#DF5774"
 beautiful.taglist_fg_urgent = xrdb.background
-beautiful.taglist_squares_sel = theme_assets.taglist_squares_sel(4, xrdb.background)
-beautiful.taglist_squares_unsel = theme_assets.taglist_squares_unsel(4, xrdb.foreground)
+beautiful.taglist_squares_sel = theme_assets.taglist_squares_sel(4, xrdb.color6)
+beautiful.taglist_squares_unsel = theme_assets.taglist_squares_unsel(4, xrdb.color6)
 
 -- Systray
 beautiful.bg_systray = xrdb.background

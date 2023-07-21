@@ -9,11 +9,12 @@ root.buttons(gears.table.join(
 ))
 -- }}}
 -- 
-
+-- Scratchpads
 local screenX = 200
 local screenY = 130
-htopScratchpad = nil
-rangerScratchpad = nil
+htopSP = nil
+fileSP = nil
+calcSP = nil
 termSP = nil
 
 -- {{{ Key bindings
@@ -92,6 +93,8 @@ globalkeys = gears.table.join(
             end, {description = "Run or Raise Tor Browser", group = "launcher"}),
     awful.key({ modkey,}, "d", function () awful.spawn.with_shell("rofi -show drun") end,
               {description = "Opens Rofi", group = "launcher"}),
+    awful.key({ modkey,}, "v", function () awful.spawn.with_shell("rofi -show window") end,
+              {description = "Opens Rofi", group = "launcher"}),
     awful.key({ modkey, "Mod1"}, "r", function () awful.spawn.with_shell(termexec .. "ranger") end,
               {description = "Opens Ranger", group = "launcher"}),
     awful.key({ modkey, "Mod1"}, "h", function () awful.spawn.with_shell(termexec .. "htop") end,
@@ -109,17 +112,7 @@ globalkeys = gears.table.join(
     awful.key({ "Ctrl", "Mod1"}, "h", function ()
          awful.spawn("rofi -modi \"clipboard:greenclip print\" -show clipboard -run-command '{cmd}'")
          end, {description = "Opens Clipboard History", group = "launcher"}),
-    awful.key({ }, "Scroll_Lock", 
-        function () 
-              awful.spawn(termexec .. "python3", {
-                floating  = true,
-                tag       = mouse.screen.selected_tag,
-                width = 500,
-                ontop = true,
-                x = 1366 - 500 - 3, -- Otherwise not placed right after closing a client and then spawning
-                placement = awful.placement.maximize_vertically + awful.placement.right
-              })
-        end, {description = "Opens Python as calculator", group = "launcher"}),
+   
     awful.key({ modkey, "Shift"}, "F10", function () awful.spawn(scripts .. "dictionary.sh") end,
               {description = "Opens Dictionary script", group = "launcher"}),
     awful.key({ modkey, "Shift"}, "F11", function () awful.spawn(scripts .. "privatebin.sh") end,
@@ -138,16 +131,25 @@ globalkeys = gears.table.join(
                 awful.spawn("kitty --class termSP")
             end
         end, {description = "Opens terminal scratchpad", group = "scratchpad"}),
-
     awful.key({modkey}, "F1", function() 
-            if rangerScratchpad and rangerScratchpad.valid then
-                rangerScratchpad.minimized = not rangerScratchpad.minimized
-                client.focus = rangerScratchpad
-                rangerScratchpad:raise()
+            if fileSP and fileSP.valid then
+                fileSP.minimized = not fileSP.minimized
+                client.focus = fileSP
+                fileSP:raise()
             else
-                awful.spawn("kitty --class scratchpad -e ranger")
+                awful.spawn("kitty --class fileSP -e ranger")
             end
         end, {description = "Opens ranger scratchpad", group = "scratchpad"}),
+    awful.key({ }, "Scroll_Lock", 
+        function () 
+            if calcSP and calcSP.valid then
+                    calcSP.minimized = not calcSP.minimized
+                    client.focus = calcSP
+                calcSP:raise()
+            else
+                awful.spawn("kitty --class calcSP -e python3")
+            end
+        end, {description = "Opens Python as calculator", group = "scratchpad"}),
 
 	-- Volume Controls
     awful.key({ modkey, }, "minus", function () awful.spawn.with_shell( scripts .. "volume.sh down") end,
@@ -194,9 +196,7 @@ globalkeys = gears.table.join(
                   local c = awful.client.restore()
                   -- Focus restored client
                   if c then
-                    c:emit_signal(
-                        "request::activate", "key.unminimize", {raise = true}
-                    )
+                    c:emit_signal("request::activate", "key.unminimize", {raise = true})
                   end
               end,
               {description = "restore minimized", group = "client"}),
@@ -219,26 +219,16 @@ globalkeys = gears.table.join(
     awful.key({ modkey }, "p", function() menubar.show() end,
               {description = "show the menubar", group = "launcher"}),
 
-    -- Hide All
+    -- Hide all screens
     awful.key({}, "Pause",
         function() 
-            local awful = require("awful")
-
-            tag1 = awful.tag.find_by_name(screen[1], "umm..")
-            tag2 = awful.tag.find_by_name(screen[2], "ok")
-
-            if tag1 then
-                tag1:delete()
-                tag2:delete()
-            else
-                awful.tag.add("umm..", {
-                    screen = 1
-                }):view_only()
-                
-                awful.tag.add("ok", {
-                    screen = 2
-                }):view_only()
-
+            for s in screen do
+                tag = awful.tag.find_by_name(s, ">_<")
+                if tag then
+                    tag:delete()
+                else
+                    awful.tag.add(">_<", { screen = s }):view_only()
+                end
             end
         end, {description = "Hide everything from screen", group = "launcher"}),
 
@@ -270,13 +260,8 @@ clientkeys = gears.table.join(
         {description = "toggle fullscreen", group = "client"}),
     awful.key({ modkey, "Shift" }, "q", function (c) c:kill() end,
               {description = "close", group = "client"}),
-    -- awful.key({ modkey, "Shift" }, "f", awful.client.floating.toggle,
-            --   {description = "toggle floating", group = "client"}),
-    awful.key({ modkey, "Shift" }, "f",
-            function(c)
-                c.floating = not c.floating
-            end,
-            {description = "toggle floating", group = "client"}),
+    awful.key({ modkey, "Shift" }, "f", awful.client.floating.toggle,
+              {description = "toggle floating", group = "client"}),
     awful.key({ modkey, "Control" }, "s", function (c) c:swap(awful.client.getmaster()) end,
               {description = "move to master", group = "client"}),
     awful.key({ modkey,  "Shift"  }, "BackSpace",      function (c) c:move_to_screen() end,

@@ -42,12 +42,18 @@ local month_calendar = awful.widget.calendar_popup.month( {
         padding = 4,
     },
     style_focus = {
+        markup = function(t) 
+            return string.format('<span style="text-align:center">%s</span>', text)
+        end,
+        border_width = 0,
         fg_color = xrdb.background,
         bg_color = xrdb.foreground,
+        shape = gears.shape.circle,
+        padding = 2,
     }
 }) 
 
--- Create a textclock widget
+-- Textclock widget
 local clockButtons =  gears.table.join( 
         awful.button({ }, 2, function() awful.spawn.with_shell("firefox https://calendar.google.com") end),
         awful.button({ }, 3, function() 
@@ -70,15 +76,14 @@ local clock = wibox.widget{
 }
 
 
-beautiful.systray_icon_spacing = 10
-
+-- System tray widget
 local systray = wibox.widget {
     {
         wibox.widget.systray(),
         left   = 5,
         top    = 2,
         bottom = 2,
-        right  = 0,
+        right  = 5,
         widget = wibox.container.margin,
     },
     widget     = wibox.container.background,
@@ -172,14 +177,7 @@ awful.screen.connect_for_each_screen(function(s)
 
     -- Create a promptbox for each screen
     s.mypromptbox = awful.widget.prompt()
-    -- Create an imagebox widget which will contain an icon indicating which layout we're using.
-    -- We need one layoutbox per screen.
-    -- s.mylayoutbox = awful.widget.layoutbox(s)
-    -- s.mylayoutbox:buttons(gears.table.join(
-      --                     awful.button({ }, 1, function () awful.layout.inc( 1) end),
-      --                     awful.button({ }, 3, function () awful.layout.inc(-1) end),
-        --                   awful.button({ }, 4, function () awful.layout.inc( 1) end),
-          --                 awful.button({ }, 5, function () awful.layout.inc(-1) end)))
+   
     -- Create a taglist widget
     s.mytaglist = awful.widget.taglist {
         screen  = s,
@@ -198,7 +196,7 @@ awful.screen.connect_for_each_screen(function(s)
 		    align = "center"
             --shape  = gears.shape.rounded_bar,
         },
-        layout   = {
+        layout = {
             --spacing = 10,
             spacing_widget = {
                 {
@@ -250,7 +248,7 @@ awful.screen.connect_for_each_screen(function(s)
             s.mytaglist,
             s.mypromptbox,
         },
-     	s.mytasklist, 	 -- Middle widget
+     	s.mytasklist, -- Middle widget
         { -- Right widgets
             layout = wibox.layout.fixed.horizontal,
             -- mykeyboardlayout,

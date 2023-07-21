@@ -11,11 +11,14 @@ client.connect_signal("manage", function (c)
         awful.placement.no_offscreen(c)
     end
 
-    if c.class and c.class:lower() == 'scratchpad' then
-        rangerScratchpad = c
-    end
-    if c.class and c.class == 'termSP' then
-        termSP = c
+    if c.class then
+        if c.class == 'fileSP' then
+            fileSP = c
+        elseif c.class == 'termSP' then
+            termSP = c
+        elseif c.class == 'calcSP' then
+            calcSP = c
+        end
     end
     -- awful.client.movetoscreen(c, mouse.screen)
     -- awful.client.movetoscreen(c, client.focus.screen)
