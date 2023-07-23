@@ -130,7 +130,7 @@ globalkeys = gears.table.join(
                 client.focus = termSP
                 termSP:raise()
             else
-                awful.spawn("kitty --class termSP")
+                awful.spawn("kitty --class termSP -e fish -c 'neofetch; fish'")
             end
         end, {description = "Opens terminal scratchpad", group = "scratchpad"}),
     awful.key({modkey}, "F1", function() 
@@ -158,14 +158,11 @@ globalkeys = gears.table.join(
                 client.focus = SP
                 SP:raise()
             else 
+                if not client.focus then return end
                 SP = client.focus
                 SP.sticky = true
                 SP.floating = true
                 SP.skip_taskbar = true
-                SP:disconnect_signal ("unmanage", function()
-                    naughty.notify { preset = naughty.config.presets.critical, title = "could not get other screen" }
-                   
-                end)
             end
         end, {description = "Makes focused client scratchpad", group = "scratchpad"}),
     awful.key({modkey, "Shift"}, "a", function()

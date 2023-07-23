@@ -1,8 +1,6 @@
 #! /bin/bash
 
-cat "/tmp/.pywal" > /dev/null
-
-if [ $? = 0 ] && [ $# -eq 0 ]; then
+if [ $# -eq 0 ]; then
 	exit 1
 fi
 
@@ -16,9 +14,7 @@ fi
 
 wal -i $wall >/dev/null
 
-echo 1 > /tmp/.pywal
-
-# As wall is not able to set wallpaper in awesome
+# As wal is not able to set wallpaper in awesome
 feh --bg-fill $wall 
 
 # Restart awesome

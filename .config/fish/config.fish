@@ -24,6 +24,7 @@ alias hcs="history clear-session"
 set scripts $HOME/.config/scripts/
 set pbdir $HOME/.local/lib/python3.10/site-packages/pbincli/cli.py
 set hcdir $HOME/.config/herbstluftwm/
+set walls /mnt/forlinuxuse/Wallpapers/
 set conf $HOME/.config
 set FLU /mnt/forlinuxuse
 set STF /run/media/shvmpc/Stuff

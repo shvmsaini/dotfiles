@@ -23,4 +23,3 @@ setxkbmap -option caps:swapescape # Swapping escape and capslock
 
 #clipmenud &
 greenclip daemon &
-
