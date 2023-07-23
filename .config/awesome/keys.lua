@@ -12,6 +12,7 @@ root.buttons(gears.table.join(
 -- Scratchpads
 local screenX = 200
 local screenY = 130
+SP = nil
 htopSP = nil
 fileSP = nil
 calcSP = nil
@@ -75,7 +76,8 @@ globalkeys = gears.table.join(
                 local matcher = function(c)
                     return awful.rules.match(c, {class = 'Nemo'})
                 end
-                awful.spawn.raise_or_spawn('nemo', {tag = awful.screen.focused().selected_tag}, matcher)
+                awful.client.run_or_raise('nemo', matcher)
+                -- awful.spawn.raise_or_spawn('nemo', nil, matcher)
             end,
               {description = "Opens Nemo", group = "launcher"}),
     awful.key({ modkey, "Mod1"}, "l", function ()
@@ -88,8 +90,8 @@ globalkeys = gears.table.join(
                 local matcher = function(c)
                     return awful.rules.match(c, {class = 'Tor Browser'})
                 end
-                local rulee = {tag = awful.screen.focused().selected_tag}
-                awful.spawn.raise_or_spawn('torbrowser-launcher', rule, matcher)
+                awful.spawn.raise_or_spawn('torbrowser-launcher',
+                 {tag = awful.screen.focused().selected_tag}, matcher)
             end, {description = "Run or Raise Tor Browser", group = "launcher"}),
     awful.key({ modkey,}, "d", function () awful.spawn.with_shell("rofi -show drun") end,
               {description = "Opens Rofi", group = "launcher"}),
@@ -150,6 +152,30 @@ globalkeys = gears.table.join(
                 awful.spawn("kitty --class calcSP -e python3")
             end
         end, {description = "Opens Python as calculator", group = "scratchpad"}),
+    awful.key({modkey}, "a", function() 
+            if SP and SP.valid then
+                SP.minimized = not SP.minimized
+                client.focus = SP
+                SP:raise()
+            else 
+                SP = client.focus
+                SP.sticky = true
+                SP.floating = true
+                SP.skip_taskbar = true
+                SP:disconnect_signal ("unmanage", function()
+                    naughty.notify { preset = naughty.config.presets.critical, title = "could not get other screen" }
+                   
+                end)
+            end
+        end, {description = "Makes focused client scratchpad", group = "scratchpad"}),
+    awful.key({modkey, "Shift"}, "a", function()
+            if SP and SP.valid then
+                SP.sticky = false
+                SP.skip_taskbar = false
+                SP.floating = false
+            end
+            SP = nil
+        end, {description = "Removes client scratchpad if focused client is scratchpad", group = "scratchpad"}),
 
 	-- Volume Controls
     awful.key({ modkey, }, "minus", function () awful.spawn.with_shell( scripts .. "volume.sh down") end,

@@ -92,6 +92,13 @@ awesome.connect_signal('exit',
     end
 
     file:close()
+    
+    -- Resetting Scratchpad
+    if SP and SP.valid then
+        SP.sticky = false
+        SP.skip_taskbar = false
+        SP.floating = false
+    end
 end)
 
 awesome.connect_signal('startup',

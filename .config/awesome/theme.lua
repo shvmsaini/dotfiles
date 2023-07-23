@@ -70,3 +70,7 @@ beautiful.taglist_squares_unsel = theme_assets.taglist_squares_unsel(4, xrdb.col
 
 -- Systray
 beautiful.bg_systray = xrdb.background
+
+-- Snap
+beautiful.snap_bg = xrdb.foreground
+beautiful.snap_shape = gears.shape.rectangle
