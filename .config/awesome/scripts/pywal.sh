@@ -1,6 +1,8 @@
 #! /bin/bash
 
-if [ $# -eq 0 ]; then
+cat "/tmp/.pywal" > /dev/null
+
+if [ $? = 0 ] && [ $# -eq 0 ]; then
 	exit 1
 fi
 
@@ -13,6 +15,8 @@ else
 fi
 
 wal -i $wall >/dev/null
+
+echo 1 > /tmp/.pywal
 
 # As wal is not able to set wallpaper in awesome
 feh --bg-fill $wall 

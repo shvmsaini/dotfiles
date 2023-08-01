@@ -18,6 +18,16 @@ fileSP = nil
 calcSP = nil
 termSP = nil
 
+createTerm = function() 
+        if termSP and termSP.valid then
+            termSP.minimized = not termSP.minimized
+            client.focus = termSP
+            termSP:raise()
+        else
+            awful.spawn("kitty --class termSP -e fish -c 'neofetch; fish'")
+        end
+    end
+
 -- {{{ Key bindings
 globalkeys = gears.table.join(
     awful.key({ modkey, }, "slash",      hotkeys_popup.show_help,
@@ -64,6 +74,10 @@ globalkeys = gears.table.join(
             end
         end,
         {description = "go back", group = "client"}),
+    awful.key({modkey, "Shift"}, "minus", function() awful.tag.incgap(-1) end,
+            {description = "decrease tag's client gap by 1", group = "tag"}),
+    awful.key({modkey, "Shift"}, "equal", function() awful.tag.incgap(1) end,
+            {description = "Increase tag's client gap by 1", group = "tag"}),
 
     -- Standard program
     awful.key({ modkey,}, "Return", function () awful.spawn(terminal) end,
@@ -123,16 +137,10 @@ globalkeys = gears.table.join(
               {description = "Opens Tesseract script", group = "launcher"}),
 
     -- Scratchpads
-    awful.key({modkey, "Shift"}, "Return",
-        function() 
-            if termSP and termSP.valid then
-                termSP.minimized = not termSP.minimized
-                client.focus = termSP
-                termSP:raise()
-            else
-                awful.spawn("kitty --class termSP -e fish -c 'neofetch; fish'")
-            end
-        end, {description = "Opens terminal scratchpad", group = "scratchpad"}),
+    awful.key({modkey, "Shift"}, "Return", createTerm
+        , {description = "Opens terminal scratchpad", group = "scratchpad"}),
+    awful.key({modkey, "Shift"}, "KP_Enter", createTerm
+        , {description = "Opens terminal scratchpad", group = "scratchpad"}),
     awful.key({modkey}, "F1", function() 
             if fileSP and fileSP.valid then
                 fileSP.minimized = not fileSP.minimized
@@ -145,8 +153,8 @@ globalkeys = gears.table.join(
     awful.key({ }, "Scroll_Lock", 
         function () 
             if calcSP and calcSP.valid then
-                    calcSP.minimized = not calcSP.minimized
-                    client.focus = calcSP
+                calcSP.minimized = not calcSP.minimized
+                client.focus = calcSP
                 calcSP:raise()
             else
                 awful.spawn("kitty --class calcSP -e python3")

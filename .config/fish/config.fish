@@ -51,7 +51,7 @@ end
 
 # Backup
 function backup --argument filename
-    cp $filename $filename.bak
+    cp $filename "$filename-$(date -I).bak"
 end
 
 # Pacman Related

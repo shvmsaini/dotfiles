@@ -13,21 +13,26 @@ local ramButtons = gears.table.join(
         awful.button({ }, 2, function() awful.spawn.with_shell(termexec .. "htop") end))
 local ram = wibox.widget{
     {
-        left   = 5,
-        top    = 1,
-        bottom = 1,
-        right  = 0,
-        widget = wibox.container.margin,
-        {   
-            image = ramIcon,
-            widget = wibox.widget.imagebox
-        },    
+        {
+            left   = 5,
+            top    = 1.5,
+            bottom = 1.5,
+            right  = 0,
+            widget = wibox.container.margin,
+            {   
+                image = ramIcon,
+                widget = wibox.widget.imagebox
+            },    
+        },
+        {
+            widget = awful.widget.watch('bash -c "~/.config/scripts/ram.sh"')
+        },
+
+        buttons = ramButtons,
+        layout = wibox.layout.fixed.horizontal,
     },
-    {
-        widget = awful.widget.watch('bash -c "~/.config/scripts/ram.sh"')
-    },
-    buttons = ramButtons,
-    layout = wibox.layout.fixed.horizontal,
+    bg = xrdb.background,
+    widget = wibox.container.background,
 }
 
 -- Keyboard map indicator and switcher
@@ -54,8 +59,9 @@ local month_calendar = awful.widget.calendar_popup.month( {
 }) 
 
 -- Textclock widget
+local clockIcon = home .. ".local/share/icons/material/white/clock.svg"
 local clockButtons =  gears.table.join( 
-        awful.button({ }, 2, function() awful.spawn.with_shell("firefox https://calendar.google.com") end),
+        awful.button({ }, 2, function() awful.spawn.with_shell("xdg-open https://calendar.google.com") end),
         awful.button({ }, 3, function() 
             month_calendar:call_calendar (0, "tr", awful.screen.focused())
             month_calendar:toggle() 
@@ -64,13 +70,25 @@ local clockButtons =  gears.table.join(
 
 local clock = wibox.widget{
     {
-        wibox.widget.textclock(" %a %b %d, %I:%M %p"),
+        left   = 5,
+        top    = 3,
+        bottom = 3,
+        right  = 0,
+        widget = wibox.container.margin,
+        {   
+            image = clockIcon,
+            widget = wibox.widget.imagebox
+        },    
+    },
+    {
+        wibox.widget.textclock("%a %b %d, %I:%M %p"),
         left   = 5,
         top    = 2,
         bottom = 2,
         right  = 0,
         widget = wibox.container.margin,
     },
+    layout = wibox.layout.fixed.horizontal,
     widget  = wibox.container.background,
     buttons = clockButtons
 }
@@ -237,7 +255,7 @@ awful.screen.connect_for_each_screen(function(s)
     }
 
     -- Create the wibox
-    s.mywibox = awful.wibar({ position = "top", screen = s, height = 22, opacity = 0.8, })
+    s.mywibox = awful.wibar({ position = "top", screen = s, height = 22, opacity = 0.7, })
 
     -- Add widgets to the wibox
     s.mywibox:setup {

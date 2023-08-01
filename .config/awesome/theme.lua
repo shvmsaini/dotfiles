@@ -18,6 +18,8 @@ powerIcon = iconFolder .. "/white/power.svg"
 termIcon = iconFolder .. "/white/terminal.svg"
 wallIcon = iconFolder .. "/white/wallpaper.svg"
 arrowIcon = iconFolder .. "/white/arrow_right.svg"
+upIcon = iconFolder .. "/white/arrow_upward.svg"
+downIcon = iconFolder .. "/white/arrow_downward.svg"
 
 beautiful.awesome_icon = iconFolder .. "/white/arch_white.svg"
 
@@ -31,7 +33,8 @@ beautiful.menu_fg_normal = xrdb.foreground
 beautiful.menu_submenu_icon = arrowIcon
 
 -- All font
-beautiful.font = "FreeSans 9"
+-- beautiful.font = "FreeSans 9"
+beautiful.font = "Hermit Nerd Font Mono 9"
 beautiful.menu_font = "Hack Nerd Font Mono 11"
 beautiful.hotkeys_font = "Hack Nerd Font Mono 11" 
 beautiful.hotkeys_description_font = "Hack Nerd Font Mono 11"
@@ -48,7 +51,7 @@ beautiful.tasklist_bg_normal = xrdb.background
 beautiful.tasklist_fg_normal = xrdb.foreground
 
 -- Notification
-beautiful.notification_font = "Hack Nerd Font Mono 12"
+beautiful.notification_font = "Fira Code 12"
 beautiful.notification_border_color = xrdb.foreground
 beautiful.notification_border_width = 2
 beautiful.notification_icon_size = 70

@@ -4,7 +4,7 @@ configuration {
   show-icons: true;
   icon-theme: "Papirus";
   modi: "window,run,drun,filebrowser";
-  font: "Hack Nerd Font 10";
+  font: "Fira Code 10";
   display-drun: "Apps";
 }
 
@@ -28,7 +28,6 @@ configuration {
 button {
     action: "ok";
     str: "\uf002";
-    font: "Hack 16";
     expand: false;
     text-color: @foreground;
     background-color: @transparent;

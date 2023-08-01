@@ -79,26 +79,55 @@ local function worker(user_args)
 
     net_speed_widget = wibox.widget {
         {
+        {
             id = 'rx_speed',
             forced_width = width,
-            align = 'right',
+            align = 'center',
             widget = wibox.widget.textbox
         },
+        -- {
+        --     image = ICONS_DIR .. 'down.svg',
+        --     widget = wibox.widget.imagebox
+        -- },
+        -- {
+        --     image =  ICONS_DIR .. 'up.svg',
+        --     widget = wibox.widget.imagebox
+        -- },
         {
-            image = ICONS_DIR .. 'down.svg',
-            widget = wibox.widget.imagebox
+                left   = 0,
+                top    = 2,
+                bottom = 2,
+                right  = 0,
+                widget = wibox.container.margin,
+                {   
+                    image = ICONS_DIR .. 'arrow_downward.svg',
+                    widget = wibox.widget.imagebox
+                }    
+            
         },
         {
-            image =  ICONS_DIR .. 'up.svg',
-            widget = wibox.widget.imagebox
+                left   = 0,
+                top    = 2,
+                bottom = 2,
+                right  = 0,
+                widget = wibox.container.margin,
+                {   
+                    image =  ICONS_DIR .. 'arrow_upward.svg',
+                    widget = wibox.widget.imagebox
+                }    
+            
         },
         {
             id = 'tx_speed',
             forced_width = width,
-            align = 'left',
+            align = 'center',
             widget = wibox.widget.textbox
         },
         layout = wibox.layout.fixed.horizontal,
+       
+        },
+        bg = xrdb.background,
+        widget = wibox.container.background,
         set_rx_text = function(self, new_rx_speed)
             self:get_children_by_id('rx_speed')[1]:set_text(tostring(new_rx_speed))
         end,

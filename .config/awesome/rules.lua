@@ -85,6 +85,7 @@ awful.rules.rules = {
           end, 
           skip_taskbar = true,
           width = 800,
+          ontop = true,
           height = 600,
           floating = true,
       },

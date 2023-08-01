@@ -12,6 +12,8 @@ pbincli=$HOME/.local/lib/python3.10/site-packages/pbincli/cli.py
 server="https://0.0g.gg"
 #server="https://0.jaegers.net"
 
+notify-send -u normal "Preparing Paste."
+
 # Magic
 python3 $pbincli send -q -f $dir/$file -B -s $server > $dir/links.txt
 
