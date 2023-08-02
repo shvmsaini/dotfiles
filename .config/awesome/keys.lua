@@ -115,22 +115,16 @@ globalkeys = gears.table.join(
               {description = "Opens Ranger", group = "launcher"}),
     awful.key({ modkey, "Mod1"}, "h", function () awful.spawn.with_shell(termexec .. "htop") end,
               {description = "Opens htop", group = "launcher"}),
-    awful.key({ modkey, "Mod1"}, "b",
-          function ()
-            awful.spawn("brave", {tag =  awful.screen.focused().selected_tag})
-          end, {description = "Opens Brave Browser", group = "launcher"}),
+    awful.key({ modkey, "Mod1"}, "b", function ()
+        awful.spawn("brave", {tag =  awful.screen.focused().selected_tag})
+        end, {description = "Opens Brave Browser", group = "launcher"}),
     awful.key({ "Ctrl", "Shift"}, "Print", function () awful.spawn.with_shell("flameshot gui") end,
               {description = "Opens Screenshot window", group = "launcher"}),
     awful.key({ }, "Print", function () awful.spawn.with_shell("flameshot launcher") end,
               {description = "Opens Screenshot window", group = "launcher"}),
-
-    -- awful.key({ "Ctrl", "Mod1"}, "h", function () awful.spawn("clipmenu") end,
     awful.key({ "Ctrl", "Mod1"}, "h", function ()
-         awful.spawn("rofi -modi \"clipboard:greenclip print\" -show clipboard -run-command '{cmd}'")
-         end, {description = "Opens Clipboard History", group = "launcher"}),
-   
-    awful.key({ modkey, "Shift"}, "F10", function () awful.spawn(scripts .. "dictionary.sh") end,
-              {description = "Opens Dictionary script", group = "launcher"}),
+        awful.spawn("rofi -modi \"clipboard:greenclip print\" -show clipboard -run-command '{cmd}'")
+        end, {description = "Opens Clipboard History", group = "launcher"}),
     awful.key({ modkey, "Shift"}, "F11", function () awful.spawn(scripts .. "privatebin.sh") end,
               {description = "Opens Privatebin client", group = "launcher"}),
     awful.key({ modkey, "Shift"}, "F12", function () awful.spawn(scripts .. "tesseract.sh") end,

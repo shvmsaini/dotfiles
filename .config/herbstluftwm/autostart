@@ -289,8 +289,8 @@ hc keybind $Mod-Shift-F11 spawn $SCRIPTS/privatebin.sh
 # Master Stack Layout on tag 4
 #$DIR/master_stack.sh &
 
-# Clipmenu
-hc keybind Ctrl+Alt+h spawn clipmenu 
+# Greenclip
+hc keybind Ctrl+Alt+h spawn rofi -modi "clipboard:greenclip print" -show clipboard -run-command '{cmd}'
 
 # Switch to Layout
 hc keybind $Mod-b spawn $DIR/staticfibo.sh

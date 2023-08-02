@@ -13,6 +13,12 @@ then
 	sudo ln -s /bin/nvim /bin/vi
 	sudo ln -s /bin/nvim /bin/nano
 	sudo ln -s /bin/kitty /bin/xterm
-fi
 
-# Theming
+	# Pywal
+	ln -s ~/.cache/wal/dunstrc ~/.config/dunst/dunstrc
+	ln -s ~/.cache/wal/flameshot.ini ~/.config/flameshot/flameshot.ini
+
+	# Symlinks
+	ln -s /usr/bin/nvim /usr/bin/vim
+	ln -s /run/media/shvmpc/Stuff/Songs/ $HOME/
+fi
