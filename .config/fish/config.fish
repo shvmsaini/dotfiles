@@ -58,9 +58,27 @@ end
 alias upgrade="sudo pacman -Syuu"
 alias remove="sudo pacman -Rns "
 alias install="sudo pacman -S "
+alias search="pacman -Ss"
+alias query="pacman -Qi"
 alias fixpacman="sudo rm /var/lib/pacman/db.lck"
 
 # Null pointer
 function 0x0 --argument filename
 	curl -F"file=@$filename" -Fexpires=1 https://0x0.st
+end
+
+# Separate and merge
+function sepmerge --argument f l i o
+	pdfseparate -f $f -l $l $i page_%d.pdf
+	pdfunite page_*.pdf $o.pdf
+	rm page_*.pdf
+end
+
+# Copy file to destination path, create directories if don't exist
+function mkcp --argument source dest
+	if path is $dest
+		cp $source $dest
+	else
+		mkdir -p "$(path dirname $dest)" && cp -R $source $dest
+	end
 end

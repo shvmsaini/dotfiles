@@ -46,8 +46,13 @@ globalkeys = gears.table.join(
               {description = "go back", group = "tag"}),
     awful.key({ modkey, }, "grave",   awful.tag.viewnext,
               {description = "view next tag", group = "tag"}),
+    awful.key({ modkey, "Ctrl" }, "Right",  awful.tag.viewnext,
+              {description = "view prev tag", group = "tag"}),
     awful.key({ modkey, "Shift" }, "grave",  awful.tag.viewprev,
               {description = "view prev tag", group = "tag"}),
+    awful.key({ modkey, "Ctrl" }, "Left",  awful.tag.viewprev,
+              {description = "view prev tag", group = "tag"}),
+
 
     awful.key({ modkey, }, "j", function () awful.client.focus.byidx( 1) end,
               {description = "focus next by index", group = "client"}),

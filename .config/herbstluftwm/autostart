@@ -278,7 +278,7 @@ $DIR/fibo_layout.sh &
 
 # Switch to Last Tag 
 $DIR/lasttag.sh &
-hc keybind $Mod-z emit_hook goto_last_tag 
+hc keybind $Mod-Escape emit_hook goto_last_tag 
 
 # Tesseract Script
 hc keybind $Mod-Shift-F12 spawn $SCRIPTS/tesseract.sh

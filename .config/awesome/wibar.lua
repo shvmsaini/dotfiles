@@ -31,6 +31,7 @@ local ram = wibox.widget{
         buttons = ramButtons,
         layout = wibox.layout.fixed.horizontal,
     },
+    fg = xrdb.foreground,
     bg = xrdb.background,
     widget = wibox.container.background,
 }
