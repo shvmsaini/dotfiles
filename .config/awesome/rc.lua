@@ -6,9 +6,9 @@ cairo = require("lgi").cairo
 gears = require("gears")
 awful = require("awful")
 require("awful.autofocus")
+-- Theme handling library
 -- Widget and layout library
 wibox = require("wibox")
--- Theme handling library
 beautiful = require("beautiful")
 -- Notification library
 naughty = require("naughty")
@@ -61,6 +61,16 @@ modkey = "Mod4"
 awful.layout.layouts = { 
     awful.layout.suit.tile.left,
     awful.layout.suit.tile,
+    -- awful.layout.suit.tile.bottom,
+    -- awful.layout.suit.tile.top,
+    -- awful.layout.suit.fair,
+    -- awful.layout.suit.fair.horizontal,
+    -- awful.layout.suit.spiral,
+    -- awful.layout.suit.spiral.dwindle,
+    -- awful.layout.suit.max,
+    -- awful.layout.suit.max.fullscreen,
+    -- awful.layout.suit.magnifier,
+    -- awful.layout.suit.corner.nw
 }
 -- }}}
 

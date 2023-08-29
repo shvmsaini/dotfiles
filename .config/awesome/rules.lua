@@ -60,16 +60,23 @@ awful.rules.rules = {
     },
 
     -- Set Logseq to always map on the tag named "2" on screen 1.
-    { rule = { class = "Logseq" },
-      properties = { screen = last, tag = " 2 " }
+    -- { rule = { class = "Logseq" },
+    --   properties = { screen = last, tag = " 2 " }
+    -- },
+    -- Code
+    { rule_any = { class = { "code-oss" , "jetbrains-studio" } },
+      properties = { screen = last, tag = " 4 " }
+    },
+    { rule = { class = "Tor Browser" },
+      properties = { screen = last, tag = " 8 " }
     },
     -- Gimp
     { rule = { class = "Gimp-2.10" },
       properties = { screen = last, tag = " 9 " }
     },
-    -- Code
-    { rule_any = { class = { "code-oss" , "jetbrains-studio" } },
-      properties = { screen = last, tag = " 3 " }
+    -- LibreOffice and Xournal
+    { rule_any = { class = { "libreoffice-startcenter", "Com.github.xournalpp.xournalpp" } },
+      properties = { screen = last, tag = " 9 " }
     },
     -- Bitwarden
     {

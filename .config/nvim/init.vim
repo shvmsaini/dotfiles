@@ -6,6 +6,10 @@ call plug#begin('~/.config/nvim/plugged')
 	Plug 'kyazdani42/nvim-web-devicons'
 	Plug 'nvim-treesitter/nvim-treesitter'
 	Plug 'nvim-orgmode/orgmode'
+	Plug 'nvim-tree/nvim-web-devicons'
+	Plug 'goolord/alpha-nvim'
+	Plug 'nvim-lua/plenary.nvim'
+	Plug 'nvim-telescope/telescope.nvim', { 'tag': '0.1.2' }
 call plug#end()
 
 colorscheme pywal
@@ -92,5 +96,8 @@ require('orgmode').setup({
   org_agenda_files = {'~/Dropbox/org/*', '~/my-orgs/**/*'},
   org_default_notes_file = '~/Dropbox/org/refile.org',
 })
+
+require('alpha').setup(require'alpha.themes.startify'.config)
+--require('alpha').setup(require'alpha.themes.dashboard'.config)
 
 END

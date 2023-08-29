@@ -19,6 +19,7 @@ alias config="/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME"
 alias dots="/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME"
 alias font-list="fc-list : family | awk -F',' '{print $1}' | sort | uniq | fzf | tr -d '\n'"
 alias hcs="history clear-session"
+alias rrr="ranger"
 
 # Directories
 set scripts $HOME/.config/scripts/

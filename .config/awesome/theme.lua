@@ -77,3 +77,10 @@ beautiful.bg_systray = xrdb.background
 -- Snap
 beautiful.snap_bg = xrdb.foreground
 beautiful.snap_shape = gears.shape.rectangle
+
+-- Titlebar
+beautiful.titlebar_fg = xrdb.foreground .. "FF"
+beautiful.titlebar_bg = xrdb.background .. "FF"
+beautiful.titlebar_sticky_button_normal = "/usr/share/icons/Papirus-Dark/24x24/actions/window-minimize.svg"
+beautiful.titlebar_minimize_button_normal = "/usr/share/icons/Papirus-Dark/24x24/actions/window-minimize.svg"
+beautiful.titlebar_close_button_normal = gears.surface.load_uncached("/usr/share/icons/Papirus-Dark/24x24/actions/window-minimize.svg")

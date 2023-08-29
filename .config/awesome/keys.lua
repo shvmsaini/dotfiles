@@ -53,7 +53,6 @@ globalkeys = gears.table.join(
     awful.key({ modkey, "Ctrl" }, "Left",  awful.tag.viewprev,
               {description = "view prev tag", group = "tag"}),
 
-
     awful.key({ modkey, }, "j", function () awful.client.focus.byidx( 1) end,
               {description = "focus next by index", group = "client"}),
     awful.key({ modkey, }, "k", function () awful.client.focus.byidx(-1) end,
@@ -83,6 +82,19 @@ globalkeys = gears.table.join(
             {description = "decrease tag's client gap by 1", group = "tag"}),
     awful.key({modkey, "Shift"}, "equal", function() awful.tag.incgap(1) end,
             {description = "Increase tag's client gap by 1", group = "tag"}),
+    awful.key({modkey, "Shift"}, "x",
+        function() 
+            if awful.layout.get(awful.screen.focused()) == awful.layout.suit.max then
+                if awful.screen.focused() == screen[0] then
+                    awful.layout.set(awful.layout.suit.tile)
+                else
+                    awful.layout.set(awful.layout.suit.tile.left)
+                end
+            else
+                awful.layout.set(awful.layout.suit.max)
+            end
+        end,
+        {description = "Set layout to Max", group = "tag"}),
 
     -- Standard program
     awful.key({ modkey,}, "Return", function () awful.spawn(terminal) end,
@@ -99,7 +111,8 @@ globalkeys = gears.table.join(
                 -- awful.spawn.raise_or_spawn('nemo', nil, matcher)
             end,
               {description = "Opens Nemo", group = "launcher"}),
-    awful.key({ modkey, "Mod1"}, "l", function ()
+    -- Todo: convert to raise_or_spawn
+    awful.key({ modkey, "Mod1"}, "g", function ()
                 local matcher = function(c)
                     return awful.rules.match(c, {class = 'Logseq'})
                 end
@@ -109,8 +122,7 @@ globalkeys = gears.table.join(
                 local matcher = function(c)
                     return awful.rules.match(c, {class = 'Tor Browser'})
                 end
-                awful.spawn.raise_or_spawn('torbrowser-launcher',
-                 {tag = awful.screen.focused().selected_tag}, matcher)
+                awful.client.run_or_raise('torbrowser-launcher', matcher)
             end, {description = "Run or Raise Tor Browser", group = "launcher"}),
     awful.key({ modkey,}, "d", function () awful.spawn.with_shell("rofi -show drun") end,
               {description = "Opens Rofi", group = "launcher"}),
@@ -120,9 +132,6 @@ globalkeys = gears.table.join(
               {description = "Opens Ranger", group = "launcher"}),
     awful.key({ modkey, "Mod1"}, "h", function () awful.spawn.with_shell(termexec .. "htop") end,
               {description = "Opens htop", group = "launcher"}),
-    awful.key({ modkey, "Mod1"}, "b", function ()
-        awful.spawn("brave", {tag =  awful.screen.focused().selected_tag})
-        end, {description = "Opens Brave Browser", group = "launcher"}),
     awful.key({ "Ctrl", "Shift"}, "Print", function () awful.spawn.with_shell("flameshot gui") end,
               {description = "Opens Screenshot window", group = "launcher"}),
     awful.key({ }, "Print", function () awful.spawn.with_shell("flameshot launcher") end,
@@ -134,6 +143,17 @@ globalkeys = gears.table.join(
               {description = "Opens Privatebin client", group = "launcher"}),
     awful.key({ modkey, "Shift"}, "F12", function () awful.spawn(scripts .. "tesseract.sh") end,
               {description = "Opens Tesseract script", group = "launcher"}),
+
+    -- Brave Profiles
+    awful.key({ modkey, "Mod1"}, "b", function ()
+        awful.spawn("brave --disable-application-cache --media-cache-size=1 --disk-cache-size=1 --profile-directory=\"Profile 5\"",
+            {tag =  awful.screen.focused().selected_tag})
+        end, {description = "Opens Brave Browser with personal profile", group = "launcher"}),
+
+    awful.key({ modkey, "Mod1"}, "w", function ()
+        awful.spawn("brave --disable-application-cache --media-cache-size=1 --disk-cache-size=1 --profile-directory=\"Profile 6\"",
+            {tag =  awful.screen.focused().selected_tag})
+        end, {description = "Opens Brave Browser with work profile", group = "launcher"}),
 
     -- Scratchpads
     awful.key({modkey, "Shift"}, "Return", createTerm
@@ -170,6 +190,7 @@ globalkeys = gears.table.join(
                 SP.sticky = true
                 SP.floating = true
                 SP.skip_taskbar = true
+                SP.ontop = true
             end
         end, {description = "Makes focused client scratchpad", group = "scratchpad"}),
     awful.key({modkey, "Shift"}, "a", function()
@@ -177,6 +198,7 @@ globalkeys = gears.table.join(
                 SP.sticky = false
                 SP.skip_taskbar = false
                 SP.floating = false
+                SP.ontop = false
             end
             SP = nil
         end, {description = "Removes client scratchpad if focused client is scratchpad", group = "scratchpad"}),
@@ -190,7 +212,19 @@ globalkeys = gears.table.join(
               {description = "Increases volume by 5%", group = "volume"}),
     awful.key({ modkey, }, "KP_Add", function () awful.spawn.with_shell(scripts .. "volume.sh up") end,
               {description = "Increases volume by 5%", group = "volume"}),
-		    
+
+    -- Mouse click emulate
+    awful.key({ modkey, "Ctrl"}, "KP_Up", function () awful.spawn.with_shell("xdotool click 4") end,
+              {description = "Mouse scroll up", group = "mouse"}),
+    awful.key({ modkey, "Ctrl"}, "KP_Down", function () awful.spawn.with_shell("xdotool click 5") end,
+              {description = "Mouse scroll down", group = "mouse"}),
+    awful.key({ modkey, "Ctrl"}, "KP_Right", function () 
+        awful.spawn.with_shell("sleep 0.1 && xdotool keydown alt key Right keyup alt") end,
+              {description = "Mouse scroll up", group = "mouse"}),
+    awful.key({ modkey, "Ctrl"}, "KP_Left", function ()
+        awful.spawn.with_shell("sleep 0.1 && xdotool keydown alt key Left keyup alt") end,
+              {description = "Mouse scroll down", group = "mouse"}),
+ 
     
     awful.key({modkey, }, "t",
         function() 
@@ -328,7 +362,12 @@ clientkeys = gears.table.join(
             c.sticky = not c.sticky
             c:raise()
         end ,
-        {description = "(un)maximize horizontally", group = "client"})
+        {description = "Make client sticky", group = "client"}),
+    awful.key({modkey}, "b",
+        function(c)
+            awful.titlebar.toggle(c)
+        end ,
+        {description = "Toggle titlebars", group = "client"})
 )
 
 -- Bind all key numbers to tags.

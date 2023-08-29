@@ -20,6 +20,38 @@ client.connect_signal("manage", function (c)
             calcSP = c
         end
     end
+
+    -- Special tag for cyrptomator
+    if c.class and c.class == "org.cryptomator.launcher.Cryptomator$MainApp" then
+        local mytag = awful.tag.add(" ", {layout = awful.layout.suit.tile.left})
+        c:move_to_tag(mytag)
+        -- Delete tag after cryptomator closes and move existing clients to tag[9]
+        c:connect_signal("unmanage", function()
+            if mytag then
+                local clients = mytag:clients()
+                for _, c2 in ipairs(clients) do
+                    c2:move_to_tag(awful.screen.focused().tags[9])
+                end
+                mytag:delete()
+            end
+        end)
+    end
+
+    -- Special tag for Logseq
+    if c.class and c.class == "Logseq" then
+        local mytag = awful.tag.add("LOG", {layout = awful.layout.suit.tile.left})
+        c:move_to_tag(mytag)
+        -- Delete tag after cryptomator closes and move existing clients to tag[9]
+        c:connect_signal("unmanage", function()
+            if mytag then
+                local clients = mytag:clients()
+                for _, c2 in ipairs(clients) do
+                    c2:move_to_tag(awful.screen.focused().tags[9])
+                end
+                mytag:delete()
+            end
+        end)
+    end
     -- awful.client.movetoscreen(c, mouse.screen)
     -- awful.client.movetoscreen(c, client.focus.screen)
 end)
@@ -40,28 +72,55 @@ client.connect_signal("request::titlebars", function(c)
 
     awful.titlebar(c) : setup {
         { -- Left
-            awful.titlebar.widget.iconwidget(c),
-            buttons = buttons,
-            layout  = wibox.layout.fixed.horizontal
+            awful.titlebar.widget.closebutton    (c),
+            awful.titlebar.widget.minimizebutton (c),
+            -- awful.titlebar.widget.ontopbutton    (c),
+            awful.titlebar.widget.stickybutton   (c),
+            awful.titlebar.widget.maximizedbutton(c),
+            -- awful.titlebar.widget.floatingbutton (c),
+            align = "left",
+            layout = wibox.layout.fixed.horizontal,
         },
         { -- Middle
-            { -- Title
-                align  = "center",
-                widget = awful.titlebar.widget.titlewidget(c)
+            {  
+                {
+                    {
+                        awful.titlebar.widget.iconwidget(c),
+                        align = "right",
+                        buttons = buttons,
+                        layout  = wibox.layout.fixed.horizontal
+                    },
+                    top = 3,
+                    bottom = 3,
+                    left = 3,
+                    right = 3,
+                    widget = wibox.container.margin
+                },
+                { -- Title
+                    widget = awful.titlebar.widget.titlewidget(c)
+                },
+                layout  = wibox.layout.fixed.horizontal
             },
-            buttons = buttons,
-            layout  = wibox.layout.flex.horizontal
+            -- align  = "center",
+            layout = wibox.layout.align.horizontal,
+            -- expand = "outside"
         },
         { -- Right
-            awful.titlebar.widget.floatingbutton (c),
-            awful.titlebar.widget.maximizedbutton(c),
-            awful.titlebar.widget.stickybutton   (c),
-            awful.titlebar.widget.ontopbutton    (c),
-            awful.titlebar.widget.closebutton    (c),
-            layout = wibox.layout.fixed.horizontal()
+            layout = wibox.layout.align.horizontal,
         },
+        buttons = buttons,
+        expand = "outside",
         layout = wibox.layout.align.horizontal
     }
+end)
+
+-- Floating
+client.connect_signal("property::floating", function(c)
+    -- if c and c.valid and c.floating then
+    --     awful.titlebar.show(c) 
+    -- else 
+    --     awful.titlebar.hide(c) 
+    -- end
 end)
 
 -- Enable sloppy focus, so that focus follows mouse.
@@ -85,7 +144,7 @@ awesome.connect_signal('exit',
             return
         end
 
-    local file = io.open('/tmp/awesomewm-last-selected-tags', 'w+')
+    local file = io.open('/tmp/.awesomewm-last-selected-tags', 'w+')
 
     for s in screen do
         file:write(s.selected_tag.index, '\n')
@@ -103,7 +162,7 @@ end)
 
 awesome.connect_signal('startup',
     function()
-        local file = io.open('/tmp/awesomewm-last-selected-tags', 'r')
+        local file = io.open('/tmp/.awesomewm-last-selected-tags', 'r')
         if not file then
             return
         end
