@@ -10,13 +10,66 @@ root.buttons(gears.table.join(
 -- }}}
 -- 
 -- Scratchpads
-local screenX = 200
-local screenY = 130
 SP = nil
+SPs = {nil, nil, nil, nil} -- F1, F2, F3, F4
 htopSP = nil
 fileSP = nil
 calcSP = nil
 termSP = nil
+SPkeys = nil
+
+notify = function(title, text)
+    naughty.notify({
+        title = title,
+        text = text,
+        timeout = 3,
+        icon = "/usr/share/icons/breeze/actions/32/bookmarks.svg",
+        bg = xrdb.foreground,
+        fg = xrdb.background
+    })
+end
+
+makeSP = function(c, i, b)
+    if b then
+        if SPs[i] and SPs[i].valid then
+            SPs[i].minimized = not SPs[i].minimized
+            client.focus = SPs[i]
+            SPs[i]:raise()
+        else 
+            notify("Marked", "Marked client on F" .. i)
+            SPs[i] = client.focus
+            SPs[i].sticky = true
+            SPs[i].floating = true
+            SPs[i].skip_taskbar = true
+            SPs[i].ontop = true
+            SPs[i].width = 900
+            SPs[i].height = 900
+            SPs[i].placement = awful.placement.centered(client.focus)
+            -- SPs[i].placement = function(...)
+            --     return awful.placement.centered(...)
+            -- end
+            -- SPs[i]:geometry({width = 900, height = 900})
+        end
+    else
+        if SPs[i] and SPs[i].valid then
+            notify("Unmarked", "Unmarked client on F" .. i)
+            SPs[i].sticky = false
+            SPs[i].skip_taskbar = false
+            SPs[i].floating = false
+            SPs[i].ontop = false
+        end
+        SPs[i] = nil
+    end
+end
+
+for i = 1, 4 do
+    SPkeys = gears.table.join(SPkeys,
+        -- Mark
+        awful.key({modkey}, "F"..i, function() makeSP(c, i, true) end, {description = "", group = "Scratchpad"}),
+        -- Unmark
+        awful.key({modkey, "Shift"}, "F" .. i, function() makeSP(c, i, nil) end, {description = "", group = "Scratchpad"})
+    )
+end
 
 createTerm = function() 
         if termSP and termSP.valid then
@@ -29,14 +82,24 @@ createTerm = function()
     end
 
 -- {{{ Key bindings
-globalkeys = gears.table.join(
+globalkeys = gears.table.join(SPkeys,
     awful.key({ modkey, }, "slash",      hotkeys_popup.show_help,
               {description = "show help", group="awesome"}),
     -- Navigation
-    awful.key({ modkey, }, "Left",  function () awful.client.focus.global_bydirection("left") end,
-              {description = "view left client", group = "tag"}),
-    awful.key({ modkey, }, "Right", function () awful.client.focus.global_bydirection("right") end,
-              {description = "view right client", group = "tag"}),
+    awful.key({ modkey, }, "Left",  function ()
+            if awful.layout.get(awful.screen.focused()) == awful.layout.suit.max then
+                awful.client.focus.byidx( -1)
+            else 
+                awful.client.focus.global_bydirection("left")
+            end
+        end,{description = "view left client", group = "tag"}),
+    awful.key({ modkey, }, "Right", function () 
+            if awful.layout.get(awful.screen.focused()) == awful.layout.suit.max then
+                awful.client.focus.byidx( 1)
+            else 
+                awful.client.focus.global_bydirection("right")
+            end
+        end,{description = "view right client", group = "tag"}),
     awful.key({ modkey, }, "Up",  function () awful.client.focus.bydirection("up") end,
               {description = "view above client", group = "tag"}),
     awful.key({ modkey, }, "Down", function () awful.client.focus.bydirection("down") end,
@@ -54,6 +117,8 @@ globalkeys = gears.table.join(
               {description = "view prev tag", group = "tag"}),
 
     awful.key({ modkey, }, "j", function () awful.client.focus.byidx( 1) end,
+              {description = "focus next by index", group = "client"}),
+    awful.key({ modkey, }, "c", function () awful.client.focus.byidx( 1) end,
               {description = "focus next by index", group = "client"}),
     awful.key({ modkey, }, "k", function () awful.client.focus.byidx(-1) end,
               {description = "focus previous by index", group = "client"}),
@@ -92,6 +157,7 @@ globalkeys = gears.table.join(
                 end
             else
                 awful.layout.set(awful.layout.suit.max)
+                client.focus:raise()
             end
         end,
         {description = "Set layout to Max", group = "tag"}),
@@ -109,9 +175,8 @@ globalkeys = gears.table.join(
                 end
                 awful.client.run_or_raise('nemo', matcher)
                 -- awful.spawn.raise_or_spawn('nemo', nil, matcher)
-            end,
-              {description = "Opens Nemo", group = "launcher"}),
-    -- Todo: convert to raise_or_spawn
+            end, {description = "Opens Nemo", group = "launcher"}),
+    -- TODO: convert to raise_or_spawn
     awful.key({ modkey, "Mod1"}, "g", function ()
                 local matcher = function(c)
                     return awful.rules.match(c, {class = 'Logseq'})
@@ -128,10 +193,19 @@ globalkeys = gears.table.join(
               {description = "Opens Rofi", group = "launcher"}),
     awful.key({ modkey,}, "v", function () awful.spawn.with_shell("rofi -show window") end,
               {description = "Opens Rofi", group = "launcher"}),
-    awful.key({ modkey, "Mod1"}, "r", function () awful.spawn.with_shell(termexec .. "ranger") end,
-              {description = "Opens Ranger", group = "launcher"}),
-    awful.key({ modkey, "Mod1"}, "h", function () awful.spawn.with_shell(termexec .. "htop") end,
+    awful.key({ modkey, "Mod1"}, "r", function ()
+            if fileSP and fileSP.valid then
+                fileSP.minimized = not fileSP.minimized
+                client.focus = fileSP
+                fileSP:raise()
+            else
+                awful.spawn("kitty --class fileSP -e ranger")
+            end
+        end, {description = "Opens Ranger", group = "launcher"}),
+    awful.key({ modkey, "Mod1"}, "h", function () awful.spawn.with_shell("kitty --class \"htop\" -e htop") end,
               {description = "Opens htop", group = "launcher"}),
+
+    -- Miscelleneous programs and scripts
     awful.key({ "Ctrl", "Shift"}, "Print", function () awful.spawn.with_shell("flameshot gui") end,
               {description = "Opens Screenshot window", group = "launcher"}),
     awful.key({ }, "Print", function () awful.spawn.with_shell("flameshot launcher") end,
@@ -160,15 +234,6 @@ globalkeys = gears.table.join(
         , {description = "Opens terminal scratchpad", group = "scratchpad"}),
     awful.key({modkey, "Shift"}, "KP_Enter", createTerm
         , {description = "Opens terminal scratchpad", group = "scratchpad"}),
-    awful.key({modkey}, "F1", function() 
-            if fileSP and fileSP.valid then
-                fileSP.minimized = not fileSP.minimized
-                client.focus = fileSP
-                fileSP:raise()
-            else
-                awful.spawn("kitty --class fileSP -e ranger")
-            end
-        end, {description = "Opens ranger scratchpad", group = "scratchpad"}),
     awful.key({ }, "Scroll_Lock", 
         function () 
             if calcSP and calcSP.valid then
@@ -185,7 +250,10 @@ globalkeys = gears.table.join(
                 client.focus = SP
                 SP:raise()
             else 
-                if not client.focus then return end
+                --makeSP(client.focus)
+                if not client.focus then
+                    return
+                end
                 SP = client.focus
                 SP.sticky = true
                 SP.floating = true
@@ -214,17 +282,18 @@ globalkeys = gears.table.join(
               {description = "Increases volume by 5%", group = "volume"}),
 
     -- Mouse click emulate
-    awful.key({ modkey, "Ctrl"}, "KP_Up", function () awful.spawn.with_shell("xdotool click 4") end,
-              {description = "Mouse scroll up", group = "mouse"}),
-    awful.key({ modkey, "Ctrl"}, "KP_Down", function () awful.spawn.with_shell("xdotool click 5") end,
-              {description = "Mouse scroll down", group = "mouse"}),
-    awful.key({ modkey, "Ctrl"}, "KP_Right", function () 
-        awful.spawn.with_shell("sleep 0.1 && xdotool keydown alt key Right keyup alt") end,
-              {description = "Mouse scroll up", group = "mouse"}),
-    awful.key({ modkey, "Ctrl"}, "KP_Left", function ()
-        awful.spawn.with_shell("sleep 0.1 && xdotool keydown alt key Left keyup alt") end,
-              {description = "Mouse scroll down", group = "mouse"}),
- 
+    awful.key({"Mod1"}, "KP_Up", function ()
+            awful.spawn.with_shell("sleep 0.1 && xdotool click 4")
+        end,{description = "Mouse scroll up", group = "mouse"}),
+    awful.key({altkey}, "KP_Down", function ()
+            awful.spawn.with_shell("sleep 0.1 && xdotool click 5")
+        end, {description = "Mouse scroll down", group = "mouse"}),
+    awful.key({altkey }, "KP_Right", function () 
+            awful.spawn.with_shell("sleep 0.1 && xdotool keydown alt key Right keyup alt")
+        end, {description = "Mouse scroll up", group = "mouse"}),
+    awful.key({altkey }, "KP_Left", function ()
+            awful.spawn.with_shell("sleep 0.1 && xdotool keydown alt key Left keyup alt")
+        end, {description = "Mouse scroll down", group = "mouse"}),
     
     awful.key({modkey, }, "t",
         function() 
@@ -235,7 +304,7 @@ globalkeys = gears.table.join(
               {description = "reload awesome", group = "awesome"}),
     awful.key({ modkey, "Shift"   }, "e",
         function()
-            awful.spawn.with_shell("$conf/awesome/scripts/exit.sh")
+            awful.spawn.with_shell("~/.config/awesome/scripts/exit.sh")
         end, {description = "quit awesome", group = "awesome"}),
 
     awful.key({ modkey, }, "l", function () awful.tag.incmwfact( 0.05) end,
@@ -266,8 +335,21 @@ globalkeys = gears.table.join(
               {description = "restore minimized", group = "client"}),
 
     -- Prompt
-    awful.key({ modkey }, "r", function () awful.screen.focused().mypromptbox:run() end,
-              {description = "run prompt", group = "launcher"}),
+    -- awful.key({ modkey }, "r", function () awful.screen.focused().mypromptbox:run() end,
+            --   {description = "run prompt", group = "launcher"}),
+    awful.key({ modkey }, "r", function()
+            awful.prompt.run {
+                prompt = "  : ",
+                textbox = awful.screen.focused().mypromptbox.widget,
+                exe_callback = function(command)
+                    awful.spawn.with_shell(command)
+                end,
+                history_path = awful.util.get_cache_dir() .. "/history",
+                history_max = 50,
+                completion_callback = awful.completion.shell,
+            }
+        end, { description = "run prompt", group = "launcher" }),
+
 
     awful.key({ modkey }, "x",
               function ()
@@ -434,6 +516,8 @@ for i = 1, 9 do
                   {description = "move focused client to tag #"..i.. " in other screen", group = "tag"})
     )
 end
+
+
 
 clientbuttons = gears.table.join(
     awful.button({ }, 1, function (c)

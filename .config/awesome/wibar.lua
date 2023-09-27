@@ -10,7 +10,7 @@ local separator = wibox.widget.textbox("  ")
 -- Ram Widget
 local ramIcon = home .. ".local/share/icons/material/white/memory.svg"
 local ramButtons = gears.table.join(
-        awful.button({ }, 2, function() awful.spawn.with_shell(termexec .. "htop") end))
+        awful.button({ }, 2, function() awful.spawn.with_shell("kitty --class \"htop\" -e htop") end))
 local ram = wibox.widget{
     {
         {
@@ -31,7 +31,7 @@ local ram = wibox.widget{
         buttons = ramButtons,
         layout = wibox.layout.fixed.horizontal,
     },
-    fg = xrdb.foreground,
+    -- fg = xrdb.foreground,
     bg = xrdb.background,
     widget = wibox.container.background,
 }
@@ -165,6 +165,7 @@ end
 -- Re-set wallpaper when a screen's geometry changes (e.g. different resolution)
 screen.connect_signal("property::geometry", set_wallpaper)
 
+
 awful.screen.connect_for_each_screen(function(s)
     -- For screen swapping
      s:connect_signal("swapped", function(self, other, is_source)
@@ -188,14 +189,28 @@ awful.screen.connect_for_each_screen(function(s)
     set_wallpaper(s)
 
     -- Each screen has its own tag table.
-    if s == screen[1] then
-        awful.tag({ " 1 ", " 2 ", " 3 ", " 4 ", " 5 ", " 6 ", " 7 ", " 8 ", " 9 " }, s, awful.layout.layouts[1])
+    if s == screen[2] then
+        -- Create the wibox
+        s.mywibox = awful.wibar({ position = "top", screen = s, height = 21, opacity = 0.7})
+        tags = { " 1 ", " 2 ", " 3 ", " 4 ", " 5 ", " 6 ", " 7 ", " 8 ", " 9 " }
+        awful.tag(tags, s, awful.layout.layouts[1])
     else
+        -- Create the wibox
+        s.mywibox = awful.wibar({ position = "top", screen = s, height = 23, opacity = 0.7})
         awful.tag({ " 1 ", " 2 ", " 3 ", " 4 ", " 5 ", " 6 ", " 7 ", " 8 ", " 9 " }, s, awful.layout.layouts[2])
     end
 
+    -- Set 4th tag layout to max
+    -- local fourth_tag = awful.tag.find_by_name(s, tags[4])
+    -- awful.layout.set(awful.layout.suit.max, fourth_tag)
+    -- fourth_tag.gap = 0
+    
+
     -- Create a promptbox for each screen
-    s.mypromptbox = awful.widget.prompt()
+    s.mypromptbox = awful.widget.prompt{
+        prompt = "~>: ",
+        with_shell = true
+    }
    
     -- Create a taglist widget
     s.mytaglist = awful.widget.taglist {
@@ -256,8 +271,7 @@ awful.screen.connect_for_each_screen(function(s)
         },
     }
 
-    -- Create the wibox
-    s.mywibox = awful.wibar({ position = "top", screen = s, height = 22, opacity = 0.7, })
+   
 
     -- Add widgets to the wibox
     s.mywibox:setup {

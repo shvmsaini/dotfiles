@@ -41,7 +41,6 @@ client.connect_signal("manage", function (c)
     if c.class and c.class == "Logseq" then
         local mytag = awful.tag.add("LOG", {layout = awful.layout.suit.tile.left})
         c:move_to_tag(mytag)
-        -- Delete tag after cryptomator closes and move existing clients to tag[9]
         c:connect_signal("unmanage", function()
             if mytag then
                 local clients = mytag:clients()
@@ -72,28 +71,22 @@ client.connect_signal("request::titlebars", function(c)
 
     awful.titlebar(c) : setup {
         { -- Left
-            awful.titlebar.widget.closebutton    (c),
-            awful.titlebar.widget.minimizebutton (c),
-            -- awful.titlebar.widget.ontopbutton    (c),
-            awful.titlebar.widget.stickybutton   (c),
-            awful.titlebar.widget.maximizedbutton(c),
-            -- awful.titlebar.widget.floatingbutton (c),
-            align = "left",
-            layout = wibox.layout.fixed.horizontal,
+            forced_width = 10,
+            buttons = buttons,
+            layout  = wibox.layout.fixed.horizontal,
         },
         { -- Middle
             {  
                 {
                     {
                         awful.titlebar.widget.iconwidget(c),
-                        align = "right",
-                        buttons = buttons,
+                        align   = "right",
                         layout  = wibox.layout.fixed.horizontal
                     },
-                    top = 3,
-                    bottom = 3,
-                    left = 3,
-                    right = 3,
+                    top     = 3,
+                    bottom  = 3,
+                    left    = 3,
+                    right   = 3,
                     widget = wibox.container.margin
                 },
                 { -- Title
@@ -101,26 +94,37 @@ client.connect_signal("request::titlebars", function(c)
                 },
                 layout  = wibox.layout.fixed.horizontal
             },
-            -- align  = "center",
-            layout = wibox.layout.align.horizontal,
-            -- expand = "outside"
+            buttons = buttons,
+            widget = wibox.container.place,
         },
-        { -- Right
-            layout = wibox.layout.align.horizontal,
+        {
+            { -- Right
+                -- awful.titlebar.widget.ontopbutton    (c),
+                -- awful.titlebar.widget.floatingbutton (c),
+                -- awful.titlebar.widget.stickybutton   (c),
+                awful.titlebar.widget.minimizebutton (c),
+                awful.titlebar.widget.maximizedbutton(c),
+                awful.titlebar.widget.closebutton    (c),
+                align   = "right",
+                layout  = wibox.layout.fixed.horizontal,
+            },
+            top     = 3.1,
+            bottom  = 3.1,
+            left    = 3.1,
+            right   = 3.1,
+            widget = wibox.container.margin
         },
-        buttons = buttons,
-        expand = "outside",
         layout = wibox.layout.align.horizontal
     }
 end)
 
 -- Floating
 client.connect_signal("property::floating", function(c)
-    -- if c and c.valid and c.floating then
-    --     awful.titlebar.show(c) 
-    -- else 
-    --     awful.titlebar.hide(c) 
-    -- end
+    if c and c.valid and c.floating and not c.fullscreen then
+        awful.titlebar.show(c) 
+    else 
+        awful.titlebar.hide(c) 
+    end
 end)
 
 -- Enable sloppy focus, so that focus follows mouse.
@@ -176,7 +180,9 @@ awesome.connect_signal('startup',
     for s in screen do
         local i = selected_tags[s.index]
         local t = s.tags[i]
-        t:view_only()
+        if t then
+            t:view_only()
+        end
     end
 
     file:close()

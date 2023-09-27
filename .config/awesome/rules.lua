@@ -1,5 +1,5 @@
 -- Rules to apply to new clients (through the "manage" signal).
-local last = screen.count()
+local scr = 1 -- screen.count()
 
 awful.rules.rules = {
     -- All clients will match this rule.
@@ -28,6 +28,7 @@ awful.rules.rules = {
         class = {
           "Arandr",
           "Blueman-manager",
+          "htop",
           "Gpick",
           "Kruler",
           "MessageWin",  -- kalarm.
@@ -36,6 +37,7 @@ awful.rules.rules = {
          -- "Tor Browser", -- Needs a fixed window size to avoid fingerprinting by screen size.
           "Wpa_gui",
           "veromix",
+          "vlc",
           "xtightvncviewer",
           "org.cryptomator.launcher.Cryptomator$MainApp",
           "Zenity"
@@ -45,6 +47,7 @@ awful.rules.rules = {
         -- and the name shown there might not match defined rules here.
         name = {
           "Event Tester",  -- xev.
+          "Running Devices", -- emulator
         },
         role = {
           "AlarmWindow",  -- Thunderbird's calendar.
@@ -61,22 +64,31 @@ awful.rules.rules = {
 
     -- Set Logseq to always map on the tag named "2" on screen 1.
     -- { rule = { class = "Logseq" },
-    --   properties = { screen = last, tag = " 2 " }
+    --   properties = { screen = scr, tag = " 2 " }
     -- },
     -- Code
     { rule_any = { class = { "code-oss" , "jetbrains-studio" } },
-      properties = { screen = last, tag = " 4 " }
+      properties = { screen = scr, tag = " 4 " }
     },
     { rule = { class = "Tor Browser" },
-      properties = { screen = last, tag = " 8 " }
+      properties = { screen = scr, tag = " 8 " }
     },
     -- Gimp
     { rule = { class = "Gimp-2.10" },
-      properties = { screen = last, tag = " 9 " }
+      properties = { screen = scr, tag = " 9 " }
     },
     -- LibreOffice and Xournal
     { rule_any = { class = { "libreoffice-startcenter", "Com.github.xournalpp.xournalpp" } },
-      properties = { screen = last, tag = " 9 " }
+      properties = { screen = scr, tag = " 9 " }
+    },
+    -- Plank
+    {
+      rule = {class = "Plank"},
+      properties = {border_width = 0, ontop = true}
+    },
+    {
+      rule = {name = "meet.google.com is sharing your screen."},
+      properties = {placement = awful.placement.bottom, border_width = 0}
     },
     -- Bitwarden
     {
@@ -85,7 +97,7 @@ awful.rules.rules = {
     },
     -- Scratchpad
     {
-      rule_any = { class = { "scratchpad" , "termSP", "fileSP", "calcSP" }},
+      rule_any = { class = { "scratchpad" , "termSP", "fileSP", "calcSP", "htop" }},
       properties = {
           sticky = true,
           placement = function(...)
