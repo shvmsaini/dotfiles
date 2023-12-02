@@ -17,6 +17,8 @@ alias rrr="ranger"
 alias xcc="xclip -selection clipboard"
 alias rl="readlink -f"
 alias jctl="journalctl -p 3 -xb"
+alias ss="import png:- | xclip -selection clipboard -t image/png"
+#alias pp="sleep 0.5; xdotool type "$(xclip -o -selection clipboard)""
 
 # Replace ls with exa
 alias ls='exa -al --color=always --group-directories-first --icons' # preferred listing
@@ -49,7 +51,10 @@ export QT_STYLE_OVERRIDE=Adwaita-dark
 set EDITOR /bin/vim
 
 # Keybind
-bind \cH backward-kill-word # Control-Backspace deletes word
+bind \cH backward-kill-word # Control-Backspace deletes backword word
+bind \e\[3\;3~ kill-word # Alt-Delete deletes forward word
+bind \e\[3\;5~ kill-word # Control-Delete deletes forward word
+bind \eg "git status"
 
 # Replace some more things with better alternatives
 alias cat='bat --style header --style snip --style changes --style header'
@@ -116,3 +121,19 @@ alias adbpaste="adb shell input text "'$(xclip -selection c -o)'""
 function awm
 	awesome-client "awful = require(\"awful\") awful.spawn(\"$argv\")"
 end
+
+# Install aur packages
+function aur-install --description "aur-install <link or package-name>"
+	set pref "https://aur.archlinux.org/"
+	set suff ".git"
+	set link "$argv"
+	switch (echo $argv)
+		case "*.git"
+			set folder "$(basename -s .git $argv)"
+		case '*'
+			set folder "$argv"
+			set link "$pref""$argv""$suff"
+	end
+	cd /tmp && git clone "$link" && cd $folder && makepkg -si
+end
+

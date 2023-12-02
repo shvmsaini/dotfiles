@@ -5,4 +5,4 @@
 
 arr=($(xrandr | grep " connected" | awk '{print $1;}';))
 
-xrandr --output ${arr[1]} --primary --left-of ${arr[0]}
+xrandr --output ${arr[1]} --primary --left-of ${arr[0]} --rate 75

@@ -18,6 +18,8 @@ client.connect_signal("manage", function (c)
             termSP = c
         elseif c.class == 'calcSP' then
             calcSP = c
+        elseif c.class == 'htop' then
+            htopSP = c
         end
     end
 
@@ -120,7 +122,12 @@ end)
 
 -- Floating
 client.connect_signal("property::floating", function(c)
-    if c and c.valid and c.floating and not c.fullscreen then
+    if c and c.valid and c.floating and not c.fullscreen and not c.maximized then
+        if c.class == "Com.github.johnfactotum.Foliate" or 
+            c.name == "win.*" or 
+            c.class == "jetbrains-idea-ce" then
+            return
+        end
         awful.titlebar.show(c) 
     else 
         awful.titlebar.hide(c) 

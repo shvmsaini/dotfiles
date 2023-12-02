@@ -6,23 +6,25 @@ xrdb = xresources.get_current_theme()
 theme_assets = require("beautiful.theme_assets")
 
 -- Themes define colours, icons, font and wallpapers.
---beautiful.init(gears.filesystem.get_themes_dir() .. "default/theme.lua")
+beautiful.init(gears.filesystem.get_themes_dir() .. "default/theme.lua")
 
 -- Awesome variables
 beautiful.useless_gap = 2
 beautiful.master_width_factor = 0.555
 
 -- Icons
-iconFolder = home .. "/.local/share/icons/material/"
-powerIcon = iconFolder .. "white/power.svg"
-termIcon = iconFolder .. "white/terminal.svg"
-wallIcon = iconFolder .. "white/wallpaper.svg"
-arrowIcon = iconFolder .. "white/arrow_right.svg"
-upIcon = iconFolder .. "white/arrow_upward.svg"
-downIcon = iconFolder .. "white/arrow_downward.svg"
-titlebarIcons = gears.filesystem.get_configuration_dir() .. "/assets/"
+iconFolder = gears.filesystem.get_configuration_dir() .. "/assets/"
+powerIcon = iconFolder .. "power.svg"
+termIcon = iconFolder .. "terminal.svg"
+wallIcon = iconFolder .. "wallpaper.svg"
+arrowIcon = iconFolder .. "arrow_right.svg"
+upIcon = iconFolder .. "arrow_upward.svg"
+downIcon = iconFolder .. "arrow_downward.svg"
+ramIcon = iconFolder .. "memory.svg"
+cpuIcon = iconFolder .. "memory.svg"
 
-beautiful.awesome_icon = iconFolder .. "/white/arch_white.svg"
+-- Wibar Awesome Icon
+beautiful.awesome_icon = iconFolder .. "arch_white.svg"
 
 -- Menu
 beautiful.menu_height = 30 
@@ -50,6 +52,8 @@ beautiful.tasklist_bg_focus = xrdb.foreground
 beautiful.tasklist_fg_focus = xrdb.background
 beautiful.tasklist_bg_normal = xrdb.background
 beautiful.tasklist_fg_normal = xrdb.foreground
+beautiful.tasklist_bg_minimize = "#232323"
+beautiful.tasklist_fg_minimize = xrdb.foreground
 
 -- Notification
 beautiful.notification_font = "Fira Code 12"
@@ -92,25 +96,25 @@ beautiful.titlebar_fg = xrdb.foreground .. "FF"
 beautiful.titlebar_bg = xrdb.background .. "FF"
 
 -- Close Button
-beautiful.titlebar_close_button_normal = titlebarIcons .. 'normal.svg'
-beautiful.titlebar_close_button_focus  = titlebarIcons .. 'close_focus.svg'
-beautiful.titlebar_close_button_normal_hover = titlebarIcons .. 'close_focus_hover.svg'
-beautiful.titlebar_close_button_focus_hover  = titlebarIcons .. 'close_focus_hover.svg'
+beautiful.titlebar_close_button_normal = iconFolder .. 'normal.svg'
+beautiful.titlebar_close_button_focus  = iconFolder .. 'close_focus.svg'
+beautiful.titlebar_close_button_normal_hover = iconFolder .. 'close_focus_hover.svg'
+beautiful.titlebar_close_button_focus_hover  = iconFolder .. 'close_focus_hover.svg'
 
 -- Minimize Button
-beautiful.titlebar_minimize_button_normal = titlebarIcons .. 'normal.svg'
-beautiful.titlebar_minimize_button_focus  = titlebarIcons .. 'minimize_focus.svg'
-beautiful.titlebar_minimize_button_normal_hover = titlebarIcons .. 'minimize_focus_hover.svg'
-beautiful.titlebar_minimize_button_focus_hover  = titlebarIcons .. 'minimize_focus_hover.svg'
+beautiful.titlebar_minimize_button_normal = iconFolder .. 'normal.svg'
+beautiful.titlebar_minimize_button_focus  = iconFolder .. 'minimize_focus.svg'
+beautiful.titlebar_minimize_button_normal_hover = iconFolder .. 'minimize_focus_hover.svg'
+beautiful.titlebar_minimize_button_focus_hover  = iconFolder .. 'minimize_focus_hover.svg'
 
 -- Maximized Button (While Window is Maximized)
-beautiful.titlebar_maximized_button_normal_active = titlebarIcons .. 'normal.svg'
-beautiful.titlebar_maximized_button_focus_active  = titlebarIcons .. 'maximized_focus.svg'
-beautiful.titlebar_maximized_button_normal_active_hover = titlebarIcons .. 'maximized_focus_hover.svg'
-beautiful.titlebar_maximized_button_focus_active_hover  = titlebarIcons .. 'maximized_focus_hover.svg'
+beautiful.titlebar_maximized_button_normal_active = iconFolder .. 'normal.svg'
+beautiful.titlebar_maximized_button_focus_active  = iconFolder .. 'maximized_focus.svg'
+beautiful.titlebar_maximized_button_normal_active_hover = iconFolder .. 'maximized_focus_hover.svg'
+beautiful.titlebar_maximized_button_focus_active_hover  = iconFolder .. 'maximized_focus_hover.svg'
 
 -- Maximized Button (While Window is not Maximized)
-beautiful.titlebar_maximized_button_normal_inactive = titlebarIcons .. 'normal.svg'
-beautiful.titlebar_maximized_button_focus_inactive  = titlebarIcons .. 'maximized_focus.svg'
-beautiful.titlebar_maximized_button_normal_inactive_hover = titlebarIcons .. 'maximized_focus_hover.svg'
-beautiful.titlebar_maximized_button_focus_inactive_hover  = titlebarIcons .. 'maximized_focus_hover.svg'
+beautiful.titlebar_maximized_button_normal_inactive = iconFolder .. 'normal.svg'
+beautiful.titlebar_maximized_button_focus_inactive  = iconFolder .. 'maximized_focus.svg'
+beautiful.titlebar_maximized_button_normal_inactive_hover = iconFolder .. 'maximized_focus_hover.svg'
+beautiful.titlebar_maximized_button_focus_inactive_hover  = iconFolder .. 'maximized_focus_hover.svg'

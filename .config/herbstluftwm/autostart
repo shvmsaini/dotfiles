@@ -46,12 +46,21 @@ hc keybind $Mod-Mod1-c spawn $DIR/app_spawn.sh code
 hc keybind $Mod-Mod1-n spawn $DIR/app_spawn.sh nemo
 hc keybind $Mod-Mod1-t spawn $DIR/app_spawn.sh tor
 hc keybind $Mod-Mod1-f spawn firefox
-hc keybind $Mod-Mod1-l spawn logseq
+hc keybind $Mod-Mod1-g spawn logseq
 hc keybind $Mod-Mod1-p spawn pavucontrol
 hc keybind $Mod-Mod1-h spawn $TERM -e htop
 hc keybind $Mod-Mod1-r spawn $TERM -e ranger
-hc keybind $Mod-s spawn $DIR/scratchpad.sh ">_<" "682x746+683+21" #Side scratchpad
-hc keybind $Mod-w spawn $DIR/scratchpad.sh ">_<" "1111x640+126+70" #Wide scratchpad
+hc keybind $Mod-Shift-a spawn $DIR/add_scratchpad.sh "a" "Remove"
+hc keybind $Mod-a spawn $DIR/add_scratchpad.sh "a" "Add"
+hc keybind $Mod-s set_attr clients.focus.sticky toggle
+
+for i in F1 F2 F3 F4; do
+	hc keybind $Mod-Shift-$i spawn $DIR/add_scratchpad.sh $i "Remove"
+	hc keybind $Mod-$i spawn $DIR/add_scratchpad.sh $i "Add"
+done
+
+hc keybind $Mod-Home spawn $DIR/scratchpad.sh ">_<" "956x1046+957+27" #Side scratchpad
+hc keybind $Mod-End spawn $DIR/scratchpad.sh ">_<" "1358x760+281+170" #Wide scratchpad
 
 hc keybind Pause spawn $DIR/hide_all.sh
 hc keybind Print spawn flameshot launcher
@@ -120,8 +129,8 @@ hc keybind $Mod-Shift-space floating toggle
 hc keybind $Mod-f fullscreen toggle
 hc keybind $Mod-Shift-f set_attr clients.focus.floating toggle
 hc keybind $Mod-Shift-d set_attr clients.focus.decorated toggle
-hc keybind $Mod-Shift-m spawn $DIR/minimize.sh "min"
-hc keybind $Mod-Control-m spawn $DIR/minimize.sh "unmin"
+hc keybind $Mod-n spawn $DIR/minimize.sh "min"
+hc keybind $Mod-Control-n spawn $DIR/minimize.sh "unmin"
 hc keybind $Mod-p pseudotile toggle
 hc keybind $Mod-m spawn $DIR/maximize.sh
 hc keybind $Mod-Shift-s spawn $DIR/move_to_monitor.sh
@@ -244,8 +253,8 @@ hc rule class="gnome-calculator" floating=true floatplacement=center
 hc rule class="Pavucontrol" floating=true
 hc rule class="Pamac-manager" floating=true
 hc rule class="GParted" floating=true
-hc rule class="Logseq" tag=2 
-hc rule class="jetbrains-studio" tag=3
+hc rule class="Logseq" tag=8 
+hc rule class="jetbrains-studio" tag=4
 hc rule class="Gimp-2.10" tag=7
 hc rule class="Gnome-system-monitor" floating=true
 hc rule class="org.cryptomator.launcher.Cryptomator\$MainApp" floating=true

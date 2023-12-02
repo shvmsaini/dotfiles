@@ -7,10 +7,20 @@ local net_speed_widget = require("awesome-wm-widgets.net-speed-widget.net-speed"
 -- Separator
 local separator = wibox.widget.textbox("  ")
 
+-- Shared tags
+sharedtags = require("awesome-sharedtags")
+
 -- Ram Widget
-local ramIcon = home .. ".local/share/icons/material/white/memory.svg"
 local ramButtons = gears.table.join(
-        awful.button({ }, 2, function() awful.spawn.with_shell("kitty --class \"htop\" -e htop") end))
+        awful.button({ }, 2, function()
+            if htopSP and htopSP.valid then
+                htopSP.minimized = not htopSP.minimized
+                client.focus = htopSP
+                htopSP:raise()
+            else
+                awful.spawn.with_shell(terminal .. " --class \"htop\" -e htop")
+            end    
+        end))
 local ram = wibox.widget{
     {
         {
@@ -27,7 +37,41 @@ local ram = wibox.widget{
         {
             widget = awful.widget.watch('bash -c "~/.config/scripts/ram.sh"')
         },
+        buttons = ramButtons,
+        layout = wibox.layout.fixed.horizontal,
+    },
+    -- fg = xrdb.foreground,
+    bg = xrdb.background,
+    widget = wibox.container.background,
+}
 
+-- CPU Temp Widget
+local cpuButtons = gears.table.join(
+        awful.button({ }, 2, function()
+            if htopSP and htopSP.valid then
+                htopSP.minimized = not htopSP.minimized
+                client.focus = htopSP
+                htopSP:raise()
+            else
+                awful.spawn.with_shell(terminal .. " --class \"htop\" -e htop")
+            end    
+        end))
+local cpu = wibox.widget{
+    {
+        {
+            left   = 5,
+            top    = 1.5,
+            bottom = 1.5,
+            right  = 0,
+            widget = wibox.container.margin,
+            {   
+                image = ramIcon,
+                widget = wibox.widget.imagebox
+            },    
+        },
+        {
+            widget = awful.widget.watch('bash -c "~/.config/scripts/ram.sh"')
+        },
         buttons = ramButtons,
         layout = wibox.layout.fixed.horizontal,
     },
@@ -60,7 +104,6 @@ local month_calendar = awful.widget.calendar_popup.month( {
 }) 
 
 -- Textclock widget
-local clockIcon = home .. ".local/share/icons/material/white/clock.svg"
 local clockButtons =  gears.table.join( 
         awful.button({ }, 2, function() awful.spawn.with_shell("xdg-open https://calendar.google.com") end),
         awful.button({ }, 3, function() 
@@ -166,6 +209,17 @@ end
 screen.connect_signal("property::geometry", set_wallpaper)
 
 
+-- Shared tags
+-- local tags = sharedtags({
+--     { name = "main", layout = awful.layout.layouts[2] },
+--     { name = "www", layout = awful.layout.layouts[10] },
+--     { name = "game", layout = awful.layout.layouts[1] },
+--     { name = "misc", layout = awful.layout.layouts[2] },
+--     { name = "chat", screen = 2, layout = awful.layout.layouts[2] },
+--     { layout = awful.layout.layouts[2] },
+--     { screen = 2, layout = awful.layout.layouts[2] }
+-- })
+
 awful.screen.connect_for_each_screen(function(s)
     -- For screen swapping
      s:connect_signal("swapped", function(self, other, is_source)
@@ -189,15 +243,15 @@ awful.screen.connect_for_each_screen(function(s)
     set_wallpaper(s)
 
     -- Each screen has its own tag table.
-    if s == screen[2] then
+    if s == screen[1] then
         -- Create the wibox
-        s.mywibox = awful.wibar({ position = "top", screen = s, height = 21, opacity = 0.7})
-        tags = { " 1 ", " 2 ", " 3 ", " 4 ", " 5 ", " 6 ", " 7 ", " 8 ", " 9 " }
+        s.mywibox = awful.wibar({ position = "top", screen = s, height = 23, opacity = 0.7})
+        tags = { " 1 ", " 2 ", " 3 ", " 4 ", " 5 ", " 6 ", " 7 ", " 8 ", " 9 "}
         awful.tag(tags, s, awful.layout.layouts[1])
     else
         -- Create the wibox
-        s.mywibox = awful.wibar({ position = "top", screen = s, height = 23, opacity = 0.7})
-        awful.tag({ " 1 ", " 2 ", " 3 ", " 4 ", " 5 ", " 6 ", " 7 ", " 8 ", " 9 " }, s, awful.layout.layouts[2])
+        s.mywibox = awful.wibar({ position = "top", screen = s, height = 21, opacity = 0.7})
+        awful.tag(tags, s, awful.layout.layouts[2])
     end
 
     -- Set 4th tag layout to max
@@ -270,8 +324,6 @@ awful.screen.connect_for_each_screen(function(s)
             widget = wibox.container.background,
         },
     }
-
-   
 
     -- Add widgets to the wibox
     s.mywibox:setup {

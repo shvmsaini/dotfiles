@@ -12,7 +12,9 @@ awful.rules.rules = {
         keys = clientkeys,
         buttons = clientbuttons,
         screen = awful.screen.preferred,
-        placement = awful.placement.no_overlap+awful.placement.no_offscreen
+        placement = awful.placement.no_overlap+awful.placement.no_offscreen,
+        size_hints_honor = true,
+        size_hints = { min_width = 1000, min_height = 100}
      }
     },
 
@@ -46,8 +48,8 @@ awful.rules.rules = {
         -- Note that the name property shown in xprop might be set slightly after creation of the client
         -- and the name shown there might not match defined rules here.
         name = {
+          "Picture in picture",
           "Event Tester",  -- xev.
-          "Running Devices", -- emulator
         },
         role = {
           "AlarmWindow",  -- Thunderbird's calendar.
@@ -64,31 +66,42 @@ awful.rules.rules = {
 
     -- Set Logseq to always map on the tag named "2" on screen 1.
     -- { rule = { class = "Logseq" },
-    --   properties = { screen = scr, tag = " 2 " }
+    --   properties = { screen = scr, tag = tags[2] }
     -- },
     -- Code
-    { rule_any = { class = { "code-oss" , "jetbrains-studio" } },
-      properties = { screen = scr, tag = " 4 " }
+    { rule_any = { class = { "code-oss" , "jetbrains-studio", "jetbrains-idea-ce" } },
+      properties = { screen = scr, tag = tags[4], titlebars_enabled = false}
     },
+    -- Tor
     { rule = { class = "Tor Browser" },
-      properties = { screen = scr, tag = " 8 " }
+      properties = { screen = scr, tag = tags[8]}
+    },
+    -- Emulator
+    {
+      rule = {name = "Running Devices"},
+      properties = {width = 380, height = 850, floating = true}
     },
     -- Gimp
     { rule = { class = "Gimp-2.10" },
-      properties = { screen = scr, tag = " 9 " }
+      properties = { screen = scr, tag = tags[9] }
     },
     -- LibreOffice and Xournal
     { rule_any = { class = { "libreoffice-startcenter", "Com.github.xournalpp.xournalpp" } },
-      properties = { screen = scr, tag = " 9 " }
+      properties = { screen = scr, tag = tags[9] }
     },
     -- Plank
     {
       rule = {class = "Plank"},
       properties = {border_width = 0, ontop = true}
     },
+    -- Vlc
+    {
+      rule = {class = "vlc"},
+      properties = {placement = awful.placement.no_overlap+awful.placement.no_offscreen}
+    },
     {
       rule = {name = "meet.google.com is sharing your screen."},
-      properties = {placement = awful.placement.bottom, border_width = 0}
+      properties = {placement = awful.placement.bottom, border_width = 0, titlebars_enabled = false}
     },
     -- Bitwarden
     {
@@ -104,9 +117,9 @@ awful.rules.rules = {
             return awful.placement.centered(...) -- https://github.com/awesomeWM/awesome/issues/2497
           end, 
           skip_taskbar = true,
-          width = 800,
+          width = 900,
           ontop = true,
-          height = 600,
+          height = 650,
           floating = true,
       },
     },
