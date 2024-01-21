@@ -2,7 +2,8 @@
 
 zenity --question --text="Are you sure, proceed to shutdown?"
 if [ $? = 0 ]; then
-	 systemctl poweroff
+	/sbin/shutdown now
+	# systemctl poweroff
 else
 	 exit
 fi

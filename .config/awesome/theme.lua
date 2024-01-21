@@ -1,7 +1,8 @@
 -- Pywal Integration
 xresources = require("beautiful.xresources")
 xrdb = xresources.get_current_theme()
-
+-- xrdb.foreground = xrdb.color4
+-- xrdb.background = "#000000"
 -- Assets 
 theme_assets = require("beautiful.theme_assets")
 
@@ -22,9 +23,15 @@ upIcon = iconFolder .. "arrow_upward.svg"
 downIcon = iconFolder .. "arrow_downward.svg"
 ramIcon = iconFolder .. "memory.svg"
 cpuIcon = iconFolder .. "memory.svg"
+volumeHighIcon =  gears.filesystem.get_configuration_dir() .. "/awesome-wm-widgets/volume-widget/icons/audio-volume-high-symbolic.svg"
+volumeMedIcon =  gears.filesystem.get_configuration_dir() .. "/awesome-wm-widgets/volume-widget/icons/audio-volume-medium-symbolic.svg"
+volumeLowIcon =  gears.filesystem.get_configuration_dir() .. "/awesome-wm-widgets/volume-widget/icons/audio-volume-low-symbolic.svg"
+volumeMuteIcon =  gears.filesystem.get_configuration_dir() .. "/awesome-wm-widgets/volume-widget/icons/audio-volume-muted-symbolic.svg"
 
 -- Wibar Awesome Icon
 beautiful.awesome_icon = iconFolder .. "arch_white.svg"
+-- beautiful.awesome_icon = iconFolder .. "icon-alien-symbolic.svg"
+-- beautiful.awesome_icon = "/usr/share/icons/Papirus/32x32/apps/pacman.svg"
 
 -- Menu
 beautiful.menu_height = 30 
@@ -37,7 +44,7 @@ beautiful.menu_submenu_icon = arrowIcon
 
 -- All font
 -- beautiful.font = "FreeSans 9"
-beautiful.font = "Hermit Nerd Font Mono 9"
+beautiful.font = "SF Pro Display 11.3"
 beautiful.menu_font = "Hack Nerd Font Mono 11"
 beautiful.hotkeys_font = "Hack Nerd Font Mono 11" 
 beautiful.hotkeys_description_font = "Hack Nerd Font Mono 11"
@@ -45,7 +52,7 @@ beautiful.hotkeys_description_font = "Hack Nerd Font Mono 11"
 -- Client
 beautiful.border_focus = xrdb.foreground
 beautiful.border_normal = xrdb.background
-beautiful.border_width = 1
+beautiful.border_width = 2
 
 -- Tasklist Widget
 beautiful.tasklist_bg_focus = xrdb.foreground

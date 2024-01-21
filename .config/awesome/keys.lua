@@ -9,15 +9,22 @@ root.buttons(gears.table.join(
 ))
 -- }}}
 -- 
+
+-- Whether tags are in herbstluftwm mode (not very usable yet)
+herbstMode = false
+
 -- Scratchpads
 SP = nil
-SPs = {nil, nil, nil, nil, false, false, false, false} -- F1..F4 SPs, F1..F4 properties
+SPs = {}
+for i = 1, 12 do
+  SPs[i] = nil -- SP itself 
+  SPs[i + 12] = false -- SP Property
+end
 htopSP = nil
 fileSP = nil
 calcSP = nil
 termSP = nil
 SPkeys = nil
-volume = 40
 
 notify = function(title, text)
     naughty.notify({
@@ -47,7 +54,7 @@ makeSP = function(c, i, m)
             SPs[i] = client.focus
             SPs[i].sticky = true
             if not SPs[i].floating then
-                SPs[i+4] = false
+                SPs[i+12] = false
                 SPs[i].floating = true
                 SPs[i].width = 1100
                 SPs[i].height = 800
@@ -67,7 +74,7 @@ makeSP = function(c, i, m)
             notify("Unmarked", "Unmarked client on F" .. i)
             SPs[i].sticky = false
             SPs[i].skip_taskbar = false
-            if SPs[i+4] == true then
+            if SPs[i+12] == true then
                 SPs[i].floating = true
             else
                 SPs[i].floating = false
@@ -78,12 +85,16 @@ makeSP = function(c, i, m)
     end
 end
 
-for i = 1, 4 do
+for i = 1, 12 do
     SPkeys = gears.table.join(SPkeys,
         -- Mark
-        awful.key({modkey}, "F"..i, function() makeSP(c, i, true) end, {description = "Mark client as scratchpad w/ F" .. i .. " key", group = "Scratchpad"}),
+        awful.key({modkey}, "F"..i, function()
+            makeSP(c, i, true)
+        end, {description = "Mark client as scratchpad w/ F" .. i .. " key", group = "Scratchpad"}),
         -- Unmark
-        awful.key({modkey, "Shift"}, "F" .. i, function() makeSP(c, i, nil) end, {description = "Unmark client as scratchpad w/ F" .. i .. " key", group = "Scratchpad"})
+        awful.key({modkey, "Shift"}, "F" .. i, function()
+            makeSP(c, i, nil)
+        end, {description = "Unmark client as scratchpad w/ F" .. i .. " key", group = "Scratchpad"})
     )
 end
 
@@ -97,7 +108,29 @@ createTerm = function()
         end
     end
 
--- {{{ Key bindings
+swapScreen = function ()
+        local focused_screen = awful.screen.focused()
+        local s = focused_screen.get_next_in_direction(focused_screen, "right")
+    
+        -- FIXME: this only makes sense for two screens
+        if not s then
+            s = focused_screen.get_next_in_direction(focused_screen, "left")
+        end
+    
+        if not s then 
+            naughty.notify { preset = naughty.config.presets.critical, title = "could not get other screen" }
+            return
+        end
+
+        -- Swapping tag names as well
+        if herbstluftwm then
+            focused_screen.selected_tag.name, s.selected_tag.name = s.selected_tag.name, focused_screen.selected_tag.name
+        end
+
+        focused_screen:swap(s)
+    end
+
+    -- {{{ Key bindings
 globalkeys = gears.table.join(SPkeys,
     awful.key({ modkey, }, "slash",      hotkeys_popup.show_help,
               {description = "show help", group="awesome"}),
@@ -187,6 +220,8 @@ globalkeys = gears.table.join(SPkeys,
               {description = "Opens Mullvad", group = "launcher"}),
     awful.key({ modkey, altkey}, "p", function () awful.spawn("pavucontrol") end,
               {description = "Opens Pavucontrol", group = "launcher"}),
+    awful.key({ modkey, altkey}, "e", function () awful.spawn(termexec .. "nvim") end,
+              {description = "Opens Neovim", group = "launcher"}),
     awful.key({ modkey, altkey}, "n", function () 
                 local matcher = function(c)
                     return awful.rules.match(c, {class = 'Nemo'})
@@ -238,10 +273,13 @@ globalkeys = gears.table.join(SPkeys,
     awful.key({ "Ctrl", altkey}, "h", function ()
         awful.spawn("rofi -modi \"clipboard:greenclip print\" -show clipboard -run-command '{cmd}'")
         end, {description = "Opens Clipboard History", group = "launcher"}),
-    awful.key({ modkey, "Shift"}, "F11", function () awful.spawn(scripts .. "privatebin.sh") end,
+    awful.key({ modkey, "Shift"}, "p", function () awful.spawn(scripts .. "privatebin.sh") end,
               {description = "Opens Privatebin client", group = "launcher"}),
-    awful.key({ modkey, "Shift"}, "F12", function () awful.spawn(scripts .. "tesseract.sh") end,
+    awful.key({ modkey, "Shift"}, "t", function () awful.spawn(scripts .. "tesseract.sh") end,
               {description = "Opens Tesseract script", group = "launcher"}),
+    awful.key({ modkey, altkey }, "c", function() awful.spawn(terminal .. " --class CountDown -e fish -c 'countdown 10'",
+            {floating = true, width = 200, height = 150, titlebars_enabled = false, ontop = true, sticky = true, placement = awful.placement.top_left, x = 0, y = 0})
+        end, {description = "swap screens", group = "layout"}),
 
     -- Brave Profiles
     awful.key({ modkey, altkey}, "b", function ()
@@ -289,7 +327,7 @@ globalkeys = gears.table.join(SPkeys,
         end, {description = "Makes focused client scratchpad", group = "scratchpad"}),
     awful.key({modkey, "Shift"}, "a", function()
             if SP and SP.valid then
-                notify("Unmarked", "Unarked client on a")
+                notify("Unmarked", "Unmarked client on a")
                 SP.sticky = false
                 SP.skip_taskbar = false
                 SP.floating = false
@@ -299,28 +337,26 @@ globalkeys = gears.table.join(SPkeys,
         end, {description = "Removes client scratchpad if focused client is scratchpad", group = "scratchpad"}),
 
 	-- Volume Controls
-    awful.key({ modkey, }, "minus", function () awful.spawn.with_shell( scripts .. "volume.sh down") end,
-              {description = "Decreases volume by 5%", group = "volume"}),
-    awful.key({ modkey, }, "KP_Subtract", function () awful.spawn.with_shell(scripts .. "volume.sh down") end,
-              {description = "Decreases volume by 5%", group = "volume"}),
-    awful.key({ modkey, }, "equal", function () awful.spawn.with_shell(scripts .. "volume.sh up") end,
-              {description = "Increases volume by 5%", group = "volume"}),
-    awful.key({ modkey, }, "KP_Add", function () awful.spawn.with_shell(scripts .. "volume.sh up") end,
-              {description = "Increases volume by 5%", group = "volume"}),
-    awful.key({ modkey, "Shift"}, "KP_Add", function ()
-            volume = volume + 5 
-            if volume > 100 then
-                volume = 100
-            end
-            awful.spawn.with_shell("pactl -- set-sink-volume 58 " .. volume .. "%")
-        end, {description = "Increases volume by 5%", group = "volume"}),
-    awful.key({ modkey, "Shift"}, "KP_Subtract", function ()
-            volume = volume - 5 
-            if volume < 0 then
-                volume = 0
-            end
-            awful.spawn.with_shell("pactl -- set-sink-volume 58 " .. volume.. "%")
-        end, {description = "Decreases volume by 5%", group = "volume"}),
+    -- awful.key({ modkey, }, "minus", function () awful.spawn.with_shell( scripts .. "volume.sh down") end,
+    --           {description = "Decreases volume by 5%", group = "volume"}),
+    -- awful.key({ modkey, }, "KP_Subtract", function () awful.spawn.with_shell(scripts .. "volume.sh down") end,
+    --           {description = "Decreases volume by 5%", group = "volume"}),
+    -- awful.key({ modkey, }, "equal", function () awful.spawn.with_shell(scripts .. "volume.sh up") end,
+    --           {description = "Increases volume by 5%", group = "volume"}),
+    -- awful.key({ modkey, }, "KP_Add", function () awful.spawn.with_shell(scripts .. "volume.sh up") end,
+    --           {description = "Increases volume by 5%", group = "volume"}),
+    awful.key({ modkey, }, "minus", function () 
+        simple_volume_widget:emit_signal("decrease")
+    end, {description = "Decreases volume by 5%", group = "volume"}),
+    awful.key({ modkey, }, "KP_Subtract", function ()
+        simple_volume_widget:emit_signal("decrease")
+    end, {description = "Decreases volume by 5%", group = "volume"}),
+    awful.key({ modkey, }, "equal", function ()
+        simple_volume_widget:emit_signal("increase")
+    end, {description = "Increases volume by 5%", group = "volume"}),
+    awful.key({ modkey, }, "KP_Add", function ()
+        simple_volume_widget:emit_signal("increase")
+    end, {description = "Increases volume by 5%", group = "volume"}),
 
 
     -- Mouse click emulate
@@ -377,8 +413,6 @@ globalkeys = gears.table.join(SPkeys,
               {description = "restore minimized", group = "client"}),
 
     -- Prompt
-    -- awful.key({ modkey }, "r", function () awful.screen.focused().mypromptbox:run() end,
-            --   {description = "run prompt", group = "launcher"}),
     awful.key({ modkey }, "r", function()
             awful.prompt.run {
                 prompt = "  : ",
@@ -430,22 +464,8 @@ globalkeys = gears.table.join(SPkeys,
         end, {description = "Hide everything from screen", group = "launcher"}),
 
     -- Swap Screen
-    awful.key({ modkey, "Control" }, "BackSpace",
-        function ()
-            local focused_screen = awful.screen.focused()
-            local s = focused_screen.get_next_in_direction(focused_screen, "right")
-        
-            -- FIXME: this only makes sense for two screens
-            if not s then
-                s = focused_screen.get_next_in_direction(focused_screen, "left")
-            end
-        
-            if not s then 
-                naughty.notify { preset = naughty.config.presets.critical, title = "could not get other screen" }
-                return
-            end
-            focused_screen:swap(s)
-        end, {description = "swap screens", group = "layout"})
+    awful.key({ modkey, "Control" }, "BackSpace", swapScreen
+        , {description = "swap screens", group = "layout"})
 )
 
 clientkeys = gears.table.join(
@@ -511,10 +531,30 @@ for i = 1, 9 do
         -- View tag only.
         awful.key({ modkey }, "#" .. i + 9,
                   function ()
-                        local screen = awful.screen.focused()
-                        local tag = screen.tags[i]
-                        if tag then
-                           tag:view_only()
+                        if not herbstluftwm then
+                            local tag = awful.screen.focused().tags[i]
+                            tag:view_only()
+                        else 
+                            local focused_screen = awful.screen.focused()
+                            -- local tag = screen.tags[i]
+                            local tag = awful.tag.find_by_name(focused_screen, " " .. i .. " ")
+                            if tag then
+                            tag:view_only()
+                            else 
+                                if focused_screen == screen[1] then
+                                    local tag = awful.tag.find_by_name(screen[2], " " .. i .. " ")
+                                    tag:view_only()
+                                    swapScreen()
+                                    tag:view_only()
+                                    -- awful.screen.focus_relative(-1)
+                                else 
+                                    local tag = awful.tag.find_by_name(screen[1], " " .. i .. " ")
+                                    tag:view_only()
+                                    swapScreen()
+                                    tag:view_only()
+                                    -- awful.screen.focus_relative(-1)
+                                end
+                            end
                         end
                   end,
                   {description = "view tag #"..i, group = "tag"}),

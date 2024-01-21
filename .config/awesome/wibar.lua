@@ -1,5 +1,24 @@
 -- Volume Widget
-local volume_widget = require('awesome-wm-widgets.volume-widget.volume')
+simple_volume_widget = require("widgets/simple_volume_widget")
+
+-- -- volume progress bar
+-- volume_progress = awful.popup {
+--     widget =  wibox.widget {
+--         max_value     = 1,
+--         value         = 0.33,
+--         forced_height = 20,
+--         forced_width  = 100,
+--         shape         = gears.shape.rounded_bar,
+--         border_width  = 2,
+--         border_color  = beautiful.border_color,
+--         widget        = wibox.widget.progressbar,
+--     },
+--     border_color = "#00ff00",
+--     border_width = 5,
+--     placement    = awful.placement.top_left,
+--     shape        = gears.shape.rounded_rect,
+--     visible      = true,
+-- }
 
 -- Net Speed Widget
 local net_speed_widget = require("awesome-wm-widgets.net-speed-widget.net-speed")
@@ -10,132 +29,15 @@ local separator = wibox.widget.textbox("  ")
 -- Shared tags
 sharedtags = require("awesome-sharedtags")
 
--- Ram Widget
-local ramButtons = gears.table.join(
-        awful.button({ }, 2, function()
-            if htopSP and htopSP.valid then
-                htopSP.minimized = not htopSP.minimized
-                client.focus = htopSP
-                htopSP:raise()
-            else
-                awful.spawn.with_shell(terminal .. " --class \"htop\" -e htop")
-            end    
-        end))
-local ram = wibox.widget{
-    {
-        {
-            left   = 5,
-            top    = 1.5,
-            bottom = 1.5,
-            right  = 0,
-            widget = wibox.container.margin,
-            {   
-                image = ramIcon,
-                widget = wibox.widget.imagebox
-            },    
-        },
-        {
-            widget = awful.widget.watch('bash -c "~/.config/scripts/ram.sh"')
-        },
-        buttons = ramButtons,
-        layout = wibox.layout.fixed.horizontal,
-    },
-    -- fg = xrdb.foreground,
-    bg = xrdb.background,
-    widget = wibox.container.background,
-}
 
--- CPU Temp Widget
-local cpuButtons = gears.table.join(
-        awful.button({ }, 2, function()
-            if htopSP and htopSP.valid then
-                htopSP.minimized = not htopSP.minimized
-                client.focus = htopSP
-                htopSP:raise()
-            else
-                awful.spawn.with_shell(terminal .. " --class \"htop\" -e htop")
-            end    
-        end))
-local cpu = wibox.widget{
-    {
-        {
-            left   = 5,
-            top    = 1.5,
-            bottom = 1.5,
-            right  = 0,
-            widget = wibox.container.margin,
-            {   
-                image = ramIcon,
-                widget = wibox.widget.imagebox
-            },    
-        },
-        {
-            widget = awful.widget.watch('bash -c "~/.config/scripts/ram.sh"')
-        },
-        buttons = ramButtons,
-        layout = wibox.layout.fixed.horizontal,
-    },
-    -- fg = xrdb.foreground,
-    bg = xrdb.background,
-    widget = wibox.container.background,
-}
+-- Ram Widget
+local simple_ram_widget = require("widgets/simple_ram_widget")
 
 -- Keyboard map indicator and switcher
 -- mykeyboardlayout = awful.widget.keyboardlayout()
 
 -- Calender Widget
-local month_calendar = awful.widget.calendar_popup.month( {
-    start_sunday = true,
-    style_month = {
-        border_width = 0,
-        bg_color = xrdb.background,
-        padding = 4,
-    },
-    style_focus = {
-        markup = function(t) 
-            return string.format('<span style="text-align:center">%s</span>', text)
-        end,
-        border_width = 0,
-        fg_color = xrdb.background,
-        bg_color = xrdb.foreground,
-        shape = gears.shape.circle,
-        padding = 2,
-    }
-}) 
-
--- Textclock widget
-local clockButtons =  gears.table.join( 
-        awful.button({ }, 2, function() awful.spawn.with_shell("xdg-open https://calendar.google.com") end),
-        awful.button({ }, 3, function() 
-            month_calendar:call_calendar (0, "tr", awful.screen.focused())
-            month_calendar:toggle() 
-        end)
-)
-
-local clock = wibox.widget{
-    {
-        left   = 5,
-        top    = 3,
-        bottom = 3,
-        right  = 0,
-        widget = wibox.container.margin,
-        {   
-            image = clockIcon,
-            widget = wibox.widget.imagebox
-        },    
-    },
-    {
-        wibox.widget.textclock("%a %b %d, %I:%M %p"),
-        left   = 5,
-        top    = 2,
-        bottom = 2,
-        right  = 0,
-        widget = wibox.container.margin,
-    },
-    layout = wibox.layout.fixed.horizontal,
-    widget  = wibox.container.background,
-    buttons = clockButtons
-}
+local simple_clock_widget = require("widgets/simple_clock_widget")
 
 
 -- System tray widget
@@ -201,7 +103,7 @@ local function set_wallpaper(s)
         end
         awful.spawn.with_shell("feh --bg-fill $(echo \"$(cat ~/.cache/wal/wal)\")")
         --gears.wallpaper.maximized(wall .. "black_hole.jpg", s, false)
-        --gears.wallpaper.maximized(wallpaper, s, true)
+        -- gears.wallpaper.maximized(wallpaper, s, true)
     end
 end
 
@@ -245,20 +147,19 @@ awful.screen.connect_for_each_screen(function(s)
     -- Each screen has its own tag table.
     if s == screen[1] then
         -- Create the wibox
-        s.mywibox = awful.wibar({ position = "top", screen = s, height = 23, opacity = 0.7})
+        s.mywibox = awful.wibar({ position = "top", screen = s, height = 23, opacity = 1})
         tags = { " 1 ", " 2 ", " 3 ", " 4 ", " 5 ", " 6 ", " 7 ", " 8 ", " 9 "}
         awful.tag(tags, s, awful.layout.layouts[1])
     else
         -- Create the wibox
-        s.mywibox = awful.wibar({ position = "top", screen = s, height = 21, opacity = 0.7})
-        awful.tag(tags, s, awful.layout.layouts[2])
-    end
-
-    -- Set 4th tag layout to max
-    -- local fourth_tag = awful.tag.find_by_name(s, tags[4])
-    -- awful.layout.set(awful.layout.suit.max, fourth_tag)
-    -- fourth_tag.gap = 0
-    
+        s.mywibox = awful.wibar({ position = "top", screen = s, height = 21, opacity = 1})
+        if herbstluftwm then
+            tags2 = {" 9 "}
+        else 
+            tags2 = tags
+        end
+        awful.tag(tags2, s, awful.layout.layouts[2])
+    end    
 
     -- Create a promptbox for each screen
     s.mypromptbox = awful.widget.prompt{
@@ -331,6 +232,7 @@ awful.screen.connect_for_each_screen(function(s)
         { -- Left widgets
             layout = wibox.layout.fixed.horizontal,
             mylauncher,
+            separator,
             s.mytaglist,
             s.mypromptbox,
         },
@@ -345,14 +247,15 @@ awful.screen.connect_for_each_screen(function(s)
             -- mykeyboardlayout,
             systray,
 		    net_speed_widget(),
-            ram,
+            simple_ram_widget,
             separator,
             separator,
-		    volume_widget{
-		  	    widget_type='icon_and_text'
-		    },
+            simple_volume_widget,
+		    -- volume_widget{
+		  	--     widget_type='icon_and_text'
+		    -- },
 		    separator,
-            clock,
+            simple_clock_widget,
 		    separator,
             -- s.mylayoutbox,
         },

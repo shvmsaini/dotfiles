@@ -29,17 +29,19 @@ awful.rules.rules = {
         },
         class = {
           "Arandr",
+          "baobab",
           "Blueman-manager",
           "htop",
           "Gpick",
           "Kruler",
           "MessageWin",  -- kalarm.
           "Pavucontrol",
+          "Otpclient",
           "Sxiv",
          -- "Tor Browser", -- Needs a fixed window size to avoid fingerprinting by screen size.
           "Wpa_gui",
           "veromix",
-          "vlc",
+          -- "vlc",
           "xtightvncviewer",
           "org.cryptomator.launcher.Cryptomator$MainApp",
           "Zenity"
@@ -56,7 +58,7 @@ awful.rules.rules = {
           "ConfigManager",  -- Thunderbird's about:config.
           "pop-up",       -- e.g. Google Chrome's (detached) Developer Tools.
         }
-      }, properties = { floating = true, placement = awful.placement.centered }
+      }, properties = { floating = true, placement = awful.placement.centered, ontop = true } 
     },
 
     -- No titlebars to normal clients and dialogs
@@ -97,8 +99,9 @@ awful.rules.rules = {
     -- Vlc
     {
       rule = {class = "vlc"},
-      properties = {placement = awful.placement.no_overlap+awful.placement.no_offscreen}
+      properties = {floating = true, placement = awful.placement.no_overlap+awful.placement.no_offscreen, width = 700, height = 500} -- vlc doesnt respect width and height
     },
+    -- Google meet
     {
       rule = {name = "meet.google.com is sharing your screen."},
       properties = {placement = awful.placement.bottom, border_width = 0, titlebars_enabled = false}

@@ -33,7 +33,8 @@ set pbdir $HOME/.local/lib/python3.10/site-packages/pbincli/cli.py
 set hcdir $HOME/.config/herbstluftwm/
 set walls /mnt/forlinuxuse/Wallpapers/
 set conf $HOME/.config
-set FLU /mnt/forlinuxuse
+# set FLU /mnt/forlinuxuse
+set FLU /run/media/shvmpc/forlinuxuse
 set STF /run/media/shvmpc/Stuff
 set DOC $HOME/Documents/
 set DWN $HOME/Downloads/
@@ -137,3 +138,12 @@ function aur-install --description "aur-install <link or package-name>"
 	cd /tmp && git clone "$link" && cd $folder && makepkg -si
 end
 
+# Git commands
+alias !gl="git log | bat"
+alias !gs="git status"
+alias !gsl="git stash list"
+alias !gp="git pull"
+alias !gbl="git branch --list"
+
+# Countdown
+alias countdown="~/.config/scripts/countdown.sh"

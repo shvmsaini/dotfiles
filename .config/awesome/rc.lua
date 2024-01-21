@@ -52,7 +52,7 @@ termexec = terminal .. " -e "
 editor = os.getenv("nvim") or "vim"
 home = os.getenv("HOME") .. "/"
 scripts = home .. ".config/scripts/"
-wall = "/mnt/forlinuxuse/Wallpapers/"
+wall = "/run/media/shvmpc/forlinuxuse/Wallpapers/"
 
 -- Default modkey.
 modkey = "Mod4"
