@@ -52,6 +52,7 @@ makeSP = function(c, i, m)
             end
             notify("Marked", "Marked client on F" .. i)
             SPs[i] = client.focus
+		  client.focus.sticky = true
             SPs[i].sticky = true
             if not SPs[i].floating then
                 SPs[i+12] = false
@@ -104,7 +105,8 @@ createTerm = function()
             client.focus = termSP
             termSP:raise()
         else
-            awful.spawn(terminal .. " --class termSP -e fish -c 'neofetch; fish'")
+            --awful.spawn(terminal .. " --class termSP -e fish -c 'neofetch --kitty $(cat ~/.cache/wal/wal) --size 320; fish'")
+            awful.spawn(terminal .. " --class termSP -e fish -c 'fastfetch --kitty $(cat ~/.cache/wal/wal); fish'")
         end
     end
 
@@ -216,8 +218,8 @@ globalkeys = gears.table.join(SPkeys,
               {description = "open a terminal", group = "launcher"}),
     awful.key({ modkey,}, "KP_Enter", function () awful.spawn(terminal) end,
               {description = "open a terminal", group = "launcher"}),
-    awful.key({ modkey, altkey}, "f", function () awful.spawn("mullvad-browser") end,
-              {description = "Opens Mullvad", group = "launcher"}),
+    awful.key({ modkey, altkey}, "f", function () awful.spawn(mainbrowser) end,
+              {description = "Opens " .. mainbrowser, group = "launcher"}),
     awful.key({ modkey, altkey}, "p", function () awful.spawn("pavucontrol") end,
               {description = "Opens Pavucontrol", group = "launcher"}),
     awful.key({ modkey, altkey}, "e", function () awful.spawn(termexec .. "nvim") end,
@@ -229,6 +231,14 @@ globalkeys = gears.table.join(SPkeys,
                 awful.client.run_or_raise('nemo', matcher)
                 -- awful.spawn.raise_or_spawn('nemo', nil, matcher)
             end, {description = "Opens Nemo", group = "launcher"}),
+    awful.key({ modkey, altkey}, "d", function () 
+                local matcher = function(c)
+                    return awful.rules.match(c, {class = 'Dolphin'})
+                end
+                awful.client.run_or_raise('dolphin', matcher)
+                -- awful.spawn.raise_or_spawn('dolphin', nil, matcher)
+            end, {description = "Opens Dolphin", group = "launcher"}),
+
     -- TODO: convert to raise_or_spawn
     awful.key({ modkey, altkey}, "g", function ()
                 local matcher = function(c)
@@ -266,7 +276,7 @@ globalkeys = gears.table.join(SPkeys,
         end, {description = "Opens htop", group = "launcher"}),
 
     -- Miscelleneous programs and scripts
-    awful.key({ "Ctrl", "Shift"}, "Print", function () awful.spawn.with_shell("flameshot gui") end,
+    awful.key({ modkey, "Shift"}, "Print", function () awful.spawn.with_shell("flameshot gui") end,
               {description = "Opens Screenshot window", group = "launcher"}),
     awful.key({ }, "Print", function () awful.spawn.with_shell("flameshot launcher") end,
               {description = "Opens Screenshot window", group = "launcher"}),
@@ -283,12 +293,12 @@ globalkeys = gears.table.join(SPkeys,
 
     -- Brave Profiles
     awful.key({ modkey, altkey}, "b", function ()
-        awful.spawn("brave --disable-application-cache --media-cache-size=1 --disk-cache-size=1 --profile-directory=\"Profile 5\"",
+        awful.spawn(browser .. " --disable-application-cache --media-cache-size=1 --disk-cache-size=1",
             {tag =  awful.screen.focused().selected_tag})
         end, {description = "Opens Brave Browser with personal profile", group = "launcher"}),
 
     awful.key({ modkey, altkey}, "w", function ()
-        awful.spawn("brave --disable-application-cache --media-cache-size=1 --disk-cache-size=1 --profile-directory=\"Profile 6\"",
+        awful.spawn(browser .. " --disable-application-cache --media-cache-size=1 --disk-cache-size=1",
             {tag =  awful.screen.focused().selected_tag})
         end, {description = "Opens Brave Browser with work profile", group = "launcher"}),
 
@@ -384,6 +394,11 @@ globalkeys = gears.table.join(SPkeys,
         function()
             awful.spawn.with_shell("~/.config/awesome/scripts/exit.sh")
         end, {description = "quit awesome", group = "awesome"}),
+    awful.key({ modkey, "Control", "Shift"   }, "k",
+        function()
+            awful.spawn.with_shell("~/.config/scripts/kill_ram_hog.sh")
+        end, {description = "quit awesome", group = "awesome"}),
+
 
     awful.key({ modkey, }, "l", function () awful.tag.incmwfact( 0.05) end,
               {description = "increase master width factor", group = "layout"}),

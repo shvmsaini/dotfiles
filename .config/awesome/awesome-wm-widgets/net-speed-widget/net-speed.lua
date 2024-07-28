@@ -126,7 +126,7 @@ local function worker(user_args)
         layout = wibox.layout.fixed.horizontal,
        
         },
-        bg = xrdb.background,
+        --bg = xrdb.background,
         widget = wibox.container.background,
         set_rx_text = function(self, new_rx_speed)
             self:get_children_by_id('rx_speed')[1]:set_text(tostring(new_rx_speed))

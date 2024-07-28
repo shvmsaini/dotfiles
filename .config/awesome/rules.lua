@@ -1,5 +1,5 @@
 -- Rules to apply to new clients (through the "manage" signal).
-local scr = 1 -- screen.count()
+local scr = 2 --screen.count()
 
 awful.rules.rules = {
     -- All clients will match this rule.
@@ -35,6 +35,8 @@ awful.rules.rules = {
           "Gpick",
           "Kruler",
           "MessageWin",  -- kalarm.
+          "GParted",
+          "gnome-logs",
           "Pavucontrol",
           "Otpclient",
           "Sxiv",

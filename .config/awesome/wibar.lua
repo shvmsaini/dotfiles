@@ -1,6 +1,49 @@
 -- Volume Widget
 simple_volume_widget = require("widgets/simple_volume_widget")
 
+-- taglist
+local function taglist_with_icons(s)
+  -- Taglist with custom update function
+  local taglist = awful.widget.taglist {
+    screen = s,
+    filter = awful.widget.taglist.filter.all,
+    update_function = function(tags)
+      local items = {}
+      local current_tag = awful.tag.getselected(s)
+      
+      -- Add current tag name
+      items[#items + 1] = {
+        text = current_tag.name,
+        fg = s.theme.taglist_fg_focus,
+        buttons = awful.util.table.join(
+          awful.button({ }, awful.tag.viewtoggle, current_tag)
+        )
+      }
+      
+      -- Add application icons for current tag
+      for _, client in ipairs(awful.client.getclients(current_tag)) do
+        items[#items + 1] = {
+          widget = wibox.widget.image {
+            image = client.icon,
+            fg = s.theme.taglist_fg_occupied,
+            click_action = function()
+              client.focus()
+            end
+          },
+          buttons = awful.util.table.join(
+            awful.button({ }, awful.client.focus, client, { action = true })
+          )
+        }
+      end
+      
+      return items
+    end,
+    layout = wibox.layout.fixed.horizontal,
+  }
+  
+  return taglist
+end
+
 -- -- volume progress bar
 -- volume_progress = awful.popup {
 --     widget =  wibox.widget {
@@ -101,7 +144,8 @@ local function set_wallpaper(s)
         if type(wallpaper) == "function" then
             wallpaper = wallpaper(s)
         end
-        awful.spawn.with_shell("feh --bg-fill $(echo \"$(cat ~/.cache/wal/wal)\")")
+	   -- awful.spawn.with_shell("~/.config/awesome/scripts/pywal.sh -f")
+        -- awful.spawn.with_shell("feh --bg-fill $(echo \"$(cat ~/.cache/wal/wal)\")")
         --gears.wallpaper.maximized(wall .. "black_hole.jpg", s, false)
         -- gears.wallpaper.maximized(wallpaper, s, true)
     end
@@ -147,13 +191,14 @@ awful.screen.connect_for_each_screen(function(s)
     -- Each screen has its own tag table.
     if s == screen[1] then
         -- Create the wibox
-        s.mywibox = awful.wibar({ position = "top", screen = s, height = 23, opacity = 1})
+        s.mywibox = awful.wibar({ position = "top", screen = s, height = 23, opacity = 100})
         tags = { " 1 ", " 2 ", " 3 ", " 4 ", " 5 ", " 6 ", " 7 ", " 8 ", " 9 "}
         awful.tag(tags, s, awful.layout.layouts[1])
     else
         -- Create the wibox
-        s.mywibox = awful.wibar({ position = "top", screen = s, height = 21, opacity = 1})
-        if herbstluftwm then
+        -- s.mywibox = awful.wibar({ position = "top", screen = s, height = 23, opacity = 100, bg = xrdb.background .. "00", fg = xrdb.foreground})
+        s.mywibox = awful.wibar({ position = "top", screen = s, height = 23, opacity = 100}) --, bg = xrdb.background .. "00", fg = xrdb.foreground})
+        if herbstMode then
             tags2 = {" 9 "}
         else 
             tags2 = tags
@@ -246,7 +291,8 @@ awful.screen.connect_for_each_screen(function(s)
             layout = wibox.layout.fixed.horizontal,
             -- mykeyboardlayout,
             systray,
-		    net_speed_widget(),
+            net_speed_widget(),
+            --taglist_with_icons,
             simple_ram_widget,
             separator,
             separator,

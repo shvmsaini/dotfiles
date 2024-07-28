@@ -20,21 +20,52 @@ alias jctl="journalctl -p 3 -xb"
 alias ss="import png:- | xclip -selection clipboard -t image/png"
 #alias pp="sleep 0.5; xdotool type "$(xclip -o -selection clipboard)""
 
-# Replace ls with exa
-alias ls='exa -al --color=always --group-directories-first --icons' # preferred listing
-alias la='exa -a --color=always --group-directories-first --icons'  # all files and dirs
-alias ll='exa -l --color=always --group-directories-first --icons'  # long format
-alias lt='exa -aT --color=always --group-directories-first --icons' # tree listing
-alias l.='exa -ald --color=always --group-directories-first --icons .*' # show only dotfiles
+# Replace ls with eza
+alias ls='eza -al --color=always --group-directories-first --icons' # preferred listing
+alias la='eza -a --color=always --group-directories-first --icons'  # all files and dirs
+alias ll='eza -l --color=always --group-directories-first --icons'  # long format
+alias lt='eza -aT --color=always --group-directories-first --icons' # tree listing
+alias l.='eza -ald --color=always --group-directories-first --icons .*' # show only dotfiles
+
+# Abbreviations
+abbr !gf "git fetch"
+abbr !gl "git log | bat"
+abbr !gch "git checkout"
+abbr !gsw "git switch"
+abbr !gc "git clone"
+abbr !gs "git status"
+abbr !gsl "git stash list"
+abbr !gbl "git branch --list"
+abbr !gfgc "git fetch && git checkout "
+abbr !gswm "git switch master"
+abbr !gswd "git switch release/s152-demo"
+abbr !gp "git pull"
+abbr !gfgc "git fetch && git checkout"
+abbr !gfc "git fetch && "
+abbr !ef "nvim ~/.config/fish/config.fish"
+
+# Countdown
+alias countdown="~/.config/scripts/countdown.sh"
+
+# Default applications
+alias fmgui="dolphin "
+alias fm="ranger "
+alias ed="nvim "
+alias edgui="kate "
+
+# Paste workaround for android emulator
+alias adbpaste="adb shell input text "'$(xclip -selection c -o)'""
 
 # Directories
+set local $HOME/.local
+set lscripts $HOME/.local/share/nemo/scripts/
 set scripts $HOME/.config/scripts/
 set pbdir $HOME/.local/lib/python3.10/site-packages/pbincli/cli.py
 set hcdir $HOME/.config/herbstluftwm/
 set walls /mnt/forlinuxuse/Wallpapers/
 set conf $HOME/.config
-# set FLU /mnt/forlinuxuse
-set FLU /run/media/shvmpc/forlinuxuse
+set FLU /mnt/forlinuxuse
+# set FLU /run/media/shvmpc/forlinuxuse
 set STF /run/media/shvmpc/Stuff
 set DOC $HOME/Documents/
 set DWN $HOME/Downloads/
@@ -42,12 +73,12 @@ set TMP /tmp/
 
 # ENV
 set QT_QPA_PLATFORMTHEME qt5ct
-set QT_STYLE_OVERRIDE Adwaita-dark
+# set QT_STYLE_OVERRIDE Adwaita-dark
 
 # PATH
 export PATH="$PATH:$HOME/.local/bin"
 export TERM=kitty
-export QT_STYLE_OVERRIDE=Adwaita-dark
+# export QT_STYLE_OVERRIDE=Adwaita-dark
 
 set EDITOR /bin/vim
 
@@ -71,12 +102,54 @@ function backup --argument filename
 end
 
 # Pacman Related
-alias upgrade="sudo pacman -Syuu"
-alias remove="sudo pacman -Rns "
-alias install="sudo pacman -S "
-alias search="pacman -Ss"
-alias query="pacman -Qi"
-alias fixpacman="sudo rm /var/lib/pacman/db.lck"
+#alias upgrade="sudo pacman -Syuu"
+#alias remove="sudo pacman -Rns "
+#alias install="sudo pacman -S "
+#alias search="pacman -Ss"
+#alias query="pacman -Qi"
+#alias fixpacman="sudo rm /var/lib/pacman/db.lck"
+# alias install="sudo dnf install "
+
+set OS $(cat /etc/os-release | grep "ID=" -m 1 | cut -d'=' -f 2)
+
+function tryinstall --argument program
+	if [ "$OS" = "fedora" ]
+		sudo dnf install $program
+	else if [ "$OS" = "arch" ]
+		sudo pacman -S $program
+	end
+end
+
+# Adb connect
+function adbconnect
+	for ip in (seq 200 -1 180)
+		echo "Trying to connect to device at 192.168.0.$ip..."
+		adb connect 192.168.0.$ip | grep "connected"
+	   	if [ $status -eq 0 ]
+		    	break
+		end
+	end 
+end
+
+
+# Give random digit
+function give_rand --argument digit
+	set random_number ""
+	for i in (seq $digit)
+		set random_number $random_number(math (random 0 9))
+	end
+	echo $random_number | xclip -selection clipboard
+end
+
+function adbdisconnect
+	for ip in (seq 200 -1 190)
+		echo "Trying to connect to device at 192.168.0.$ip..."
+		adb disconnect 192.168.0.$ip | grep "disconnected"
+	   	if [ $status -eq 0 ]
+		    	break
+		end
+	end 
+end
 
 # Null pointer
 function 0x0 --argument filename
@@ -115,9 +188,6 @@ function record --argument screen
 	end
 end
 
-# Paste workaround for android emulator
-alias adbpaste="adb shell input text "'$(xclip -selection c -o)'""
-
 # Run with awesome
 function awm
 	awesome-client "awful = require(\"awful\") awful.spawn(\"$argv\")"
@@ -138,12 +208,10 @@ function aur-install --description "aur-install <link or package-name>"
 	cd /tmp && git clone "$link" && cd $folder && makepkg -si
 end
 
-# Git commands
-alias !gl="git log | bat"
-alias !gs="git status"
-alias !gsl="git stash list"
-alias !gp="git pull"
-alias !gbl="git branch --list"
+# SSH
+fish_ssh_agent
+# Add All keys to session
+for key in (dir -1 $HOME/.ssh/id_* | grep -v .pub);
+  DISPLAY=1 SSH_ASKPASS="$HOME/.ssh/pass.sh" ssh-add $key < /dev/null > /dev/null 2>&1;
+end
 
-# Countdown
-alias countdown="~/.config/scripts/countdown.sh"

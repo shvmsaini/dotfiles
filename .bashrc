@@ -139,11 +139,12 @@ export IDEA_JDK=/usr/lib/jvm/jdk-jetbrains
 export ANDROID_SDK_ROOT=/home/shvmpc/Android/Sdk
 export JAVA_HOME=/usr/lib/jvm/java-17-openjdk
 export RUBY=/home/shvmpc/.local/share/gem/ruby/3.0.0/bin
+export FLUTTER=/opt/flutter/flutter/bin
 export LOCALBIN=/home/shvmpc/.local/bin
 
 export QT_QPA_PLATFORMTHEME=qt5ct
-export QT_STYLE_OVERRIDE=Adwaita-dark
+# export QT_STYLE_OVERRIDE=Adwaita-dark
 
-export PATH=$PATH:$JAVA_HOME:$ANDROID_SDK_ROOT:$IDEA_JDK:$RUBY:$LOCALBIN
+export PATH=$PATH:$JAVA_HOME:$ANDROID_SDK_ROOT:$IDEA_JDK:$RUBY:$LOCALBIN:$FLUTTER
 
 bind 'set bell-style none'

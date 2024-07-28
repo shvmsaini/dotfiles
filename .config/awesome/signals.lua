@@ -24,10 +24,12 @@ client.connect_signal("manage", function (c)
             -- Set 4th tag layout to max
             local fourth_tag = awful.tag.find_by_name(s, tags[4])
             awful.layout.set(awful.layout.suit.max, fourth_tag)
-		elseif c.name == 'Logcat' then
-			SPs[1] = c
-		elseif c.name == 'Running Devices' then
-			SP = c
+        elseif c.name == 'Logcat' then
+            SPs[1] = c
+        elseif c.name == 'Running Devices' then
+            SP = c
+            SP.sticky = true
+            SP.ontop = true
         end
     end
 
@@ -531,6 +533,10 @@ local noti_buttons = gears.table.join(
 
 
 naughty.connect_signal("request::display", function(n)
+	n.timeout = n.timeout
+	-- if not n.timeout then 
+	-- 	n.timeout = 5
+	-- end
 --   if not n.app_icon then
 --     n.app_icon = beautiful.notification_icon
 --   end
@@ -584,5 +590,4 @@ naughty.connect_signal("request::display", function(n)
     },
   }
 end)
-
 

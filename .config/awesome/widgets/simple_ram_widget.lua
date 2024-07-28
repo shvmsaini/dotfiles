@@ -29,7 +29,7 @@ local simple_ram_widget = wibox.widget{
         layout = wibox.layout.fixed.horizontal,
     },
     -- fg = xrdb.foreground,
-    bg = xrdb.background,
+    --bg = xrdb.background .. "00",
     widget = wibox.container.background,
 }
 

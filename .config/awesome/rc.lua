@@ -51,8 +51,12 @@ terminal = "kitty"
 termexec = terminal .. " -e "
 editor = os.getenv("nvim") or "vim"
 home = os.getenv("HOME") .. "/"
+filemanager = "dolphin" or "nemo"
 scripts = home .. ".config/scripts/"
-wall = "/run/media/shvmpc/forlinuxuse/Wallpapers/"
+browser = "brave-browser-beta"
+mainbrowser = "firefox"
+-- wall = "/run/media/shvmpc/forlinuxuse/Wallpapers/"
+wall = "/mnt/forlinuxuse/Wallpapers/"
 
 -- Default modkey.
 modkey = "Mod4"
@@ -85,3 +89,4 @@ require("signals")
 
 -- Autostart
 awful.spawn(scripts .. "autostart.sh")
+

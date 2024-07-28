@@ -7,6 +7,7 @@ local mute = false
 awful.spawn.easy_async({'bash', '-c', "~/.config/scripts/volume_simple.sh"}, function(stdout)
         if stdout then
             volume_before_mute = tonumber(stdout)
+            changeIcon()
         end
     end)
 
@@ -100,7 +101,7 @@ local simple_volume_widget = wibox.widget{
         layout = wibox.layout.fixed.horizontal,
     },
     -- fg = xrdb.foreground,
-    bg = xrdb.background,
+  --  bg = xrdb.background,
     widget = wibox.container.background,
 }
 

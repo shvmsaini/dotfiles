@@ -6,7 +6,8 @@ if [ $? = 0 ] && [ $# -eq 0 ]; then
 	exit 1
 fi
 
-wdir="/run/media/shvmpc/forlinuxuse/Wallpapers"
+wdir="/mnt/forlinuxuse/Wallpapers"
+#wdir="/run/media/shvmpc/forlinuxuse/Wallpapers"
 
 if [ "$#" = 1 ] && [ $1 != -f ]; then
 	wall=$1
