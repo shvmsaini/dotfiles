@@ -122,9 +122,9 @@ awful.rules.rules = {
             return awful.placement.centered(...) -- https://github.com/awesomeWM/awesome/issues/2497
           end, 
           skip_taskbar = true,
-          width = 900,
+          width = 1000,
           ontop = true,
-          height = 650,
+          height = 750,
           floating = true,
       },
     },

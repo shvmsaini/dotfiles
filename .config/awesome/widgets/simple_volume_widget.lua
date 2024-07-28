@@ -3,14 +3,6 @@
 local volume_before_mute = 0
 local volume_widget, volume_timer = awful.widget.watch('bash -c "~/.config/scripts/volume_simple.sh"', 15)
 local mute = false
-
-awful.spawn.easy_async({'bash', '-c', "~/.config/scripts/volume_simple.sh"}, function(stdout)
-        if stdout then
-            volume_before_mute = tonumber(stdout)
-            changeIcon()
-        end
-    end)
-
 local icon = wibox.widget.imagebox()
 icon:set_image(volumeHighIcon)
 
@@ -19,7 +11,7 @@ local changeIcon = function()
         icon:set_image(volumeMuteIcon)
     elseif volume_before_mute < 30 then
         icon:set_image(volumeLowIcon)
-    elseif volume_before_mute < 60 then
+    elseif volume_before_mute < 70 then
         icon:set_image(volumeMedIcon)
     else
         icon:set_image(volumeHighIcon)
@@ -28,9 +20,17 @@ local changeIcon = function()
 end
 
 local increaseVolume = function()
+    if mute then 
+        awful.spawn("amixer set Master " .. volume_before_mute .. "%")
+        mute = false
+        changeIcon()
+        return
+    end
+
     if not volume_before_mute then 
         volume_before_mute = 0
     end
+
     volume_before_mute = volume_before_mute + 5
     if volume_before_mute > 100 then
         volume_before_mute = 100
@@ -41,6 +41,13 @@ local increaseVolume = function()
 end
 
 local decreaseVolume = function()
+    if mute then 
+        awful.spawn("amixer set Master " .. volume_before_mute .. "%")
+        mute = false
+        changeIcon()
+        return
+    end
+
     if not volume_before_mute then 
         volume_before_mute = 0
     end
@@ -112,5 +119,12 @@ end)
 simple_volume_widget:connect_signal("increase", function()
     increaseVolume()
 end) 
+
+awful.spawn.easy_async({'bash', '-c', "~/.config/scripts/volume_simple.sh"}, function(stdout)
+        if stdout then
+            volume_before_mute = tonumber(stdout)
+            changeIcon()
+        end
+    end)
 
 return simple_volume_widget

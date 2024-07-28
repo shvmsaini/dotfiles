@@ -3,8 +3,8 @@
 $HOME/.config/scripts/autoxrandr.sh &
 
 #killall picom 
-#picom --config $HOME/.config/picom/picom.conf &
-xcompmgr &
+picom --config $HOME/.config/picom/picom.conf &
+# xcompmgr &
 
 # killall nm-applet
 # nm-applet &

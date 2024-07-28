@@ -120,6 +120,14 @@ function tryinstall --argument program
 	end
 end
 
+function upgrade 
+  if [ $OS = "fedora" ]
+    sudo dnf upgrade
+  else if [ $OS = "arch" ]
+    sudo pacman -Syuu
+  end
+end
+
 # Adb connect
 function adbconnect
 	for ip in (seq 200 -1 180)
@@ -215,3 +223,5 @@ for key in (dir -1 $HOME/.ssh/id_* | grep -v .pub);
   DISPLAY=1 SSH_ASKPASS="$HOME/.ssh/pass.sh" ssh-add $key < /dev/null > /dev/null 2>&1;
 end
 
+#zoxide
+zoxide init fish | source
