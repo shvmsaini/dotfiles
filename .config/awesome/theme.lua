@@ -29,8 +29,8 @@ volumeLowIcon =  gears.filesystem.get_configuration_dir() .. "/awesome-wm-widget
 volumeMuteIcon =  gears.filesystem.get_configuration_dir() .. "/awesome-wm-widgets/volume-widget/icons/audio-volume-muted-symbolic.svg"
 
 -- Wibar Awesome Icon
-beautiful.awesome_icon = iconFolder .. "arch_white.svg"
--- beautiful.awesome_icon = iconFolder .. "icon-alien-symbolic.svg"
+-- beautiful.awesome_icon = iconFolder .. "arch_white.svg"
+beautiful.awesome_icon = iconFolder .. "icon-alien-symbolic.svg"
 -- beautiful.awesome_icon = "/usr/share/icons/Papirus/32x32/apps/pacman.svg"
 
 -- Menu
@@ -43,8 +43,9 @@ beautiful.menu_fg_normal = xrdb.foreground
 beautiful.menu_submenu_icon = arrowIcon
 
 -- All font
--- beautiful.font = "FreeSans 9"
-beautiful.font = "SF Pro Display 11.3"
+beautiful.font = "FreeSans 12"
+--beautiful.font = "SF Pro Display 11.3"
+--beautiful.font = "SF Pro Display 11.3"
 beautiful.menu_font = "Hack Nerd Font Mono 11"
 beautiful.hotkeys_font = "Hack Nerd Font Mono 11" 
 beautiful.hotkeys_description_font = "Hack Nerd Font Mono 11"
@@ -73,6 +74,9 @@ beautiful.notification_margin = 5
 beautiful.notification_max_width = 1000
 beautiful.notification_max_height = 100
 --beautiful.notification_shape = gears.shape.rounded_rect
+beautiful.notification_shape = function(cr, w, h)
+    gears.shape.rounded_rect(cr, w, h, 5)
+end
 
 -- Wibar
 beautiful.wibar_bg = xrdb.background

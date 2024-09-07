@@ -38,10 +38,12 @@ abbr !gsl "git stash list"
 abbr !gbl "git branch --list"
 abbr !gfgc "git fetch && git checkout "
 abbr !gswm "git switch master"
-abbr !gswd "git switch release/s152-demo"
+abbr !gswd "git switch release/s154-demo"
 abbr !gp "git pull"
 abbr !gfgc "git fetch && git checkout"
-abbr !gfc "git fetch && "
+abbr !gfc "git fetch &&"
+abbr !gstp "git stash pop"
+abbr !gst "git stash"
 abbr !ef "nvim ~/.config/fish/config.fish"
 
 # Countdown
@@ -62,10 +64,10 @@ set lscripts $HOME/.local/share/nemo/scripts/
 set scripts $HOME/.config/scripts/
 set pbdir $HOME/.local/lib/python3.10/site-packages/pbincli/cli.py
 set hcdir $HOME/.config/herbstluftwm/
-set walls /mnt/forlinuxuse/Wallpapers/
+set walls /run/media/shvmpc/forlinuxuse/Wallpapers/
 set conf $HOME/.config
-set FLU /mnt/forlinuxuse
-# set FLU /run/media/shvmpc/forlinuxuse
+#set FLU /mnt/forlinuxuse
+set FLU /run/media/shvmpc/forlinuxuse
 set STF /run/media/shvmpc/Stuff
 set DOC $HOME/Documents/
 set DWN $HOME/Downloads/
@@ -102,34 +104,34 @@ function backup --argument filename
 end
 
 # Pacman Related
-#alias upgrade="sudo pacman -Syuu"
-#alias remove="sudo pacman -Rns "
-#alias install="sudo pacman -S "
-#alias search="pacman -Ss"
-#alias query="pacman -Qi"
-#alias fixpacman="sudo rm /var/lib/pacman/db.lck"
-# alias install="sudo dnf install "
+abbr upgrade "sudo pacman -Syuu"
+abbr remove "sudo pacman -Rns"
+abbr install "sudo pacman -S"
+abbr search "pacman -Ss"
+abbr query "pacman -Qi"
+abbr fixpacman "sudo rm /var/lib/pacman/db.lck"
+#abbr install "sudo dnf install "
 
 set OS $(cat /etc/os-release | grep "ID=" -m 1 | cut -d'=' -f 2)
 
-function tryinstall --argument program
-	if [ "$OS" = "fedora" ]
-		sudo dnf install $program
-	else if [ "$OS" = "arch" ]
-		sudo pacman -S $program
-	end
-end
-
-function upgrade 
-  if [ $OS = "fedora" ]
-    sudo dnf upgrade
-  else if [ $OS = "arch" ]
-    sudo pacman -Syuu
-  end
-end
+#function tryinstall --argument program
+#	if [ "$OS" = "fedora" ]
+#		sudo dnf install $program
+#	else if [ "$OS" = "arch" ]
+#		sudo pacman -S $program
+#	end
+#end
+#
+#function upgrade 
+#  if [ $OS = "fedora" ]
+#    sudo dnf upgrade
+#  else if [ $OS = "arch" ]
+#    sudo pacman -Syuu
+#  end
+#end
 
 # Adb connect
-function adbconnect
+function adbc
 	for ip in (seq 200 -1 180)
 		echo "Trying to connect to device at 192.168.0.$ip..."
 		adb connect 192.168.0.$ip | grep "connected"
@@ -149,7 +151,7 @@ function give_rand --argument digit
 	echo $random_number | xclip -selection clipboard
 end
 
-function adbdisconnect
+function adbd
 	for ip in (seq 200 -1 190)
 		echo "Trying to connect to device at 192.168.0.$ip..."
 		adb disconnect 192.168.0.$ip | grep "disconnected"
@@ -225,3 +227,6 @@ end
 
 #zoxide
 zoxide init fish | source
+
+# clipboard
+abbr to_clip "xclip -selection clipboard"

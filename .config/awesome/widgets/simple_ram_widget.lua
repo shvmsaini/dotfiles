@@ -1,3 +1,11 @@
+local gears = require("gears")
+local awful = require("awful")
+local wibox = require("wibox")
+--local xrdb = require("xrdb")
+
+local htopSP = htopSP
+local ramIcon = ramIcon
+
 local ramButtons = gears.table.join(
         awful.button({ }, 2, function()
             if htopSP and htopSP.valid then
@@ -17,10 +25,13 @@ local simple_ram_widget = wibox.widget{
             bottom = 1.5,
             right  = 0,
             widget = wibox.container.margin,
-            {   
-                image = ramIcon,
-                widget = wibox.widget.imagebox
-            },    
+            {
+                markup = '<span font=\"Sans 18\" color=\"' .. '#FFFFFF' .. '\"> 󰍛 </span>',
+                --font = "Sans 14",
+                --image = ramIcon,
+                widget = wibox.widget.textbox
+                --widget = wibox.widget.imagebox
+            },
         },
         {
             widget = awful.widget.watch('bash -c "~/.config/scripts/ram.sh"')

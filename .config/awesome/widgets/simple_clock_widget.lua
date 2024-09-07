@@ -1,3 +1,7 @@
+local wibox = require("wibox")
+local awful = require("awful")
+local gears = require("gears")
+
 local month_calendar = awful.widget.calendar_popup.month( {
     start_sunday = true,
     style_month = {
@@ -15,14 +19,14 @@ local month_calendar = awful.widget.calendar_popup.month( {
         shape = gears.shape.circle,
         padding = 2,
     }
-}) 
+})
 
 -- Textclock widget
-local clockButtons =  gears.table.join( 
+local clockButtons =  gears.table.join(
         awful.button({ }, 2, function() awful.spawn.with_shell("xdg-open https://calendar.google.com") end),
-        awful.button({ }, 3, function() 
+        awful.button({ }, 3, function()
             month_calendar:call_calendar (0, "tr", awful.screen.focused())
-            month_calendar:toggle() 
+            month_calendar:toggle()
         end)
 )
 
@@ -33,10 +37,10 @@ local simple_clock_widget = wibox.widget{
         bottom = 3,
         right  = 0,
         widget = wibox.container.margin,
-        {   
+        {
             image = clockIcon,
             widget = wibox.widget.imagebox
-        },    
+        },
     },
     {
         wibox.widget.textclock("%a %b %d, %I:%M %p"),

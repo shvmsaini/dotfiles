@@ -2,18 +2,19 @@
 
 $HOME/.config/scripts/autoxrandr.sh &
 
-#killall picom 
-picom --config $HOME/.config/picom/picom.conf &
+killall picom 
+#picom --config $HOME/.config/picom/picom.conf &
+picom --config $HOME/.config/picom.bak/picom_blur.conf &
 # xcompmgr &
 
 # killall nm-applet
 # nm-applet &
 
-
-# killall polkitd
+killall polkitd
+killall polkit-gnome-au
 /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 &
 
-# killall gnome-keyring-daemon 
+killall gnome-keyring-d 
 gnome-keyring-daemon & 
 
 numlockx & # Activating numlock
@@ -26,4 +27,5 @@ setxkbmap -option caps:swapescape # Swapping escape and capslock
 # Clipboard Managers
 #parcellite &
 #clipmenud &
+killall greenclip
 greenclip daemon &

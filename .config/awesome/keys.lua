@@ -1,4 +1,6 @@
 require("awful.ewmh")
+awful = require("awful")
+wibox = require("wibox")
 
 -- {{{ Mouse bindings
 root.buttons(gears.table.join(
@@ -106,7 +108,7 @@ createTerm = function()
             termSP:raise()
         else
             --awful.spawn(terminal .. " --class termSP -e fish -c 'neofetch --kitty $(cat ~/.cache/wal/wal) --size 320; fish'")
-            awful.spawn(terminal .. " --class termSP -e fish -c 'fastfetch --kitty $(cat ~/.cache/wal/wal); fish'")
+            awful.spawn(terminal .. " --class termSP -e fish -c 'fastfetch --kitty $(cat ~/.cache/wal/wal) --logo-preserve-aspect-ratio --logo-width 40 && wait; fish'")
         end
     end
 
@@ -222,8 +224,8 @@ globalkeys = gears.table.join(SPkeys,
               {description = "Opens " .. mainbrowser, group = "launcher"}),
     awful.key({ modkey, altkey}, "p", function () awful.spawn("pavucontrol") end,
               {description = "Opens Pavucontrol", group = "launcher"}),
-    awful.key({ modkey, altkey}, "e", function () awful.spawn(termexec .. "nvim") end,
-              {description = "Opens Neovim", group = "launcher"}),
+    awful.key({ modkey, altkey}, "e", function () awful.spawn(termexec .. "nvim " .. home .. "/todo.md") end,
+              {description = "Opens Neovim TODO", group = "launcher"}),
     awful.key({ modkey, altkey}, "n", function () 
                 local matcher = function(c)
                     return awful.rules.match(c, {class = 'Nemo'})
@@ -244,7 +246,7 @@ globalkeys = gears.table.join(SPkeys,
                 local matcher = function(c)
                     return awful.rules.match(c, {class = 'Logseq'})
                 end
-                awful.client.run_or_raise('logseq', matcher)
+                awful.client.run_or_raise('/run/media/shvmpc/forlinuxuse/Appimage/Logseq.AppImage', matcher)
              end, {description = "Run or Raise Logseq", group = "launcher"}),
     awful.key({ modkey, altkey}, "t", function ()
                 local matcher = function(c)
@@ -253,6 +255,8 @@ globalkeys = gears.table.join(SPkeys,
                 awful.client.run_or_raise('torbrowser-launcher', matcher)
             end, {description = "Run or Raise Tor Browser", group = "launcher"}),
     awful.key({ modkey,}, "d", function () awful.spawn.with_shell("rofi -show drun") end,
+              {description = "Opens Rofi", group = "launcher"}),
+    awful.key({ "Ctrl", altkey}, "i", function () awful.spawn.with_shell("~/lazyid.sh ~/id.txt") end,
               {description = "Opens Rofi", group = "launcher"}),
     awful.key({ modkey,}, "v", function () awful.spawn.with_shell("rofi -show window") end,
               {description = "Opens Rofi", group = "launcher"}),
@@ -549,20 +553,20 @@ for i = 1, 9 do
                         if not herbstluftwm then
                             local tag = awful.screen.focused().tags[i]
                             tag:view_only()
-                        else 
+                        else
                             local focused_screen = awful.screen.focused()
                             -- local tag = screen.tags[i]
                             local tag = awful.tag.find_by_name(focused_screen, " " .. i .. " ")
                             if tag then
                             tag:view_only()
-                            else 
+                            else
                                 if focused_screen == screen[1] then
                                     local tag = awful.tag.find_by_name(screen[2], " " .. i .. " ")
                                     tag:view_only()
                                     swapScreen()
                                     tag:view_only()
                                     -- awful.screen.focus_relative(-1)
-                                else 
+                                else
                                     local tag = awful.tag.find_by_name(screen[1], " " .. i .. " ")
                                     tag:view_only()
                                     swapScreen()

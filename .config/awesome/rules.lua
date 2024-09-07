@@ -1,4 +1,6 @@
 -- Rules to apply to new clients (through the "manage" signal).
+local awful = require("awful")
+local beautiful = require("beautiful")
 local scr = 2 --screen.count()
 
 awful.rules.rules = {
@@ -44,6 +46,8 @@ awful.rules.rules = {
           "Wpa_gui",
           "veromix",
           -- "vlc",
+          "gl",
+          "mpv",
           "xtightvncviewer",
           "org.cryptomator.launcher.Cryptomator$MainApp",
           "Zenity"
@@ -60,7 +64,7 @@ awful.rules.rules = {
           "ConfigManager",  -- Thunderbird's about:config.
           "pop-up",       -- e.g. Google Chrome's (detached) Developer Tools.
         }
-      }, properties = { floating = true, placement = awful.placement.centered, ontop = true } 
+      }, properties = { floating = true, placement = awful.placement.centered, ontop = true }
     },
 
     -- No titlebars to normal clients and dialogs
@@ -85,6 +89,12 @@ awful.rules.rules = {
       rule = {name = "Running Devices"},
       properties = {width = 380, height = 850, floating = true}
     },
+    -- Emulator
+    {
+      rule = {class = "GParted"},
+      properties = {placement = awful.placement.centered, width = 980, height = 650, floating = true}
+    },
+ 
     -- Gimp
     { rule = { class = "Gimp-2.10" },
       properties = { screen = scr, tag = tags[9] }
@@ -111,7 +121,7 @@ awful.rules.rules = {
     -- Bitwarden
     {
       rule = {class = "Bitwarden"},
-      properties = {floating = true, placement = awful.placement.centered, width = 1100, height = 650}
+      properties = {floating = true, placement = awful.placement.centered, width = 1100, height = 650, titlebars_enabled = false}
     },
     -- Scratchpad
     {
@@ -120,9 +130,9 @@ awful.rules.rules = {
           sticky = true,
           placement = function(...)
             return awful.placement.centered(...) -- https://github.com/awesomeWM/awesome/issues/2497
-          end, 
+          end,
           skip_taskbar = true,
-          width = 1000,
+          width = 1200,
           ontop = true,
           height = 750,
           floating = true,
@@ -130,16 +140,16 @@ awful.rules.rules = {
     },
     {
       rule = { class = "termSP" },
-      properties = { width = 1000, height = 600 },
+      properties = { width = 1200, height = 700 },
     },
     {
       rule = { class = "calcSP" },
-      properties = { 
+      properties = {
         width = 800,
         height = 400,
         placement =  function(...)
           return awful.placement.top(...)
-        end, 
+        end,
       },
     },
 }

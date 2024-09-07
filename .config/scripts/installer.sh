@@ -1,7 +1,8 @@
 #! /bin/sh
 
 # All programs
-sudo pacman -S gnome-themes-extra adwaita-qt5 adwaita-qt6 transmission-qt flameshot code htop kitty pulseaudio noto-fonts-emoji android-tools rofi qrencode zbar ntfs-3g vlc picom tesseract zenity  polkit-gnome numlockx fuse3 papirus-icon-theme ueberzug highlight gvfs nemo fzf python3 python-pip python-pywal xorg-xinit ranger bat exa git xorg neovim fish firefox pulseaudio-alsa pavucontrol gvfs-mtp
+#sudo pacman -S gnome-themes-extra adwaita-qt5 adwaita-qt6 transmission-qt flameshot code htop kitty pulseaudio noto-fonts-emoji android-tools rofi qrencode zbar ntfs-3g vlc picom tesseract zenity  polkit-gnome numlockx fuse3 papirus-icon-theme ueberzug highlight gvfs nemo fzf python3 python-pip python-pywal xorg-xinit ranger bat exa git xorg neovim fish firefox pulseaudio-alsa pavucontrol gvfs-mtp
+sudo pacman -Syuu picom feh zenity bat exa zoxide flameshot
 
 
 # Link to Neovim

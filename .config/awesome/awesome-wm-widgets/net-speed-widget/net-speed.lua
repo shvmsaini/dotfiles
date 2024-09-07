@@ -99,11 +99,13 @@ local function worker(user_args)
                 bottom = 2,
                 right  = 0,
                 widget = wibox.container.margin,
-                {   
-                    image = ICONS_DIR .. 'arrow_downward.svg',
-                    widget = wibox.widget.imagebox
-                }    
-            
+                {
+                    --image = ICONS_DIR .. 'arrow_downward.svg',
+                    --widget = wibox.widget.imagebox
+                    markup = '<span font=\"Sans 20\" color=\"' .. '#FFFFFF' .. '\"></span>',
+                    widget = wibox.widget.textbox
+
+                }
         },
         {
                 left   = 0,
@@ -111,11 +113,12 @@ local function worker(user_args)
                 bottom = 2,
                 right  = 0,
                 widget = wibox.container.margin,
-                {   
-                    image =  ICONS_DIR .. 'arrow_upward.svg',
-                    widget = wibox.widget.imagebox
-                }    
-            
+                {
+                    --image =  ICONS_DIR .. 'arrow_upward.svg',
+                    --widget = wibox.widget.imagebox
+                    markup = '<span font=\"Sans 20\" color=\"' .. '#FFFFFF' .. '\"></span>',
+                    widget = wibox.widget.textbox
+                }
         },
         {
             id = 'tx_speed',

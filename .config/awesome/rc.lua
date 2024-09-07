@@ -55,8 +55,8 @@ filemanager = "dolphin" or "nemo"
 scripts = home .. ".config/scripts/"
 browser = "brave-browser-beta"
 mainbrowser = "firefox"
--- wall = "/run/media/shvmpc/forlinuxuse/Wallpapers/"
-wall = "/mnt/forlinuxuse/Wallpapers/"
+wall = "/run/media/shvmpc/forlinuxuse/Wallpapers/"
+-- wall = "/mnt/forlinuxuse/Wallpapers/"
 
 -- Default modkey.
 modkey = "Mod4"

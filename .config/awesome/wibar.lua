@@ -1,3 +1,7 @@
+local gears = require("gears")
+local awful = require("awful")
+local wibox = require("wibox")
+
 -- Volume Widget
 simple_volume_widget = require("widgets/simple_volume_widget")
 
@@ -10,7 +14,6 @@ local function taglist_with_icons(s)
     update_function = function(tags)
       local items = {}
       local current_tag = awful.tag.getselected(s)
-      
       -- Add current tag name
       items[#items + 1] = {
         text = current_tag.name,
@@ -19,7 +22,6 @@ local function taglist_with_icons(s)
           awful.button({ }, awful.tag.viewtoggle, current_tag)
         )
       }
-      
       -- Add application icons for current tag
       for _, client in ipairs(awful.client.getclients(current_tag)) do
         items[#items + 1] = {
@@ -35,12 +37,10 @@ local function taglist_with_icons(s)
           )
         }
       end
-      
       return items
     end,
     layout = wibox.layout.fixed.horizontal,
   }
-  
   return taglist
 end
 
@@ -68,10 +68,6 @@ local net_speed_widget = require("awesome-wm-widgets.net-speed-widget.net-speed"
 
 -- Separator
 local separator = wibox.widget.textbox("  ")
-
--- Shared tags
-sharedtags = require("awesome-sharedtags")
-
 
 -- Ram Widget
 local simple_ram_widget = require("widgets/simple_ram_widget")
@@ -135,7 +131,6 @@ local tasklist_buttons = gears.table.join(
             awful.mouse.client.move(c)
             end))
 
-
 local function set_wallpaper(s)
     -- Wallpaper
     if beautiful.wallpaper then
@@ -153,18 +148,6 @@ end
 
 -- Re-set wallpaper when a screen's geometry changes (e.g. different resolution)
 screen.connect_signal("property::geometry", set_wallpaper)
-
-
--- Shared tags
--- local tags = sharedtags({
---     { name = "main", layout = awful.layout.layouts[2] },
---     { name = "www", layout = awful.layout.layouts[10] },
---     { name = "game", layout = awful.layout.layouts[1] },
---     { name = "misc", layout = awful.layout.layouts[2] },
---     { name = "chat", screen = 2, layout = awful.layout.layouts[2] },
---     { layout = awful.layout.layouts[2] },
---     { screen = 2, layout = awful.layout.layouts[2] }
--- })
 
 awful.screen.connect_for_each_screen(function(s)
     -- For screen swapping
@@ -191,33 +174,85 @@ awful.screen.connect_for_each_screen(function(s)
     -- Each screen has its own tag table.
     if s == screen[1] then
         -- Create the wibox
-        s.mywibox = awful.wibar({ position = "top", screen = s, height = 23, opacity = 100})
-        tags = { " 1 ", " 2 ", " 3 ", " 4 ", " 5 ", " 6 ", " 7 ", " 8 ", " 9 "}
-        awful.tag(tags, s, awful.layout.layouts[1])
+        s.mywibox = awful.wibar({ position = "top", screen = s, height = 23, opacity = 0.8})
+        tags = { " 1 ", " 2 ", " 3 ", " 4 ", " 5 ", " 6 ", " 7 ", " 8 ", " >_< "}
+        awful.tag(tags, s, awful.layout.layouts[2])
     else
         -- Create the wibox
-        -- s.mywibox = awful.wibar({ position = "top", screen = s, height = 23, opacity = 100, bg = xrdb.background .. "00", fg = xrdb.foreground})
-        s.mywibox = awful.wibar({ position = "top", screen = s, height = 23, opacity = 100}) --, bg = xrdb.background .. "00", fg = xrdb.foreground})
+        --s.mywibox = awful.wibar({ position = "top", screen = s, height = 23, opacity = 1, bg = xrdb.background .. "00", fg = xrdb.foreground})
+        s.mywibox = awful.wibar({ position = "top", screen = s, height = 23, opacity = 0.8}) --, bg = xrdb.background .. "00", fg = xrdb.foreground})
         if herbstMode then
             tags2 = {" 9 "}
-        else 
+        else
             tags2 = tags
         end
-        awful.tag(tags2, s, awful.layout.layouts[2])
-    end    
+        awful.tag(tags2, s, awful.layout.layouts[1])
+    end
 
     -- Create a promptbox for each screen
     s.mypromptbox = awful.widget.prompt{
         prompt = "~>: ",
         with_shell = true
     }
-   
+
     -- Create a taglist widget
     s.mytaglist = awful.widget.taglist {
         screen  = s,
         filter  = awful.widget.taglist.filter.all,
         buttons = taglist_buttons,
     }
+
+    --s.mytasklist = awful.widget.tasklist {
+    --screen   = s,
+    --filter   = awful.widget.tasklist.filter.currenttags,
+    --buttons  = tasklist_buttons,
+    --style    = {
+    --    shape_border_width = 1,
+    --    shape_border_color = '#777777',
+    --    shape  = gears.shape.rounded_bar,
+    --},
+    --layout   = {
+    --    spacing = 10,
+    --    spacing_widget = {
+    --        {
+    --            forced_width = 5,
+    --            shape        = gears.shape.circle,
+    --            widget       = wibox.widget.separator
+    --        },
+    --        valign = 'center',
+    --        halign = 'center',
+    --        widget = wibox.container.place,
+    --    },
+    --    layout  = wibox.layout.flex.horizontal
+    --},
+    ---- Notice that there is *NO* wibox.wibox prefix, it is a template,
+    ---- not a widget instance.
+    --widget_template = {
+    --    {
+    --        {
+    --            {
+    --                {
+    --                    id     = 'icon_role',
+    --                    widget = wibox.widget.imagebox,
+    --                },
+    --                margins = 2,
+    --                widget  = wibox.container.margin,
+    --            },
+    --            {
+    --                id     = 'text_role',
+    --                widget = wibox.widget.textbox,
+    --            },
+    --            layout = wibox.layout.fixed.horizontal,
+    --        },
+    --        left  = 10,
+    --        right = 10,
+    --        widget = wibox.container.margin
+    --    },
+    --    id     = 'background_role',
+    --    widget = wibox.container.background,
+    --  },
+    --}
+
 
     -- Create a tasklist widget
     s.mytasklist = awful.widget.tasklist {
@@ -282,7 +317,7 @@ awful.screen.connect_for_each_screen(function(s)
             s.mypromptbox,
         },
         -- { -- Middle widget
-            s.mytasklist, 
+            s.mytasklist,
         --     align = "center",
         --     expand = "outside",
         --     layout = wibox.layout.align.horizontal,

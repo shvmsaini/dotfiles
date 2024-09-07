@@ -1,12 +1,20 @@
--- Volume Widget
--- need to make this non global and return it to local
-local volume_before_mute = 0
-local volume_widget, volume_timer = awful.widget.watch('bash -c "~/.config/scripts/volume_simple.sh"', 15)
+local wibox = require("wibox")
+local awful = require("awful")
+local gears = require("gears")
+local volumeHighIcon = volumeHighIcon
+local volumeMuteIcon = volumeMuteIcon
+local volumeLowIcon = volumeLowIcon
+local volumeMedIcon = volumeMedIcon
+
+local volume_before_mute = tonumber(0)
 local mute = false
 local icon = wibox.widget.imagebox()
-icon:set_image(volumeHighIcon)
+local volume = wibox.widget.textbox()
 
-local changeIcon = function() 
+local changeIcon = function()
+    if not volume_before_mute then
+      volume_before_mute = tonumber(0)
+    end
     if mute or volume_before_mute == 0 then
         icon:set_image(volumeMuteIcon)
     elseif volume_before_mute < 30 then
@@ -16,69 +24,65 @@ local changeIcon = function()
     else
         icon:set_image(volumeHighIcon)
     end
-    volume_timer:emit_signal("timeout")
 end
 
 local increaseVolume = function()
-    if mute then 
+    if mute then
         awful.spawn("amixer set Master " .. volume_before_mute .. "%")
         mute = false
         changeIcon()
         return
-    end
-
-    if not volume_before_mute then 
-        volume_before_mute = 0
     end
 
     volume_before_mute = volume_before_mute + 5
     if volume_before_mute > 100 then
         volume_before_mute = 100
     end
-    awful.spawn("amixer set Master 5%+")
-    volume_timer:emit_signal("timeout")
+    awful.spawn("amixer set Master " .. volume_before_mute .. "%")
+
+    volume:set_text(volume_before_mute)
     changeIcon()
 end
 
 local decreaseVolume = function()
-    if mute then 
+    if mute then
         awful.spawn("amixer set Master " .. volume_before_mute .. "%")
         mute = false
         changeIcon()
         return
     end
 
-    if not volume_before_mute then 
-        volume_before_mute = 0
-    end
     volume_before_mute = volume_before_mute - 5
     if volume_before_mute < 0 then
         volume_before_mute = 0
     end
-    awful.spawn("amixer set Master 5%-")
-    volume_timer:emit_signal("timeout")
+
+    awful.spawn("amixer set Master " .. volume_before_mute .. "%")
+
+    volume:set_text(volume_before_mute)
     changeIcon()
 end
 
 local simple_volume_widget_buttons = gears.table.join(
         awful.button({ }, 1, function()
             if mute then
+                volume:set_text(volume_before_mute)
                 awful.spawn("amixer set Master " .. volume_before_mute .. "%")
-            else 
-                -- awful.spawn("amixer set Master mute")
+            else
+                volume:set_text("0")
                 awful.spawn("amixer set Master 0%")
             end
             mute = not mute
-           changeIcon()
-        end), 
+            changeIcon()
+        end),
         awful.button({ }, 2, function()
             awful.spawn("pavucontrol")
-        end), 
+        end),
         awful.button({ }, 4, function()
-            increaseVolume()            
-        end), 
+            increaseVolume()
+        end),
         awful.button({ }, 5, function()
-            decreaseVolume()            
+            decreaseVolume()
         end)
     )
 
@@ -90,13 +94,14 @@ local simple_volume_widget = wibox.widget{
             bottom = 2.5,
             right  = 2,
             widget = wibox.container.margin,
-            {   
+            {
                 widget = icon
-            },    
+            },
         },
         {
             {
-                widget = volume_widget,
+                text = "100",
+                widget = volume,
             },
             {
                 text = "%",
@@ -112,19 +117,31 @@ local simple_volume_widget = wibox.widget{
     widget = wibox.container.background,
 }
 
+gears.timer {
+    timeout   = 5,
+    call_now  = true,
+    autostart = true,
+    callback  = function()
+        awful.spawn.easy_async(
+            {'bash', '-c', "~/.config/scripts/volume_simple.sh"},
+            function(out)
+                if not mute then
+                  volume_before_mute = tonumber(out)
+                  volume:set_text(out)
+                  changeIcon()
+                end
+            end
+          )
+      end
+  }
+
+
 simple_volume_widget:connect_signal("decrease", function()
     decreaseVolume()
-end) 
+end)
 
 simple_volume_widget:connect_signal("increase", function()
     increaseVolume()
-end) 
-
-awful.spawn.easy_async({'bash', '-c', "~/.config/scripts/volume_simple.sh"}, function(stdout)
-        if stdout then
-            volume_before_mute = tonumber(stdout)
-            changeIcon()
-        end
-    end)
+end)
 
 return simple_volume_widget
