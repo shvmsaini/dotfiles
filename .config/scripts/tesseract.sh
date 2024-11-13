@@ -23,4 +23,6 @@ tesseract $dir/$file $dir/output
 
 xclip -selection clipboard < $dir/output.txt 
 
+notify-send -t 2000 "Copied \"$(cat $dir/output.txt)\" to clipboard"
+
 trap "rm -rf $dir" EXIT

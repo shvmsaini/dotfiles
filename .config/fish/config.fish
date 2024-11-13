@@ -45,15 +45,10 @@ abbr !gfc "git fetch &&"
 abbr !gstp "git stash pop"
 abbr !gst "git stash"
 abbr !ef "nvim ~/.config/fish/config.fish"
+abbr !ek "nvim ~/.config/kitty/kitty.conf"
 
 # Countdown
 alias countdown="~/.config/scripts/countdown.sh"
-
-# Default applications
-alias fmgui="dolphin "
-alias fm="ranger "
-alias ed="nvim "
-alias edgui="kate "
 
 # Paste workaround for android emulator
 alias adbpaste="adb shell input text "'$(xclip -selection c -o)'""
@@ -82,7 +77,7 @@ export PATH="$PATH:$HOME/.local/bin"
 export TERM=kitty
 # export QT_STYLE_OVERRIDE=Adwaita-dark
 
-set EDITOR /bin/vim
+set EDITOR /bin/nvim
 
 # Keybind
 bind \cH backward-kill-word # Control-Backspace deletes backword word
@@ -141,16 +136,7 @@ function adbc
 	end 
 end
 
-
-# Give random digit
-function give_rand --argument digit
-	set random_number ""
-	for i in (seq $digit)
-		set random_number $random_number(math (random 0 9))
-	end
-	echo $random_number | xclip -selection clipboard
-end
-
+# Adb disconnect
 function adbd
 	for ip in (seq 200 -1 190)
 		echo "Trying to connect to device at 192.168.0.$ip..."
@@ -161,12 +147,21 @@ function adbd
 	end 
 end
 
+# Give random digit
+function give_rand --argument digit
+	set random_number ""
+	for i in (seq $digit)
+		set random_number $random_number(math (random 0 9))
+	end
+	echo $random_number | xclip -selection clipboard
+end
+
 # Null pointer
 function 0x0 --argument filename
 	curl -F"file=@$filename" -Fexpires=1 https://0x0.st
 end
 
-# Separate and merge
+# Separate and merge (Split pdf)
 function sepmerge --argument f l i o --description "Function to separate pdf files. "
 	if test -z $f
 		echo "sepmerge <first_page> <last_page> <input> <output>"
@@ -190,11 +185,20 @@ end
 function record --argument screen
 	switch $screen
 		case first
-			ffmpeg -f pulse -i "alsa_output.pci-0000_00_1f.3.analog-stereo.monitor" -y -f x11grab -s 1920x1080 -i "$DISPLAY".0 "/tmp/video-$(date +%d-%b-%s).mp4"
+      #ffmpeg -f pulse -i "alsa_output.pci-0000_00_1f.3.analog-stereo.monitor" -y -f x11grab -s 1920x1080 -i "$DISPLAY".0 "/tmp/video-$(date +%d-%b-%s).mp4"
+			ffmpeg -f pulse -i "alsa_output.pci-0000_00_1f.3.analog-stereo.monitor" -y -f x11grab -s 1920x1080 -i "$DISPLAY".0+1366 "/tmp/video-$(date +%d-%b-%s).mp4"
 		case second
-			ffmpeg -f pulse -i "alsa_output.pci-0000_00_1f.3.analog-stereo.monitor" -y -f x11grab -s 1366x768 -i "$DISPLAY".0+1920 "/tmp/video-$(date +%d-%b-%s).mp4"
-		case '*'
-			echo "record <first|second>"
+      #ffmpeg -f pulse -i "alsa_output.pci-0000_00_1f.3.analog-stereo.monitor" -y -f x11grab -s 1366x768 -i "$DISPLAY".0+1920 "/tmp/video-$(date +%d-%b-%s).mp4"
+			ffmpeg -f pulse -i "alsa_output.pci-0000_00_1f.3.analog-stereo.monitor" -y -f x11grab -s 1366x768 -i "$DISPLAY".0 "/tmp/video-$(date +%d-%b-%s).mp4"
+    case portion
+      set selection (string split ' ' (slop -f "%x %y %w %h"))
+      set X $selection[1]
+      set Y $selection[2]
+      set WIDTH $selection[3]
+      set HEIGHT $selection[4]
+      ffmpeg -f pulse -i "alsa_output.pci-0000_00_1f.3.analog-stereo.monitor" -y -f x11grab -s {$WIDTH}x{$HEIGHT} -i "$DISPLAY".0+{$X},{$Y} "/tmp/video-$(date +%d-%b-%s).mp4"
+    case '*'
+			echo "record <first|second|portion>"
 	end
 end
 
@@ -225,8 +229,12 @@ for key in (dir -1 $HOME/.ssh/id_* | grep -v .pub);
   DISPLAY=1 SSH_ASKPASS="$HOME/.ssh/pass.sh" ssh-add $key < /dev/null > /dev/null 2>&1;
 end
 
-#zoxide
+# Zoxide
 zoxide init fish | source
 
-# clipboard
+# Clipboard
 abbr to_clip "xclip -selection clipboard"
+
+#function nvim
+#    kitty @ set-spacing padding=0 && /usr/bin/nvim $argv && kitty @ set-spacing padding=20
+#end

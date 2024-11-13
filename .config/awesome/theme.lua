@@ -1,5 +1,6 @@
 -- Pywal Integration
 xresources = require("beautiful.xresources")
+beautiful = require("beautiful")
 xrdb = xresources.get_current_theme()
 -- xrdb.foreground = xrdb.color4
 -- xrdb.background = "#000000"
@@ -16,6 +17,7 @@ beautiful.master_width_factor = 0.555
 -- Icons
 iconFolder = gears.filesystem.get_configuration_dir() .. "/assets/"
 powerIcon = iconFolder .. "power.svg"
+commandIcon = iconFolder .. "command.svg"
 termIcon = iconFolder .. "terminal.svg"
 wallIcon = iconFolder .. "wallpaper.svg"
 arrowIcon = iconFolder .. "arrow_right.svg"
@@ -29,13 +31,13 @@ volumeLowIcon =  gears.filesystem.get_configuration_dir() .. "/awesome-wm-widget
 volumeMuteIcon =  gears.filesystem.get_configuration_dir() .. "/awesome-wm-widgets/volume-widget/icons/audio-volume-muted-symbolic.svg"
 
 -- Wibar Awesome Icon
--- beautiful.awesome_icon = iconFolder .. "arch_white.svg"
-beautiful.awesome_icon = iconFolder .. "icon-alien-symbolic.svg"
+beautiful.awesome_icon = iconFolder .. "arch_white.svg"
+-- beautiful.awesome_icon = iconFolder .. "icon-alien-symbolic.svg"
 -- beautiful.awesome_icon = "/usr/share/icons/Papirus/32x32/apps/pacman.svg"
 
 -- Menu
-beautiful.menu_height = 30 
-beautiful.menu_width = 200 
+beautiful.menu_height = 30
+beautiful.menu_width = 200
 beautiful.menu_bg_focus = xrdb.foreground
 beautiful.menu_fg_focus = xrdb.background
 beautiful.menu_bg_normal = xrdb.background

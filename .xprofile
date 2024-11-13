@@ -2,7 +2,7 @@ nm-applet &
 ~/.config/scripts/autoxrandr.sh
 ~/.config/awesome/scripts/pywal.sh
 # picom &
-export GTK_THEME=Adwaita:dark
+# export GTK_THEME=Adwaita:dark
 #export QT_STYLE_OVERRIDE=Adwaita-dark
 export QT_QPA_PLATFORMTHEME=qt5ct
 export JAVA_HOME=/home/shvmpc/.jdks/openjdk-21.0.1

@@ -1,6 +1,9 @@
 require("awful.ewmh")
-awful = require("awful")
-wibox = require("wibox")
+local awful = require("awful")
+local wibox = require("wibox")
+local modkey = modkey
+local xresources = require("beautiful.xresources")
+local xrdb = xresources.get_current_theme()
 
 -- {{{ Mouse bindings
 root.buttons(gears.table.join(
@@ -10,10 +13,6 @@ root.buttons(gears.table.join(
     awful.button({}, 1, function() mymainmenu:hide() end)
 ))
 -- }}}
--- 
-
--- Whether tags are in herbstluftwm mode (not very usable yet)
-herbstMode = false
 
 -- Scratchpads
 SP = nil
@@ -115,20 +114,13 @@ createTerm = function()
 swapScreen = function ()
         local focused_screen = awful.screen.focused()
         local s = focused_screen.get_next_in_direction(focused_screen, "right")
-    
         -- FIXME: this only makes sense for two screens
         if not s then
             s = focused_screen.get_next_in_direction(focused_screen, "left")
         end
-    
-        if not s then 
+        if not s then
             naughty.notify { preset = naughty.config.presets.critical, title = "could not get other screen" }
             return
-        end
-
-        -- Swapping tag names as well
-        if herbstluftwm then
-            focused_screen.selected_tag.name, s.selected_tag.name = s.selected_tag.name, focused_screen.selected_tag.name
         end
 
         focused_screen:swap(s)
@@ -142,14 +134,14 @@ globalkeys = gears.table.join(SPkeys,
     awful.key({ modkey, }, "Left",  function ()
             if awful.layout.get(awful.screen.focused()) == awful.layout.suit.max then
                 awful.client.focus.byidx( -1)
-            else 
+            else
                 awful.client.focus.global_bydirection("left")
             end
         end,{description = "view left client", group = "tag"}),
     awful.key({ modkey, }, "Right", function () 
             if awful.layout.get(awful.screen.focused()) == awful.layout.suit.max then
                 awful.client.focus.byidx( 1)
-            else 
+            else
                 awful.client.focus.global_bydirection("right")
             end
         end,{description = "view right client", group = "tag"}),
@@ -222,6 +214,9 @@ globalkeys = gears.table.join(SPkeys,
               {description = "open a terminal", group = "launcher"}),
     awful.key({ modkey, altkey}, "f", function () awful.spawn(mainbrowser) end,
               {description = "Opens " .. mainbrowser, group = "launcher"}),
+    awful.key({ modkey, altkey}, "z", function ()
+              awful.spawn.with_shell("$FLU/Appimage/zen-specific.AppImage --profile /home/shvmpc/.zen/loc2j3u6.1/") end,
+              {description = "Opens " .. mainbrowser, group = "launcher"}),
     awful.key({ modkey, altkey}, "p", function () awful.spawn("pavucontrol") end,
               {description = "Opens Pavucontrol", group = "launcher"}),
     awful.key({ modkey, altkey}, "e", function () awful.spawn(termexec .. "nvim " .. home .. "/todo.md") end,
@@ -246,6 +241,27 @@ globalkeys = gears.table.join(SPkeys,
                 local matcher = function(c)
                     return awful.rules.match(c, {class = 'Logseq'})
                 end
+
+                local clients = client.get()
+                local logseq_running = false
+
+                for _, c in ipairs(clients) do
+                    if matcher(c) then
+                        logseq_running = true
+                        break
+                    end
+                end
+
+                -- Show notification if Logseq is not running
+                if not logseq_running then
+                    naughty.notify({
+                        title = "Launching Logseq",
+                        text = "Logseq is starting up...",
+                        timeout = 5, -- Notification will disappear after 5 seconds
+                        preset = naughty.config.presets.normal
+                    })
+                end
+
                 awful.client.run_or_raise('/run/media/shvmpc/forlinuxuse/Appimage/Logseq.AppImage', matcher)
              end, {description = "Run or Raise Logseq", group = "launcher"}),
     awful.key({ modkey, altkey}, "t", function ()
@@ -256,7 +272,9 @@ globalkeys = gears.table.join(SPkeys,
             end, {description = "Run or Raise Tor Browser", group = "launcher"}),
     awful.key({ modkey,}, "d", function () awful.spawn.with_shell("rofi -show drun") end,
               {description = "Opens Rofi", group = "launcher"}),
-    awful.key({ "Ctrl", altkey}, "i", function () awful.spawn.with_shell("~/lazyid.sh ~/id.txt") end,
+    awful.key({ modkey,}, ";", function () awful.spawn.with_shell("~/.config/scripts/dmoji.sh") end,
+              {description = "Opens Rofi", group = "launcher"}),
+    awful.key({ "Ctrl", altkey}, "i", function () awful.spawn.with_shell("~/.config/scripts/get_ids.sh ~/id.txt") end,
               {description = "Opens Rofi", group = "launcher"}),
     awful.key({ modkey,}, "v", function () awful.spawn.with_shell("rofi -show window") end,
               {description = "Opens Rofi", group = "launcher"}),
@@ -550,31 +568,8 @@ for i = 1, 9 do
         -- View tag only.
         awful.key({ modkey }, "#" .. i + 9,
                   function ()
-                        if not herbstluftwm then
-                            local tag = awful.screen.focused().tags[i]
-                            tag:view_only()
-                        else
-                            local focused_screen = awful.screen.focused()
-                            -- local tag = screen.tags[i]
-                            local tag = awful.tag.find_by_name(focused_screen, " " .. i .. " ")
-                            if tag then
-                            tag:view_only()
-                            else
-                                if focused_screen == screen[1] then
-                                    local tag = awful.tag.find_by_name(screen[2], " " .. i .. " ")
-                                    tag:view_only()
-                                    swapScreen()
-                                    tag:view_only()
-                                    -- awful.screen.focus_relative(-1)
-                                else
-                                    local tag = awful.tag.find_by_name(screen[1], " " .. i .. " ")
-                                    tag:view_only()
-                                    swapScreen()
-                                    tag:view_only()
-                                    -- awful.screen.focus_relative(-1)
-                                end
-                            end
-                        end
+                      local tag = awful.screen.focused().tags[i]
+                      tag:view_only()
                   end,
                   {description = "view tag #"..i, group = "tag"}),
         -- Toggle tag display.
@@ -626,8 +621,6 @@ for i = 1, 9 do
                   {description = "move focused client to tag #"..i.. " in other screen", group = "tag"})
     )
 end
-
-
 
 clientbuttons = gears.table.join(
     awful.button({ }, 1, function (c)

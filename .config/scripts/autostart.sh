@@ -4,7 +4,8 @@ $HOME/.config/scripts/autoxrandr.sh &
 
 killall picom 
 #picom --config $HOME/.config/picom/picom.conf &
-picom --config $HOME/.config/picom.bak/picom_blur.conf &
+#picom --config $HOME/.config/picom.bak/picom_blur.conf &
+picom --config $HOME/.config/picom.bak/picom_dual_blur.conf &
 # xcompmgr &
 
 # killall nm-applet
@@ -25,7 +26,9 @@ setxkbmap -option caps:swapescape # Swapping escape and capslock
           #"keycode 134 = Caps_Lock NoSymbol Caps_Lock"
 
 # Clipboard Managers
-#parcellite &
-#clipmenud &
 killall greenclip
 greenclip daemon &
+
+# Auto-suspend service
+killall suspend_if_idle.sh
+~/.config/scripts/suspend_if_idle.sh &

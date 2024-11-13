@@ -25,24 +25,28 @@ require("awful.hotkeys_popup.keys")
 -- Check if awesome encountered an error during startup and fell back to
 -- another config (This code will only ever execute for the fallback config)
 if awesome.startup_errors then
-    naughty.notify({ preset = naughty.config.presets.critical,
-                     title = "Oops, there were errors during startup!",
-                     text = awesome.startup_errors })
+  naughty.notify({
+    preset = naughty.config.presets.critical,
+    title = "Oops, there were errors during startup!",
+    text = awesome.startup_errors
+  })
 end
 
 -- Handle runtime errors after startup
 do
-    local in_error = false
-    awesome.connect_signal("debug::error", function (err)
-        -- Make sure we don't go into an endless error loop
-        if in_error then return end
-        in_error = true
+  local in_error = false
+  awesome.connect_signal("debug::error", function(err)
+    -- Make sure we don't go into an endless error loop
+    if in_error then return end
+    in_error = true
 
-        naughty.notify({ preset = naughty.config.presets.critical,
-                         title = "Oops, an error happened!",
-                         text = tostring(err) })
-        in_error = false
-    end)
+    naughty.notify({
+      preset = naughty.config.presets.critical,
+      title = "Oops, an error happened!",
+      text = tostring(err)
+    })
+    in_error = false
+  end)
 end
 -- }}}
 
@@ -63,11 +67,14 @@ modkey = "Mod4"
 altkey = "Mod1"
 
 -- Table of layouts to cover with awful.layout.inc, order matters.
-awful.layout.layouts = { 
-    awful.layout.suit.tile.left,
-    awful.layout.suit.tile,
-}
+--awful.layout.layouts = {}
+awful.layout.append_default_layouts({
+  awful.layout.suit.tile.left,
+  awful.layout.suit.tile,
+})
 -- }}}
+--
+awesome.set_preferred_icon_size(24)
 
 -- Beautiful theme
 require("theme")
@@ -77,6 +84,12 @@ require("menu")
 
 -- Wibar
 require("wibar")
+
+-- Dock
+-- require("widgets/dock")
+
+-- Notes
+-- require("widgets/notes")
 
 -- Keys
 require("keys")
@@ -89,4 +102,3 @@ require("signals")
 
 -- Autostart
 awful.spawn(scripts .. "autostart.sh")
-

@@ -1,3 +1,5 @@
+require("telescope")
+
 vim.opt.undofile = false
 
 -- Automatically open NERDTree on startup

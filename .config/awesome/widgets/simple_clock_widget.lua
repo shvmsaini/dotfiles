@@ -1,6 +1,8 @@
 local wibox = require("wibox")
 local awful = require("awful")
 local gears = require("gears")
+local xresources = require("beautiful.xresources")
+local xrdb = xresources.get_current_theme()
 
 local month_calendar = awful.widget.calendar_popup.month( {
     start_sunday = true,
@@ -10,7 +12,7 @@ local month_calendar = awful.widget.calendar_popup.month( {
         padding = 4,
     },
     style_focus = {
-        markup = function(t) 
+        markup = function(t)
             return string.format('<span style="text-align:center">%s</span>', text)
         end,
         border_width = 0,
@@ -30,6 +32,8 @@ local clockButtons =  gears.table.join(
         end)
 )
 
+local textClock = wibox.widget.textclock("  %a %b %d, %I:%M %p")
+
 local simple_clock_widget = wibox.widget{
     {
         left   = 5,
@@ -43,7 +47,7 @@ local simple_clock_widget = wibox.widget{
         },
     },
     {
-        wibox.widget.textclock("%a %b %d, %I:%M %p"),
+        textClock,
         left   = 5,
         top    = 2,
         bottom = 2,

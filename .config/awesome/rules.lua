@@ -2,6 +2,7 @@
 local awful = require("awful")
 local beautiful = require("beautiful")
 local scr = 2 --screen.count()
+local tags = MY_TAGS
 
 awful.rules.rules = {
     -- All clients will match this rule.
@@ -50,7 +51,7 @@ awful.rules.rules = {
           "mpv",
           "xtightvncviewer",
           "org.cryptomator.launcher.Cryptomator$MainApp",
-          "Zenity"
+          --"Zenity"
         },
 
         -- Note that the name property shown in xprop might be set slightly after creation of the client
@@ -77,24 +78,32 @@ awful.rules.rules = {
     --   properties = { screen = scr, tag = tags[2] }
     -- },
     -- Code
-    { rule_any = { class = { "code-oss" , "jetbrains-studio", "jetbrains-idea-ce" } },
+    { rule_any = { class = { "code-oss" , "jetbrains-studio", }}, --"jetbrains-idea-ce" } },
       properties = { screen = scr, tag = tags[4], titlebars_enabled = false}
     },
     -- Tor
     { rule = { class = "Tor Browser" },
       properties = { screen = scr, tag = tags[8]}
     },
+    -- Zenity
+    { rule = { class = "zenity" },
+      properties = { ontop = true, titlebars_enabled = false }
+    },
     -- Emulator
     {
       rule = {name = "Running Devices"},
       properties = {width = 380, height = 850, floating = true}
     },
-    -- Emulator
+    -- Logcat
+    {
+      rule = {name = "Logcat"},
+      properties = {screen = 1, tag = tags[1]}
+    },
+    -- Gparted
     {
       rule = {class = "GParted"},
       properties = {placement = awful.placement.centered, width = 980, height = 650, floating = true}
     },
- 
     -- Gimp
     { rule = { class = "Gimp-2.10" },
       properties = { screen = scr, tag = tags[9] }
