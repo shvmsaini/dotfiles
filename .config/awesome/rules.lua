@@ -57,7 +57,7 @@ awful.rules.rules = {
         -- Note that the name property shown in xprop might be set slightly after creation of the client
         -- and the name shown there might not match defined rules here.
         name = {
-          "Picture in picture",
+          --"Picture in picture",
           "Event Tester",  -- xev.
         },
         role = {
@@ -77,6 +77,9 @@ awful.rules.rules = {
     -- { rule = { class = "Logseq" },
     --   properties = { screen = scr, tag = tags[2] }
     -- },
+    { rule = { class = "firefox" },
+      properties = { tag = tags[1] }
+    },
     -- Code
     { rule_any = { class = { "code-oss" , "jetbrains-studio", }}, --"jetbrains-idea-ce" } },
       properties = { screen = scr, tag = tags[4], titlebars_enabled = false}
@@ -150,6 +153,10 @@ awful.rules.rules = {
     {
       rule = { class = "termSP" },
       properties = { width = 1200, height = 700 },
+    },
+    {
+      rule = { name = "Picture-in-Picture" },
+      properties = { screen = 1, floating = false },
     },
     {
       rule = { class = "calcSP" },

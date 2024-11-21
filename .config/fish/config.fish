@@ -6,6 +6,7 @@ end
 set fish_greeting
 
 # Aliases 
+alias n=nemo
 alias plis="sudo"
 alias hc="herbstclient"
 alias dir="dir --color=auto"
@@ -46,6 +47,7 @@ abbr !gstp "git stash pop"
 abbr !gst "git stash"
 abbr !ef "nvim ~/.config/fish/config.fish"
 abbr !ek "nvim ~/.config/kitty/kitty.conf"
+abbr !axel "axel -n 5"
 
 # Countdown
 alias countdown="~/.config/scripts/countdown.sh"
@@ -61,12 +63,12 @@ set pbdir $HOME/.local/lib/python3.10/site-packages/pbincli/cli.py
 set hcdir $HOME/.config/herbstluftwm/
 set walls /run/media/shvmpc/forlinuxuse/Wallpapers/
 set conf $HOME/.config
-#set FLU /mnt/forlinuxuse
-set FLU /run/media/shvmpc/forlinuxuse
-set STF /run/media/shvmpc/Stuff
-set DOC $HOME/Documents/
-set DWN $HOME/Downloads/
-set TMP /tmp/
+#set flu /mnt/forlinuxuse
+set flu /run/media/shvmpc/forlinuxuse
+set stf /run/media/shvmpc/Stuff
+set doc $HOME/Documents/
+set down $HOME/Downloads/
+set tmp /tmp/
 
 # ENV
 set QT_QPA_PLATFORMTHEME qt5ct
@@ -126,23 +128,28 @@ set OS $(cat /etc/os-release | grep "ID=" -m 1 | cut -d'=' -f 2)
 #end
 
 # Adb connect
+set seq1 (seq 200 -1 190)
+set seq2 (seq 33 254)
+set seq3 (seq 254 -1 33)
+set seq3 1
+
 function adbc
-	for ip in (seq 200 -1 180)
-		echo "Trying to connect to device at 192.168.0.$ip..."
-		adb connect 192.168.0.$ip | grep "connected"
-	   	if [ $status -eq 0 ]
-		    	break
+	for ip in $seq2
+		echo "Trying to connect to device at 192.168.$seq3.$ip..."
+		adb connect 192.168.$seq3.$ip | grep "connected"
+    if [ $status -eq 0 ]
+      break
 		end
 	end 
 end
 
 # Adb disconnect
 function adbd
-	for ip in (seq 200 -1 190)
-		echo "Trying to connect to device at 192.168.0.$ip..."
-		adb disconnect 192.168.0.$ip | grep "disconnected"
-	   	if [ $status -eq 0 ]
-		    	break
+	for ip in $seq2
+    echo "Trying to connect to device at 192.168.$seq3.$ip..."
+		adb disconnect 192.168.$seq3.$ip | grep "disconnected"
+    if [ $status -eq 0 ]
+      break
 		end
 	end 
 end
@@ -238,3 +245,10 @@ abbr to_clip "xclip -selection clipboard"
 #function nvim
 #    kitty @ set-spacing padding=0 && /usr/bin/nvim $argv && kitty @ set-spacing padding=20
 #end
+
+function vcd
+  set original_dir (pwd)  # Store the current directory
+  cd $argv[1]             # Change to the specified directory
+  nvim                    # Open Vim
+  cd $original_dir        # Change back to the original directoryend
+end

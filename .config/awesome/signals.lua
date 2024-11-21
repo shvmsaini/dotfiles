@@ -220,5 +220,3 @@ awesome.connect_signal('startup',
 
     file:close()
   end)
-
-require("widgets/notif")

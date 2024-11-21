@@ -100,5 +100,8 @@ require("rules")
 -- Signals
 require("signals")
 
+-- Notification
+require("widgets/notification")
+
 -- Autostart
 awful.spawn(scripts .. "autostart.sh")

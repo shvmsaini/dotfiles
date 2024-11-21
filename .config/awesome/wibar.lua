@@ -241,6 +241,8 @@ awful.screen.connect_for_each_screen(function(s)
       separator,
       separator,
       simple_volume_widget,
+      --separator,
+      --slider_volume_widget,
       -- volume_progress,
       separator,
       simple_clock_widget,

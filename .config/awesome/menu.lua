@@ -1,11 +1,15 @@
-scripts = scripts
+local awful = require("awful")
+local scripts = scripts
+local terminal = terminal
 -- Create a launcher widget and a main menu
 myawesomemenu = {
   { "hotkeys",     function() hotkeys_popup.show_help(nil, awful.screen.focused()) end },
   { "manual",      terminal .. " -e man awesome" },
   { "edit config", termexec .. editor .. " " .. home .. ".config/awesome/rc.lua" },
   { "restart",     awesome.restart },
-  { "quit",        function() awesome.quit() end },
+  { "quit", function()
+    awful.spawn.with_shell("~/.config/awesome/scripts/exit.sh")
+  end },
 }
 
 powermenu = {
@@ -15,10 +19,10 @@ powermenu = {
 }
 
 menu_scripts = {
-  { "Scan QR Code", scripts .. "qrcode.sh" },
-  { "Scan text (Tesseract)",   scripts .. "tesseract.sh" },
-  { "Kill ram hog",   scripts .. "kill_ram_hog.sh" },
-  { "Show emojis",    scripts .. "dmoji.sh" },
+  { "Scan QR Code",          scripts .. "qrcode.sh" },
+  { "Scan text (Tesseract)", scripts .. "tesseract.sh" },
+  { "Kill ram hog",          scripts .. "kill_ram_hog.sh" },
+  { "Show emojis",           scripts .. "dmoji.sh" },
 }
 
 mymainmenu = awful.menu({
@@ -29,8 +33,8 @@ mymainmenu = awful.menu({
         awful.spawn.with_shell("~/.config/awesome/scripts/pywal.sh -f")
       end,
       wallIcon },
-    { "scripts", menu_scripts, commandIcon  },
-    { "power", powermenu, powerIcon }
+    { "scripts", menu_scripts, commandIcon },
+    { "power",   powermenu,    powerIcon }
   }
 })
 
