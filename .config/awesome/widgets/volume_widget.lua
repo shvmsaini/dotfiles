@@ -66,10 +66,10 @@ local simple_volume_widget_buttons = gears.table.join(
     awful.spawn("pavucontrol")
   end),
   awful.button({}, 4, function()
-    simple_volume_widget:emit("decrease")
+     changeVolume()
   end),
   awful.button({}, 5, function()
-    simple_volume_widget:emit("increase")
+     changeVolume(true)
   end)
 )
 

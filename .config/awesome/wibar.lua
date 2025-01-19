@@ -8,13 +8,13 @@ local taglistv2 = require("widgets/taglistv2")
 
 -- Volume Widget
 -- Made global for keys to work, for now
-simple_volume_widget = require("widgets/simple_volume_widget")
+simple_volume_widget = require("widgets/volume_widget")
 
 -- Recording widget
-local recording_widget = require("widgets/simple_recording")
+local recording_widget = require("widgets/recording_widget")
 
 -- Microphone widget
-local microphone_widget = require("widgets/simple_microphone")
+local microphone_widget = require("widgets/microphone_widget")
 
 -- Tags
 MY_TAGS = { " 1 ", " 2 ", " 3 ", " 4 ", " 5 ", " 6 ", " 7 ", " 8 ", " ( ͡° ͜ʖ ͡ °) " }
@@ -30,13 +30,13 @@ local net_speed_widget = require("awesome-wm-widgets.net-speed-widget.net-speed"
 local separator = wibox.widget.textbox("  ")
 
 -- Ram Widget
-local simple_ram_widget = require("widgets/simple_ram_widget")
+local simple_ram_widget = require("widgets/ram_widget")
 
 -- Keyboard map indicator and switcher
 -- mykeyboardlayout = awful.widget.keyboardlayout()
 
 -- Calender Widget
-local simple_clock_widget = require("widgets/simple_clock_widget")
+local simple_clock_widget = require("widgets/clock_widget")
 
 
 -- System tray widget
@@ -131,10 +131,10 @@ awful.screen.connect_for_each_screen(function(s)
   -- Each screen has its own tag table.
   -- Create the wibox
   if s == screen[1] then
-    s.mywibox = awful.wibar({ position = "top", screen = s, height = 23, opacity = 0.8 })
+    s.mywibox = awful.wibar({ position = "top", screen = s, height = 23, opacity = 0.9 })
     awful.tag(tags, s, awful.layout.layouts[2])
   else
-    s.mywibox = awful.wibar({ position = "top", screen = s, height = 24, opacity = 0.8 }) --, bg = xrdb.background .. "00", fg = xrdb.foreground})
+    s.mywibox = awful.wibar({ position = "top", screen = s, height = 24, opacity = 0.9 , bg = xrdb.background .. transparency, fg = xrdb.foreground})
     awful.tag(tags, s, awful.layout.layouts[1])
   end
 
@@ -232,13 +232,13 @@ awful.screen.connect_for_each_screen(function(s)
     { -- Right widgets
       layout = wibox.layout.fixed.horizontal,
       -- mykeyboardlayout,
-      _microphone_widget,
       systray,
       net_speed_widget(),
       _recording_widget,
       --taglist_with_icons,
       simple_ram_widget,
       separator,
+      _microphone_widget,
       separator,
       simple_volume_widget,
       --separator,

@@ -19,14 +19,22 @@ powermenu = {
 }
 
 menu_scripts = {
-  { "Scan QR Code",          scripts .. "qrcode.sh" },
+  { "Scan QR Code", function()
+    --awful.menu.hide()
+    awful.spawn.with_shell(scripts .. "qrcode.sh")
+  end
+  },
   { "Scan text (Tesseract)", scripts .. "tesseract.sh" },
   { "Kill ram hog",          scripts .. "kill_ram_hog.sh" },
   { "Show emojis",           scripts .. "dmoji.sh" },
+  { "Run work applications", function () run_work_workspace() end },
 }
 
 mymainmenu = awful.menu({
   items = { { "awesome", myawesomemenu, beautiful.awesome_icon },
+    { "All applications", function()
+      awful.spawn.with_shell("rofi -drun-use-desktop-cache -show drun")
+    end, appsIcon },
     { "open terminal", terminal,      termIcon },
     { "change wallpaper",
       function()

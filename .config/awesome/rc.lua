@@ -75,6 +75,10 @@ awful.layout.append_default_layouts({
 -- }}}
 --
 awesome.set_preferred_icon_size(24)
+screen.primary = screen[2]
+
+-- Utility functions
+require("utils")
 
 -- Beautiful theme
 require("theme")

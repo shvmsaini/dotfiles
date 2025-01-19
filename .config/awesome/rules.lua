@@ -80,9 +80,28 @@ awful.rules.rules = {
     { rule = { class = "firefox" },
       properties = { tag = tags[1] }
     },
+    { rule = { class = "zen-alpha" },
+      properties = { tag = tags[2] }
+    },
+    -- Thunderbird
+    { rule_any = { class = { "thunderbird", "eu.betterbird.Betterbird" } },
+      properties = { tag = tags[9] }
+    },
     -- Code
-    { rule_any = { class = { "code-oss" , "jetbrains-studio", }}, --"jetbrains-idea-ce" } },
+    { rule_any = { class = { "jetbrains-studio"}}, --"jetbrains-idea-ce" } },
       properties = { screen = scr, tag = tags[4], titlebars_enabled = false}
+    },
+    -- Code
+    { rule_any = { class = { "code-oss", "Code" }}, --"jetbrains-idea-ce" } },
+      properties = { screen = scr, tag = tags[5], titlebars_enabled = false}
+    },
+    -- Qbittorrent
+    { rule = { class = "qBittorrent" },
+      properties = { screen = 1, tag = tags[8]}
+    },
+    -- Insomnia
+    { rule = { class = "Insomnia" },
+      properties = { screen = scr, tag = tags[6]}
     },
     -- Tor
     { rule = { class = "Tor Browser" },
@@ -108,7 +127,7 @@ awful.rules.rules = {
       properties = {placement = awful.placement.centered, width = 980, height = 650, floating = true}
     },
     -- Gimp
-    { rule = { class = "Gimp-2.10" },
+    { rule = { class = "Gimp" },
       properties = { screen = scr, tag = tags[9] }
     },
     -- LibreOffice and Xournal
@@ -135,6 +154,11 @@ awful.rules.rules = {
       rule = {class = "Bitwarden"},
       properties = {floating = true, placement = awful.placement.centered, width = 1100, height = 650, titlebars_enabled = false}
     },
+    -- Stremio
+    {
+      rule = {class = "Stremio"},
+      properties = { maximized = true }
+    },
     -- Scratchpad
     {
       rule_any = { class = { "scratchpad" , "termSP", "fileSP", "calcSP", "htop" }},
@@ -155,7 +179,7 @@ awful.rules.rules = {
       properties = { width = 1200, height = 700 },
     },
     {
-      rule = { name = "Picture-in-Picture" },
+      rule_any = { name = { "Picture-in-Picture", "Picture in picture" } },
       properties = { screen = 1, floating = false },
     },
     {

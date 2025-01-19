@@ -25,10 +25,10 @@ local function update_mic_status()
       --naughty.notify { preset = naughty.config.presets.critical, title = "tet -> " .. text }
       if text == "Muted" then
         text_widget.markup = '<span foreground="#FFFFFF"> 󰍭 </span>'
-        bg_widget.bg = "#DF5774"
+        --bg_widget.bg = "#DF5774"
       else
-        text_widget.markup = '<span foreground="#000000"> 󰍬 </span>'
-        bg_widget.bg = "#b8e994"
+        text_widget.markup = '<span foreground="#FFFFFF"> 󰍬 </span>'
+        --bg_widget.bg = "#b8e994"
       end
     end
 end

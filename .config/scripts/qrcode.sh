@@ -15,12 +15,16 @@ fi
 dir=$(mktemp -dt "$(basename $0).XXXXXXXXXXXX")
 file="screeshot.jpg"
 
+echo "File will be saved at $dir/$file"
+
 flameshot gui -p $dir/$file
 
-#TESSDATA_PREFIX=/usr/local/share/tessdata/ tesseract $dir/$file $dir/output
+if [ $? -eq 0 ]; then
+  #TESSDATA_PREFIX=/usr/local/share/tessdata/ tesseract $dir/$file $dir/output
 
-zbarimg $dir/$file $dir/output
-
-xclip -selection clipboard < $dir/output.txt 
+  zbarimg $dir/$file | cut -d ':' -f2- | xclip -selection clipboard
+else 
+  echo "flameshot didn't capture"
+fi
 
 trap "rm -rf $dir" EXIT

@@ -3,9 +3,7 @@
 $HOME/.config/scripts/autoxrandr.sh &
 
 killall picom 
-#picom --config $HOME/.config/picom/picom.conf &
-#picom --config $HOME/.config/picom.bak/picom_blur.conf &
-picom --config $HOME/.config/picom.bak/picom_dual_blur.conf &
+picom --config $HOME/.config/picom/picom_dual_blur.conf &
 # xcompmgr &
 
 # killall nm-applet

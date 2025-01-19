@@ -19,7 +19,6 @@ alias xcc="xclip -selection clipboard"
 alias rl="readlink -f"
 alias jctl="journalctl -p 3 -xb"
 alias ss="import png:- | xclip -selection clipboard -t image/png"
-#alias pp="sleep 0.5; xdotool type "$(xclip -o -selection clipboard)""
 
 # Replace ls with eza
 alias ls='eza -al --color=always --group-directories-first --icons' # preferred listing
@@ -29,6 +28,7 @@ alias lt='eza -aT --color=always --group-directories-first --icons' # tree listi
 alias l.='eza -ald --color=always --group-directories-first --icons .*' # show only dotfiles
 
 # Abbreviations
+abbr !yt "/mnt/forlinuxuse/Appimage/yt-dlp_linux"
 abbr !gf "git fetch"
 abbr !gl "git log | bat"
 abbr !gch "git checkout"
@@ -41,6 +41,7 @@ abbr !gfgc "git fetch && git checkout "
 abbr !gswm "git switch master"
 abbr !gswd "git switch release/s154-demo"
 abbr !gp "git pull"
+abbr !gpm "git pull && git merge"
 abbr !gfgc "git fetch && git checkout"
 abbr !gfc "git fetch &&"
 abbr !gstp "git stash pop"
@@ -111,7 +112,7 @@ abbr fixpacman "sudo rm /var/lib/pacman/db.lck"
 
 set OS $(cat /etc/os-release | grep "ID=" -m 1 | cut -d'=' -f 2)
 
-#function tryinstall --argument program
+#function install --argument program
 #	if [ "$OS" = "fedora" ]
 #		sudo dnf install $program
 #	else if [ "$OS" = "arch" ]
@@ -246,9 +247,16 @@ abbr to_clip "xclip -selection clipboard"
 #    kitty @ set-spacing padding=0 && /usr/bin/nvim $argv && kitty @ set-spacing padding=20
 #end
 
+# Open directory in neovim
 function vcd
-  set original_dir (pwd)  # Store the current directory
-  cd $argv[1]             # Change to the specified directory
-  nvim                    # Open Vim
-  cd $original_dir        # Change back to the original directoryend
+  set original_dir (pwd)
+  cd $argv[1]
+  nvim
+  cd $original_dir
+end
+
+# Type the clipboard
+function pp
+    sleep 0.5
+    xdotool type (xclip -o -selection clipboard)
 end

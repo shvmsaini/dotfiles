@@ -2,6 +2,7 @@
 xresources = require("beautiful.xresources")
 beautiful = require("beautiful")
 xrdb = xresources.get_current_theme()
+transparency = "99"
 -- xrdb.foreground = xrdb.color4
 -- xrdb.background = "#000000"
 -- Assets 
@@ -11,7 +12,7 @@ theme_assets = require("beautiful.theme_assets")
 beautiful.init(gears.filesystem.get_themes_dir() .. "default/theme.lua")
 
 -- Awesome variables
-beautiful.useless_gap = 2
+beautiful.useless_gap = 3
 beautiful.master_width_factor = 0.555
 
 -- Icons
@@ -19,6 +20,7 @@ iconFolder = gears.filesystem.get_configuration_dir() .. "/assets/"
 powerIcon = iconFolder .. "power.svg"
 commandIcon = iconFolder .. "command.svg"
 termIcon = iconFolder .. "terminal.svg"
+appsIcon = iconFolder .. "apps.svg"
 wallIcon = iconFolder .. "wallpaper.svg"
 arrowIcon = iconFolder .. "arrow_right.svg"
 upIcon = iconFolder .. "arrow_upward.svg"
@@ -53,7 +55,7 @@ beautiful.hotkeys_font = "Hack Nerd Font Mono 11"
 beautiful.hotkeys_description_font = "Hack Nerd Font Mono 11"
 
 -- Client
-beautiful.border_focus = xrdb.foreground
+beautiful.border_focus = xrdb.foreground .."00"
 beautiful.border_normal = xrdb.background
 beautiful.border_width = 2
 

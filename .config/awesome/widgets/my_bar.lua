@@ -1,3 +1,7 @@
+local awful = require("awful")
+local wibox = require("wibox")
+local gears = require("gears")
+
 local my_bar = awful.widget.taglist {
     screen  = s,
     filter  = awful.widget.taglist.filter.all,

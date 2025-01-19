@@ -1,6 +1,5 @@
 local awful = require("awful")
 local wibox = require("wibox")
-local gear = require("gears")
 local beautiful = require("beautiful")
 
 local mytasklist = wibox.widget {
