@@ -1,5 +1,15 @@
 from ranger.api.commands import Command
 
+class nemo(Command):
+    """:nemo
+
+    Open the current directory in Nemo file manager.
+    """
+    def execute(self):
+        import os
+        current_path = self.fm.thisdir.path
+        os.system("nohup nemo '{}' > /dev/null 2>&1 &".format(current_path))
+
 class paste_as_root(Command):
 	def execute(self):
 		if self.fm.do_cut:

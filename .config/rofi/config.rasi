@@ -5,7 +5,7 @@ configuration {
   icon-theme: "Papirus";
   modi: "window,run,drun,filebrowser";
   font: "Fira Code 10";
-  display-drun: "Apps";
+  display-drun: "Apps ~>";
 }
 
 @theme "/dev/null"
@@ -58,6 +58,7 @@ element selected.normal {
   background-color: @color3;
   text-color: @fg;
   border: 0px;
+  border-radius: 0px;
   padding: 0px;
   margin: 0px;
 }
@@ -106,7 +107,7 @@ listview {
   background-color: @bg;
   columns: 1;
   border-radius:0px;
-  lines: 8;
+  lines: 10;
 }
 
 scrollbar {

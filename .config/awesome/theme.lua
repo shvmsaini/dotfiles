@@ -2,7 +2,7 @@
 xresources = require("beautiful.xresources")
 beautiful = require("beautiful")
 xrdb = xresources.get_current_theme()
-transparency = "99"
+transparency = "90"
 -- xrdb.foreground = xrdb.color4
 -- xrdb.background = "#000000"
 -- Assets 
@@ -94,7 +94,7 @@ beautiful.taglist_squares_sel = theme_assets.taglist_squares_sel(4, xrdb.color6)
 beautiful.taglist_squares_unsel = theme_assets.taglist_squares_unsel(4, xrdb.color6)
 
 -- Systray
-beautiful.bg_systray = xrdb.background
+-- beautiful.bg_systray = xrdb.background
 beautiful.systray_icon_spacing = 5
 
 -- Snap

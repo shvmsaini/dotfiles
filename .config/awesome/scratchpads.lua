@@ -10,26 +10,6 @@ calcSP = nil
 termSP = nil
 local SPkeys = nil -- Scratchpad keybinds
 
-notifyMark = function(title, text)
-  local icon = nil
-  if title == "Marked" then
-    icon = "/usr/share/icons/breeze/actions/32/bookmarks-bookmarked.svg"
-  else
-    icon = "/usr/share/icons/breeze/actions/32/bookmarks.svg"
-  end
-  naughty.notify({
-    title = title,
-    text = text,
-    timeout = 1,
-    icon = icon,
-    bg = xrdb.foreground,
-    fg = xrdb.background,
-    position = "bottom_middle",
-    border_width = 1,
-    border_color = xrdb.background
-  })
-end
-
 local makeSP = function(c, i, m)
   if m then
     if SPs[i] and SPs[i].valid then

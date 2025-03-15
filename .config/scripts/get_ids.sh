@@ -10,7 +10,7 @@ if [ ! -f "$file_path" ]; then
 fi
 
 # Print file content and pipe to rofi
-selected_item=$(cat "$file_path" | rofi -dmenu -p "Select:")
+selected_item=$(cat "$file_path" | rofi -dmenu -i -p "Select:")
 
 # Copy selected item to clipboard
 if [ "$selected_item" != "" ]; then

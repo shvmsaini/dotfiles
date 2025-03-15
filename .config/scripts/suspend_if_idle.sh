@@ -15,11 +15,10 @@ while true; do
     # Check if the idle time exceeds the limit
     if [ "$IDLE_TIME" -ge "$IDLE_LIMIT" ]; then
         # Start the countdown
-        for ((i = WARNING_TIME; i > 0; i--)); do
+        for ((i = WARNING_TIME; i > 0; i--)); do⌛️
             # Notify the user about the impending suspension with remaining time
-            notify-send -u normal "Idle Timeout" \ 
-              "Your system will suspend in $i seconds. Move your mouse or press a key to cancel." \ 
-              -h string:x-canonical-private-synchronous:anything -t 1200
+            content="Your system will suspend in $i seconds. Move your mouse or press a key to cancel. 🔥"
+            notify-send -u normal "⌛️ Idle Timeout" $content -h string:x-canonical-private-synchronous:anything -t 1200
 
             # Sleep for 1 second
             sleep 1

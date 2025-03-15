@@ -134,7 +134,7 @@ awful.screen.connect_for_each_screen(function(s)
     s.mywibox = awful.wibar({ position = "top", screen = s, height = 23, opacity = 0.9 })
     awful.tag(tags, s, awful.layout.layouts[2])
   else
-    s.mywibox = awful.wibar({ position = "top", screen = s, height = 24, opacity = 0.9 , bg = xrdb.background .. transparency, fg = xrdb.foreground})
+    s.mywibox = awful.wibar({ position = "top", screen = s, height = 27, opacity = 0.9 , bg = xrdb.background .. transparency, fg = xrdb.foreground})
     awful.tag(tags, s, awful.layout.layouts[1])
   end
 
@@ -232,7 +232,7 @@ awful.screen.connect_for_each_screen(function(s)
     { -- Right widgets
       layout = wibox.layout.fixed.horizontal,
       -- mykeyboardlayout,
-      systray,
+      separator,
       net_speed_widget(),
       _recording_widget,
       --taglist_with_icons,
@@ -247,6 +247,7 @@ awful.screen.connect_for_each_screen(function(s)
       separator,
       simple_clock_widget,
       separator,
+      systray,
       -- s.mylayoutbox,
     },
   }

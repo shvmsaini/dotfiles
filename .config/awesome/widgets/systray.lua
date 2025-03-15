@@ -14,7 +14,10 @@ local systray = wibox.widget {
     right  = 5,
     widget = wibox.container.margin,
   },
+  bg = "#000000",
   widget = wibox.container.background,
 }
+
+systray.opacity = 0.4
 
 return systray

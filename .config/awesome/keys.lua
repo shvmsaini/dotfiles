@@ -4,6 +4,8 @@ local wibox = require("wibox")
 local modkey = modkey
 local xresources = require("beautiful.xresources")
 local xrdb = xresources.get_current_theme()
+local altkey = altkey
+local gears = require("gears")
 
 -- {{{ Mouse bindings
 root.buttons(gears.table.join(
@@ -15,84 +17,7 @@ root.buttons(gears.table.join(
 -- }}}
 
 -- Scratchpads
-SP = nil
-SPs = {}
-for i = 1, 12 do
-  SPs[i] = nil        -- SP itself
-  SPs[i + 12] = false -- SP Property
-end
-htopSP = nil
-fileSP = nil
-calcSP = nil
-termSP = nil
 local SPkeys = nil -- Scratchpad keybinds
-
-local notifyMark = function(title, text)
-  local icon = nil
-  if title == "Marked" then
-    icon = "/usr/share/icons/breeze/actions/32/bookmarks-bookmarked.svg"
-  else
-    icon = "/usr/share/icons/breeze/actions/32/bookmarks.svg"
-  end
-  naughty.notify({
-    title = title,
-    text = text,
-    timeout = 1,
-    icon = icon,
-    bg = xrdb.foreground,
-    fg = xrdb.background,
-    position = "bottom_middle",
-    border_width = 1,
-    border_color = xrdb.background
-  })
-end
-
-local makeSP = function(c, i, m)
-  if m then
-    if SPs[i] and SPs[i].valid then
-      SPs[i].minimized = not SPs[i].minimized
-      client.focus = SPs[i]
-      SPs[i]:raise()
-    else
-      if not client.focus then
-        return
-      end
-      notifyMark("Marked", "Marked client on F" .. i)
-      SPs[i] = client.focus
-      client.focus.sticky = true
-      SPs[i].sticky = true
-      if not SPs[i].floating then
-        SPs[i + 12] = false
-        SPs[i].floating = true
-        SPs[i].width = 1100
-        SPs[i].height = 800
-        SPs[i].placement = awful.placement.centered(client.focus)
-      else
-        SPs[i + 4] = true
-      end
-      SPs[i].ontop = true
-      SPs[i].skip_taskbar = true
-      -- SPs[i].placement = function(...)
-      --     return awful.placement.centered(...)
-      -- end
-      -- SPs[i]:geometry({width = 900, height = 900})
-    end
-  else
-    if SPs[i] and SPs[i].valid then
-      notifyMark("Unmarked", "Unmarked client on F" .. i)
-      SPs[i].sticky = false
-      SPs[i].skip_taskbar = false
-      if SPs[i + 12] == true then
-        SPs[i].floating = true
-      else
-        SPs[i].floating = false
-      end
-      SPs[i].ontop = false
-    end
-    SPs[i] = nil
-  end
-end
-
 for i = 1, 12 do
   SPkeys = gears.table.join(SPkeys,
     -- Mark
@@ -105,6 +30,7 @@ for i = 1, 12 do
     end, { description = "Unmark client as scratchpad w/ F" .. i .. " key", group = "Scratchpad" })
   )
 end
+local appKeys = require("app_launch_keys")
 
 local createTerm = function()
   if termSP and termSP.valid then
@@ -133,7 +59,7 @@ local swapScreen = function()
 end
 
 -- {{{ Key bindings
-local globalkeys = gears.table.join(SPkeys,
+local globalkeys = gears.table.join(SPkeys, appKeys,
   awful.key({ modkey, }, "slash", hotkeys_popup.show_help,
     { description = "show help", group = "awesome" }),
   -- Navigation
@@ -216,29 +142,6 @@ local globalkeys = gears.table.join(SPkeys,
     { description = "open a terminal", group = "launcher" }),
   awful.key({ modkey, }, "KP_Enter", function() awful.spawn(terminal) end,
     { description = "open a terminal", group = "launcher" }),
-  awful.key({ modkey, altkey }, "f", function() awful.spawn(mainbrowser) end,
-    { description = "Opens " .. mainbrowser, group = "launcher" }),
-  awful.key({ modkey, altkey }, "z", function()
-    awful.spawn.with_shell("zen-browser")
-  end, { description = "Opens " .. mainbrowser, group = "launcher" }),
-  awful.key({ modkey, altkey }, "m", function() awful.spawn("/opt/mullvad-browser/Browser/mullvadbrowser") end,
-    { description = "Opens Mullvad browser", group = "launcher" }),
-  awful.key({ modkey, altkey }, "p", function() awful.spawn("pavucontrol") end,
-    { description = "Opens Pavucontrol", group = "launcher" }),
-  awful.key({ modkey, altkey }, "e", function() awful.spawn(termexec .. "nvim " .. home .. "/todo.md") end,
-    { description = "Opens Neovim TODO", group = "launcher" }),
-  awful.key({ modkey, altkey }, "n", function()
-    run_or_raise('Nemo', 'nemo')
-  end, { description = "Opens Nemo", group = "launcher" }),
-  awful.key({ modkey, altkey }, "d", function()
-    run_or_raise('eu.betterbird.Betterbird', 'betterbird')
-  end, { description = "Opens Betterbird Mail Client", group = "launcher" }),
-  awful.key({ modkey, altkey }, "g", function()
-    run_or_raise('Logseq', '/run/media/shvmpc/forlinuxuse/Appimage/Logseq.AppImage')
-  end, { description = "Run or Raise Logseq", group = "launcher" }),
-  awful.key({ modkey, altkey }, "t", function()
-    run_or_raise('Tor Browser', 'torbrowser-launcher')
-  end, { description = "Run or Raise Tor Browser", group = "launcher" }),
   awful.key({ modkey, }, "d", function() awful.spawn.with_shell("rofi -show drun") end,
     { description = "Opens Rofi", group = "launcher" }),
   awful.key({ modkey, }, ";", function() awful.spawn.with_shell("~/.config/scripts/dmoji.sh") end,
@@ -247,24 +150,6 @@ local globalkeys = gears.table.join(SPkeys,
     { description = "Opens Rofi", group = "launcher" }),
   awful.key({ modkey, }, "v", function() awful.spawn.with_shell("rofi -show window") end,
     { description = "Opens Rofi", group = "launcher" }),
-  awful.key({ modkey, altkey }, "r", function()
-    if fileSP and fileSP.valid then
-      fileSP.minimized = not fileSP.minimized
-      client.focus = fileSP
-      fileSP:raise()
-    else
-      awful.spawn(terminal .. " --class fileSP -e ranger")
-    end
-  end, { description = "Opens Ranger", group = "launcher" }),
-  awful.key({ modkey, altkey }, "h", function()
-    if htopSP and htopSP.valid then
-      htopSP.minimized = not htopSP.minimized
-      client.focus = htopSP
-      htopSP:raise()
-    else
-      awful.spawn.with_shell(terminal .. " --class \"htop\" -e htop")
-    end
-  end, { description = "Opens htop", group = "launcher" }),
 
   -- Miscelleneous programs and scripts
   awful.key({ modkey, "Shift" }, "Print", function() awful.spawn.with_shell("flameshot gui") end,
@@ -278,31 +163,7 @@ local globalkeys = gears.table.join(SPkeys,
     { description = "Opens Privatebin client", group = "launcher" }),
   awful.key({ modkey, "Shift" }, "t", function() awful.spawn(scripts .. "tesseract.sh") end,
     { description = "Opens Tesseract script", group = "launcher" }),
-  awful.key({ modkey, altkey }, "c", function()
-    awful.spawn(terminal .. " --class CountDown -e fish -c 'countdown 10'",
-      {
-        floating = true,
-        width = 200,
-        height = 150,
-        titlebars_enabled = false,
-        ontop = true,
-        sticky = true,
-        placement =
-            awful.placement.top_left,
-        x = 0,
-        y = 0
-      })
-  end, { description = "swap screens", group = "layout" }),
-
-  -- Brave Profiles
-  awful.key({ modkey, altkey }, "b", function()
-    awful.spawn(browser .. " --disable-application-cache --media-cache-size=1 --disk-cache-size=1",
-      { tag = awful.screen.focused().selected_tag })
-  end, { description = "Opens Brave Browser with personal profile", group = "launcher" }),
-  awful.key({ modkey, altkey }, "w", function()
-    awful.spawn(browser .. " --disable-application-cache --media-cache-size=1 --disk-cache-size=1",
-      { tag = awful.screen.focused().selected_tag })
-  end, { description = "Opens Brave Browser with work profile", group = "launcher" }),
+ 
 
   -- Scratchpads
   awful.key({ modkey, "Shift" }, "Return", createTerm
@@ -349,14 +210,6 @@ local globalkeys = gears.table.join(SPkeys,
   end, { description = "Removes client scratchpad if focused client is scratchpad", group = "scratchpad" }),
 
   -- Volume Controls
-  -- awful.key({ modkey, }, "minus", function () awful.spawn.with_shell( scripts .. "volume.sh down") end,
-  --           {description = "Decreases volume by 5%", group = "volume"}),
-  -- awful.key({ modkey, }, "KP_Subtract", function () awful.spawn.with_shell(scripts .. "volume.sh down") end,
-  --           {description = "Decreases volume by 5%", group = "volume"}),
-  -- awful.key({ modkey, }, "equal", function () awful.spawn.with_shell(scripts .. "volume.sh up") end,
-  --           {description = "Increases volume by 5%", group = "volume"}),
-  -- awful.key({ modkey, }, "KP_Add", function () awful.spawn.with_shell(scripts .. "volume.sh up") end,
-  --           {description = "Increases volume by 5%", group = "volume"}),
   awful.key({ modkey, }, "minus", function()
     simple_volume_widget:emit_signal("decrease")
   end, { description = "Decreases volume by 5%", group = "volume" }),

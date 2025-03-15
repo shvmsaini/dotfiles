@@ -19,14 +19,13 @@ local function create_tag_widget(screen)
   }
 
   local function update_tag_widget()
-    tag_widget:reset() -- Clear existing tags
+    tag_widget:reset()
 
     for _, tag in ipairs(screen.tags) do
       local bg_container = wibox.container.background()
       local margin_container = wibox.container.margin(2, 2, 2, 2)
       local container = wibox.layout.fixed.horizontal()
 
-      -- Create a tag icon with a textbox for the tag name
       local tag_icon = wibox.widget {
         {
           id = "text",
@@ -36,20 +35,18 @@ local function create_tag_widget(screen)
         widget = wibox.container.margin,
       }
 
-      -- Set colors and text based on tag selection
       if tag.selected then
         bg_container.bg = foreground
         bg_container.opacity = 1
-        tag_icon:get_children_by_id("text")[1].markup = "<span foreground='" ..
-            text_background .. "'><b>" .. tag.name .. "</b></span>"
+        tag_icon:get_children_by_id("text")[1].markup =
+          "<span foreground='" .. text_background .. "'><b>" .. tag.name .. "</b></span>"
       else
         bg_container.bg = background
         bg_container.opacity = 0.9
-        tag_icon:get_children_by_id("text")[1].markup = "<span foreground='" ..
-            text_foreground .. "'>" .. tag.name .. "</span>"
+        tag_icon:get_children_by_id("text")[1].markup =
+          "<span foreground='" .. text_foreground .. "'>" .. tag.name .. "</span>"
       end
 
-      -- Mouse hover effects
       bg_container:connect_signal("mouse::enter", function()
         if not tag.selected then bg_container.bg = hover .. "99" end
       end)
@@ -57,7 +54,6 @@ local function create_tag_widget(screen)
         if not tag.selected then bg_container.bg = background end
       end)
 
-      -- Click events for tag navigation
       bg_container:buttons(gears.table.join(
         awful.button({}, 1, function() tag:view_only() end),
         awful.button({}, 3, function() awful.tag.viewtoggle(tag) end),
@@ -65,20 +61,43 @@ local function create_tag_widget(screen)
         awful.button({}, 5, function() awful.tag.viewprev(tag.screen) end)
       ))
 
-      -- Add the tag icon to the container
       container:add(tag_icon)
 
-      -- Add client icons to the tag
       for _, client in ipairs(tag:clients()) do
         local client_icon = wibox.widget {
-          image = client.icon or ramIcon, -- Default icon if none
+          image = client.icon or nil,
           resize = true,
           widget = wibox.widget.imagebox,
         }
 
-        -- Click events for client icons
-        client_icon:buttons(gears.table.join(
-          awful.button({}, 1, function() client:activate({ context = "tasklist", raise = true }) end),
+        local active_line = wibox.widget {
+          widget = wibox.container.background,
+          forced_width = 10,
+          forced_height = 10,
+          bg = "#ff69b4",
+        }
+
+        local line_container = wibox.container.place(active_line)
+        line_container.forced_height = 4
+        line_container.forced_width = 10
+        line_container.valign = "top"
+        line_container.halign = "center"
+        line_container.margins = 0
+
+        local overlay = wibox.widget {
+          client_icon,
+          line_container,
+          layout = wibox.layout.stack,
+        }
+
+        if client ~= client.focus then
+          line_container.visible = false
+        else
+          line_container.visible = true
+        end
+
+        overlay:buttons(gears.table.join(
+          awful.button({}, 1, function() client:activate({context = "tasklist", raise = true}) end),
           awful.button({}, 2, function() client:kill() end),
           awful.button({}, 3, function()
             local current_tag = awful.screen.focused().selected_tag
@@ -95,7 +114,7 @@ local function create_tag_widget(screen)
           end)
         ))
 
-        local margin_container1 = wibox.container.margin(client_icon, 2, 2, 2, 2)
+        local margin_container1 = wibox.container.margin(overlay, 2, 2, 2, 2)
         container:add(margin_container1)
       end
 
@@ -105,15 +124,16 @@ local function create_tag_widget(screen)
     end
   end
 
-  -- Connect signals to update the widget
   tag.connect_signal("tag::history::update", update_tag_widget)
-  --screen.connect_signal("tag::history::update", update_tag_widget)
   tag.connect_signal("property::selected", update_tag_widget)
   tag.connect_signal("property::name", update_tag_widget)
   client.connect_signal("tagged", update_tag_widget)
   client.connect_signal("untagged", update_tag_widget)
+  client.connect_signal("focus", update_tag_widget)
+  client.connect_signal("unfocus", update_tag_widget)
 
   return tag_widget
 end
 
 return create_tag_widget
+

@@ -68,6 +68,7 @@ set conf $HOME/.config
 set flu /run/media/shvmpc/forlinuxuse
 set stf /run/media/shvmpc/Stuff
 set doc $HOME/Documents/
+set mus $HOME/Music/
 set down $HOME/Downloads/
 set tmp /tmp/
 
@@ -250,8 +251,9 @@ abbr to_clip "xclip -selection clipboard"
 # Open directory in neovim
 function vcd
   set original_dir (pwd)
-  cd $argv[1]
-  nvim
+  set given_path (dirname $argv[1])
+  cd $given_path
+  nvim $argv[1]
   cd $original_dir
 end
 
@@ -260,3 +262,18 @@ function pp
     sleep 0.5
     xdotool type (xclip -o -selection clipboard)
 end
+
+# VPN
+function random_openvpn
+    # Get a random file from the ~/.config/openvpn/ directory
+    set config_file (dir ~/.config/openvpn/*.ovpn | shuf -n 1)
+
+    # Check if a config file was found
+    if test -n "$config_file"
+        echo "Starting OpenVPN with config: $config_file"
+        sudo openvpn --config "$config_file" --auth-user-pass $conf/openvpn/user_and_pass.txt
+    else
+        echo "No OpenVPN configuration files found."
+    end
+end
+
