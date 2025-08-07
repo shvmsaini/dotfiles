@@ -48,6 +48,9 @@ abbr !gstp "git stash pop"
 abbr !gst "git stash"
 abbr !ef "nvim ~/.config/fish/config.fish"
 abbr !ek "nvim ~/.config/kitty/kitty.conf"
+abbr !hcs "history clear-session"
+abbr !adblist "adb shell pm list packages"
+abbr !adbstop "adb shell am force-stop your_package"
 abbr !axel "axel -n 5"
 
 # Countdown
@@ -110,6 +113,11 @@ abbr search "pacman -Ss"
 abbr query "pacman -Qi"
 abbr fixpacman "sudo rm /var/lib/pacman/db.lck"
 #abbr install "sudo dnf install "
+
+# Mac
+#abbr install "brew install"
+#abbr upgrade "brew upgrade"
+#abbr remove "brew remove"
 
 set OS $(cat /etc/os-release | grep "ID=" -m 1 | cut -d'=' -f 2)
 
